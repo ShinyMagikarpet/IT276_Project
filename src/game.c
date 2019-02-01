@@ -2,6 +2,7 @@
 #include "gf2d_graphics.h"
 #include "gf2d_sprite.h"
 #include "simple_logger.h"
+#include "gf2d_entity.h"
 
 int main(int argc, char * argv[])
 {
