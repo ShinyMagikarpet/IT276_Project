@@ -83,7 +83,7 @@ void gf2d_entity_draw(Entity * self)
 		&self->scale,
 		&self->scalecenter,
 		&self->rotation,
-		NULL,
+		&self->flip,
 		NULL,
 		(int)self->frame);
 

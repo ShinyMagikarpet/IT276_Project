@@ -6,7 +6,6 @@
 #include "gf2d_sprite.h"
 
 
-
 typedef struct Entity_S {
 
 	int _inuse;
@@ -15,6 +14,7 @@ typedef struct Entity_S {
 	Vector2D position;
 	Vector2D scale;
 	Vector2D scalecenter;
+	Vector2D flip;
 	Sprite *sprite;
 	float frame;
 
