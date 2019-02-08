@@ -7,6 +7,7 @@ typedef struct {
 
 	Entity *entityList;
 	Uint32 maxEntities;
+	Uint64 autoincrement;
 
 }EntityManager;
 
@@ -45,12 +46,28 @@ void gf2d_entity_system_init(Uint32 maxEntities) {
 
 }
 
-
+Entity *gf2d_entity_new()
+{
+	int i;
+	for (i = 0; i < entityManager.maxEntities; i++)
+	{
+		if (entityManager.entityList[i]._inuse)continue;
+		entityManager.entityList[i]._inuse = 1;
+		entityManager.entityList[i].scale.x = 1;
+		entityManager.entityList[i].scale.y = 1;
+		return &entityManager.entityList[i];
+	}
+	slog("all entities in use, cannot provide a new entity");
+	return NULL;
+}
 
 void gf2d_entity_free(Entity *self)
 {
-	int i;
 	if (!self)return;
+	if (self->sprite != NULL)
+	{
+		gf2d_sprite_free(self->sprite);
+	}
 	memset(self, 0, sizeof(Entity));
 }
 
@@ -63,17 +80,26 @@ void gf2d_entity_draw(Entity * self)
 	gf2d_sprite_draw(
 		self->sprite,
 		self->position,
-		self->scale,
-		self->scalecenter,
-		self->rotation,
+		&self->scale,
+		&self->scalecenter,
+		&self->rotation,
 		NULL,
 		NULL,
-		NULL);
+		(int)self->frame);
 
 	if (self->draw != NULL) {
 		self->draw(self);
 	}
 
+}
+
+void gf2d_entity_draw_all() {
+	int i;
+
+	for (i = 0; i < entityManager.maxEntities; i++) {
+		//if (entityManager.entityList[i]._inuse == 0)continue;
+		gf2d_entity_draw(&entityManager.entityList[i]);
+	}
 }
 
 void gf2d_entity_update(Entity *self) {
