@@ -111,3 +111,11 @@ void gf2d_entity_update(Entity *self) {
 		self->update(self);
 	}
 }
+
+void gf2d_entity_update_all() {
+	int i;
+
+	for (i = 0; i < entityManager.maxEntities; i++) {
+		gf2d_entity_update(&entityManager.entityList[i]);
+	}
+}

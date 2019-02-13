@@ -1,7 +1,9 @@
 #include "Player.h"
 #include "simple_logger.h"
 
+void player_think(Entity *self);
 void player_update(Entity *self);
+float mf = 0;
 
 Entity *player_new(Vector2D position) {
 
@@ -15,20 +17,103 @@ Entity *player_new(Vector2D position) {
 	}
 
 	vector2d_copy(player->position, position);
-	player->sprite = gf2d_sprite_load_all("images/ed210.png", 128, 128, 16);
-	player->frame = 48;
+	player->sprite = gf2d_sprite_load_all("images/NPC_test.png", 16, 32, 4);
+	player->frame = 0;
+	player->dir = DIR_DOWN;
+	player->scale.x = 2;
+	player->scale.y = 2;
+	player->think = player_think;
 	player->update = player_update;
 	return player;
 
 }
 
+void player_think(Entity *self) {
+
+}
+
 void player_update(Entity *self) {
+
+
+	Bool isButtonPressed = false;
 	const Uint8 *keys;
+
+	if (mf >= 1.0)mf = 0;
 	keys = SDL_GetKeyboardState(NULL);
-	if (keys[SDL_SCANCODE_UP])self->position.y -= 2;
-	if (keys[SDL_SCANCODE_DOWN])self->position.y += 2;
-	if (keys[SDL_SCANCODE_RIGHT])self->position.x += 2;
-	if (keys[SDL_SCANCODE_LEFT])self->position.x -= 2;
+	if (keys[SDL_SCANCODE_UP]) {
+		isButtonPressed = true;
+		self->dir = DIR_UP;
+		self->position.y -= 2;
+
+		if (self->frame >= 12) {
+			self->frame = 0;
+		}
+		else {
+			if (mf == 0)
+				self->frame++;
+		}
+		if (self->frame > 11 || self->frame < 8)self->frame = 8;
+		
+	}
+	if (keys[SDL_SCANCODE_DOWN]) {
+		isButtonPressed = true;
+		self->dir = DIR_DOWN;
+		self->position.y += 2;
+
+		if (self->frame >= 4) {
+			self->frame = 0;
+		}
+		else {
+			if(mf == 0)
+				self->frame++;
+		}
+		if (self->frame > 3)self->frame = 0;
+		
+		
+	}
+	if (keys[SDL_SCANCODE_RIGHT]) {
+		isButtonPressed = true;
+		self->dir = DIR_RIGHT;
+		self->position.x += 2;
+
+		if (self->frame >= 8) {
+			self->frame = 4;
+		}
+		else {
+			if (mf == 0)
+				self->frame++;
+		}
+		if (self->frame > 7 || self->frame < 4)self->frame = 4;
+		
+	}
+	if (keys[SDL_SCANCODE_LEFT]) {
+		isButtonPressed = true;
+		self->dir = DIR_LEFT;
+		self->position.x -= 2;
+
+		if (self->frame >= 16) {
+			self->frame = 12;
+		}
+		else {
+			if (mf == 0)
+				self->frame++;
+		}
+		if (self->frame > 15 || self->frame < 12)self->frame = 12;
+		
+	}
+
+	if (!isButtonPressed) {
+		if (self->dir == DIR_UP)self->frame = 8;
+		if (self->dir == DIR_RIGHT)self->frame = 4;
+		if (self->dir == DIR_DOWN)self->frame = 0;
+		if (self->dir == DIR_LEFT)self->frame = 12;
+		mf = 0;
+
+	}
+	//slog("mf Value is: %f", mf);
+	//slog("Current frame is: %f", self->frame);
+	mf += 0.1;
+
 
 }
 
