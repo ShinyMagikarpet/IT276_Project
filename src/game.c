@@ -3,6 +3,7 @@
 #include "gf2d_sprite.h"
 #include "simple_logger.h"
 #include "Player.h"
+#include "Bug.h"
 
 int main(int argc, char * argv[])
 {
@@ -33,6 +34,7 @@ int main(int argc, char * argv[])
    
 	gf2d_entity_system_init(1024);
 	player = player_new(vector2d(600, 360));
+	bug_new(vector2d(1000, 0), player);
 
     /*demo setup*/
     sprite = gf2d_sprite_load_image("images/backgrounds/bg_flat.png");
@@ -47,19 +49,18 @@ int main(int argc, char * argv[])
         mf+=0.1;
         if (mf >= 16.0)mf = 0;
         
-		gf2d_entity_update(player);
+		gf2d_entity_update_all();
         
         gf2d_graphics_clear_screen();// clears drawing buffers
-        // all drawing should happen betweem clear_screen and next_frame
-            //backgrounds drawn first
-            gf2d_sprite_draw_image(sprite,vector2d(0,0));
-            
-
-
+		// all drawing should happen betweem clear_screen and next_frame
+        //backgrounds drawn first
+         gf2d_sprite_draw_image(sprite,vector2d(0,0));
 			
 
 			//Draw Entity
 			gf2d_entity_draw_all();
+
+		 
 
             //UI elements last
             gf2d_sprite_draw(
