@@ -2,6 +2,9 @@
 
 void gf2d_input_init(char *configFile) {
 
+	if (!configFile)
+		return;
+	
 }
 
 /**
