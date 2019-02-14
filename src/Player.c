@@ -17,7 +17,7 @@ Entity *player_new(Vector2D position) {
 	}
 
 	vector2d_copy(player->position, position);
-	player->sprite = gf2d_sprite_load_all("images/NPC_test.png", 16, 32, 4);
+	player->sprite = gf2d_sprite_load_all("images/character.png", 16, 32, 4);
 	player->frame = 0;
 	player->dir = DIR_DOWN;
 	player->scale.x = 2;
@@ -29,6 +29,20 @@ Entity *player_new(Vector2D position) {
 }
 
 void player_think(Entity *self) {
+
+}
+
+void player_walk_frame_range(Entity *self, int frameStart, int frameEnd) {
+
+	if (self->frame >= frameEnd + 1) {
+		self->frame = frameStart;
+	}
+	else {
+		if (mf == 0)
+			self->frame++;
+	}
+	if (self->frame > frameEnd || self->frame < frameStart)self->frame = frameStart;
+
 
 }
 
@@ -45,14 +59,7 @@ void player_update(Entity *self) {
 		self->dir = DIR_UP;
 		self->position.y -= 2;
 
-		if (self->frame >= 12) {
-			self->frame = 0;
-		}
-		else {
-			if (mf == 0)
-				self->frame++;
-		}
-		if (self->frame > 11 || self->frame < 8)self->frame = 8;
+		player_walk_frame_range(self, 8, 11);
 		
 	}
 	if (keys[SDL_SCANCODE_DOWN]) {
@@ -60,14 +67,7 @@ void player_update(Entity *self) {
 		self->dir = DIR_DOWN;
 		self->position.y += 2;
 
-		if (self->frame >= 4) {
-			self->frame = 0;
-		}
-		else {
-			if(mf == 0)
-				self->frame++;
-		}
-		if (self->frame > 3)self->frame = 0;
+		player_walk_frame_range(self, 0, 3);
 		
 		
 	}
@@ -76,14 +76,7 @@ void player_update(Entity *self) {
 		self->dir = DIR_RIGHT;
 		self->position.x += 2;
 
-		if (self->frame >= 8) {
-			self->frame = 4;
-		}
-		else {
-			if (mf == 0)
-				self->frame++;
-		}
-		if (self->frame > 7 || self->frame < 4)self->frame = 4;
+		player_walk_frame_range(self, 4, 7);
 		
 	}
 	if (keys[SDL_SCANCODE_LEFT]) {
@@ -91,14 +84,7 @@ void player_update(Entity *self) {
 		self->dir = DIR_LEFT;
 		self->position.x -= 2;
 
-		if (self->frame >= 16) {
-			self->frame = 12;
-		}
-		else {
-			if (mf == 0)
-				self->frame++;
-		}
-		if (self->frame > 15 || self->frame < 12)self->frame = 12;
+		player_walk_frame_range(self, 12, 15);
 		
 	}
 
