@@ -6,6 +6,8 @@
 
 Entity *player_new(Vector2D position);
 
+Entity *player_get();
+
 
 
 

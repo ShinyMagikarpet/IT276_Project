@@ -4,6 +4,7 @@
 #include "simple_logger.h"
 #include "Player.h"
 #include "Bug.h"
+#include "gf2d_actor.h"
 
 int main(int argc, char * argv[])
 {
@@ -32,6 +33,7 @@ int main(int argc, char * argv[])
     gf2d_sprite_init(1024);
     SDL_ShowCursor(SDL_DISABLE);
    
+	gf2d_action_list_init(128);
 	gf2d_entity_system_init(1024);
 	player = player_new(vector2d(600, 360));
 	bug_new(vector2d(1000, 0), player);

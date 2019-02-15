@@ -1,14 +1,15 @@
 #include "Player.h"
 #include "simple_logger.h"
 
+
+static Entity *player = NULL;
+
 void player_think(Entity *self);
 void player_update(Entity *self);
-float mf = 0;
 
 Entity *player_new(Vector2D position) {
 
-	Entity *player = NULL;
-
+	//Entity *self;
 	player = gf2d_entity_new();
 
 	if (!player) {
@@ -16,90 +17,72 @@ Entity *player_new(Vector2D position) {
 		return NULL;
 	}
 
+	gf2d_line_cpy(player->name, "player");
+	gf2d_actor_load(&player->actor, "actor/player.actor");
+	gf2d_actor_set_action(&player->actor, "idle_down");
 	vector2d_copy(player->position, position);
-	player->sprite = gf2d_sprite_load_all("images/character.png", 16, 32, 4);
-	player->frame = 0;
-	player->dir = DIR_DOWN;
+	//player->sprite = gf2d_sprite_load_all("images/character.png", 16, 32, 4);
+	//vector2d_copy(player->scale, player->actor.al->scale);
 	player->scale.x = 2;
 	player->scale.y = 2;
+	//player->actor.frame = 0;
+	//vector2d_set(player->flip, 1, 0);
 	player->think = player_think;
 	player->update = player_update;
+	player->state = ES_Idle;
 	return player;
+}
 
+Entity *player_get() {
+	return player;
 }
 
 void player_think(Entity *self) {
 
 }
 
-void player_walk_frame_range(Entity *self, int frameStart, int frameEnd) {
-
-	if (self->frame >= frameEnd + 1) {
-		self->frame = frameStart;
-	}
-	else {
-		if (mf == 0)
-			self->frame++;
-	}
-	if (self->frame > frameEnd || self->frame < frameStart)self->frame = frameStart;
-
-
-}
-
 void player_update(Entity *self) {
 
-
-	Bool isButtonPressed = false;
 	const Uint8 *keys;
 
-	if (mf >= 1.0)mf = 0;
 	keys = SDL_GetKeyboardState(NULL);
+	
+	//Need to fix walking animation to easily
+	//transition from idle to walking
 	if (keys[SDL_SCANCODE_UP]) {
-		isButtonPressed = true;
-		self->dir = DIR_UP;
 		self->position.y -= 2;
 
-		player_walk_frame_range(self, 8, 11);
+		if (self->state != ES_Walk)
+			gf2d_actor_set_action(&self->actor, "walk_up");
+		else
+			gf2d_actor_next_frame(&self->actor);
+
+		self->state = ES_Walk;
 		
 	}
+		
 	if (keys[SDL_SCANCODE_DOWN]) {
-		isButtonPressed = true;
-		self->dir = DIR_DOWN;
 		self->position.y += 2;
 
-		player_walk_frame_range(self, 0, 3);
-		
+		if (self->state != ES_Walk)
+			gf2d_actor_set_action(&self->actor, "walk_down");
+		else
+			gf2d_actor_next_frame(&self->actor);
+
+		self->state = ES_Walk;
 		
 	}
-	if (keys[SDL_SCANCODE_RIGHT]) {
-		isButtonPressed = true;
-		self->dir = DIR_RIGHT;
+		
+
+	if (keys[SDL_SCANCODE_RIGHT])
 		self->position.x += 2;
 
-		player_walk_frame_range(self, 4, 7);
-		
-	}
-	if (keys[SDL_SCANCODE_LEFT]) {
-		isButtonPressed = true;
-		self->dir = DIR_LEFT;
+	if (keys[SDL_SCANCODE_LEFT])
 		self->position.x -= 2;
 
-		player_walk_frame_range(self, 12, 15);
-		
-	}
-
-	if (!isButtonPressed) {
-		if (self->dir == DIR_UP)self->frame = 8;
-		if (self->dir == DIR_RIGHT)self->frame = 4;
-		if (self->dir == DIR_DOWN)self->frame = 0;
-		if (self->dir == DIR_LEFT)self->frame = 12;
-		mf = 0;
+	if (self->state == ES_Idle) {
 
 	}
-	//slog("mf Value is: %f", mf);
-	//slog("Current frame is: %f", self->frame);
-	mf += 0.1;
-
 
 }
 

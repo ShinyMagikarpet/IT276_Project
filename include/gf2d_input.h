@@ -8,8 +8,8 @@
 typedef enum {
 
 		IE_Idle = 0,
-		IE_pressed = 1,
-		IE_HOLD = 2,
+		IE_Pressed = 1,
+		IE_Hold = 2,
 		IE_Release = 3
 
 }InputEvent;

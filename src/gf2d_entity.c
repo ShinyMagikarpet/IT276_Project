@@ -51,8 +51,8 @@ Entity *gf2d_entity_new()
 	int i;
 	for (i = 0; i < entityManager.maxEntities; i++)
 	{
-		if (entityManager.entityList[i]._inuse)continue;
-		entityManager.entityList[i]._inuse = 1;
+		if (entityManager.entityList[i].inuse)continue;
+		entityManager.entityList[i].inuse = 1;
 		entityManager.entityList[i].scale.x = 1;
 		entityManager.entityList[i].scale.y = 1;
 		return &entityManager.entityList[i];
@@ -75,17 +75,17 @@ void gf2d_entity_draw(Entity * self)
 {
 
 	if (!self)return;
-	if (!self->_inuse)return;
+	if (!self->inuse)return;
 
 	gf2d_sprite_draw(
-		self->sprite,
+		self->actor.sprite,
 		self->position,
 		&self->scale,
 		&self->scalecenter,
 		&self->rotation,
 		&self->flip,
 		NULL,
-		(int)self->frame);
+		(Uint64)self->actor.frame);
 
 	if (self->draw != NULL) {
 		self->draw(self);
@@ -105,7 +105,7 @@ void gf2d_entity_draw_all() {
 void gf2d_entity_update(Entity *self) {
 
 	if (!self)return;
-	if (!self->_inuse)return;
+	if (!self->inuse)return;
 
 	if (self->update != NULL) {
 		self->update(self);

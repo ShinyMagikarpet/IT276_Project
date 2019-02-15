@@ -1,0 +1,53 @@
+sprite: images/character.png
+frameWidth: 16
+frameHeight: 32
+framesPerLine: 4
+scale: 1,1
+
+action: idle_up
+startFrame: 8
+endFrame: 8
+frameRate: 0.05
+type: loop
+
+action: idle_right
+startFrame: 4
+endFrame: 4
+frameRate: 0.05
+type: loop
+
+action: idle_down
+startFrame: 0
+endFrame: 0
+frameRate: 0.05
+type: loop
+
+action: idle_right
+startFrame: 12
+endFrame: 12
+frameRate: 0.05
+type: loop
+
+action: walk_up
+startFrame: 8
+endFrame: 12
+frameRate: 0.05
+type: loop
+
+action: walk_right
+startFrame: 4
+endFrame: 8
+frameRate: 0.05
+type: loop
+
+action: walk_down
+startFrame: 0
+endFrame: 4
+frameRate: 0.05
+type: loop
+
+action: walk_left
+startFrame: 12
+endFrame: 15
+frameRate: 1.0
+type: loop
