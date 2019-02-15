@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "Bug.h"
 #include "gf2d_actor.h"
+#include "gf2d_input.h"
 
 int main(int argc, char * argv[])
 {
@@ -35,6 +36,7 @@ int main(int argc, char * argv[])
    
 	gf2d_action_list_init(128);
 	gf2d_entity_system_init(1024);
+	gf2d_input_init("config/input.cfg");
 	player = player_new(vector2d(600, 360));
 	bug_new(vector2d(1000, 0), player);
 
@@ -44,13 +46,13 @@ int main(int argc, char * argv[])
     /*main game loop*/
     while(!done)
     {
-        SDL_PumpEvents();   // update SDL's internal event structures
+        //SDL_PumpEvents();   // update SDL's internal event structures
         keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
         /*update things here*/
         SDL_GetMouseState(&mx,&my);
         mf+=0.1;
         if (mf >= 16.0)mf = 0;
-        
+		gf2d_input_update();
 		gf2d_entity_update_all();
         
         gf2d_graphics_clear_screen();// clears drawing buffers

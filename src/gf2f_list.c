@@ -19,7 +19,7 @@ List *gf2d_list_new_size(Uint32 count) {
 		slog("failed to allocate memory for list");
 		return NULL;
 	}
-	memset(1, 0, sizeof(List));
+	memset(l, 0, sizeof(List));
 	l->size = count;
 	l->element = (ListElement*)malloc(sizeof(ListElement)*count);
 	if (!l->element) {

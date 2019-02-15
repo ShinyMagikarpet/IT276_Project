@@ -22,7 +22,7 @@ endFrame: 0
 frameRate: 0.05
 type: loop
 
-action: idle_right
+action: idle_left
 startFrame: 12
 endFrame: 12
 frameRate: 0.05
@@ -49,5 +49,5 @@ type: loop
 action: walk_left
 startFrame: 12
 endFrame: 15
-frameRate: 1.0
+frameRate: 0.05
 type: loop

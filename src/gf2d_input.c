@@ -1,6 +1,8 @@
 #include "gf2d_input.h"
 #include "gf2d_list.h"
 #include "simple_logger.h"
+#include <simple_json.h>
+
 
 static List *gf2d_input_list = NULL;
 static const Uint8 * gf2d_input_keys = NULL;
@@ -223,6 +225,7 @@ void gf2d_input_init(char *configFile)
 	if (!gf2d_input_key_count)
 	{
 		slog("failed to get keyboard count!");
+		
 	}
 	else
 	{
@@ -395,6 +398,22 @@ SDL_Scancode gf2d_input_key_to_scancode(const char * buffer)
 		{
 			kc = SDL_SCANCODE_ESCAPE;
 		}
+		else if (strcmp(buffer, "UPARROW") == 0) 
+		{
+			kc = SDL_SCANCODE_UP;
+		}
+		else if (strcmp(buffer, "DOWNARROW") == 0)
+		{
+			kc = SDL_SCANCODE_DOWN;
+		}
+		else if (strcmp(buffer, "RIGHTARROW") == 0)
+		{
+			kc = SDL_SCANCODE_RIGHT;
+		}
+		else if (strcmp(buffer, "LEFTARROW") == 0)
+		{
+			kc = SDL_SCANCODE_LEFT;
+		}
 	}
 	if (kc == -1)
 	{
@@ -442,68 +461,68 @@ Uint8 gf2d_input_key_down(const char *key)
 	return 0;
 }
 
-//void gf2d_input_parse_command_json(SJson *command)
-//{
-//	SJson *value, *list;
-//	const char * buffer;
-//	Input *in;
-//	int count, i;
-//	SDL_Scancode kc = 0;
-//	if (!command)return;
-//	value = sj_object_get_value(command, "command");
-//	if (!value)
-//	{
-//		slog("input command missing 'command' key");
-//		return;
-//	}
-//	in = gf2d_input_new();
-//	if (!in)return;
-//	buffer = sj_get_string_value(value);
-//	gf2d_line_cpy(in->command, buffer);
-//	list = sj_object_get_value(command, "keys");
-//	count = sj_array_get_count(list);
-//	for (i = 0; i < count; i++)
-//	{
-//		value = sj_array_get_nth(list, i);
-//		if (!value)continue;
-//		buffer = sj_get_string_value(value);
-//		if (strlen(buffer) == 0)
-//		{
-//			slog("error in key list, empty value");
-//			continue;   //error
-//		}
-//		kc = gf2d_input_key_to_scancode(buffer);
-//#pragma GCC diagnostic ignored "-Wint-to-pointer-cast"
-//		if (kc != -1)
-//		{
-//			gf2d_list_append(in->keyCodes, (void *)kc);
-//		}
-//	}
-//	gf2d_list_append(gf2d_input_list, (void *)in);
-//}
-//
-//void gf2d_input_commands_load(char *configFile)
-//{
-//	SJson *json;
-//	SJson *commands;
-//	SJson *value;
-//	int count, i;
-//	if (!configFile)return;
-//	json = sj_load(configFile);
-//	if (!json)return;
-//	commands = sj_object_get_value(json, "commands");
-//	if (!commands)
-//	{
-//		slog("config file %s does not contain 'commands' object", configFile);
-//		sj_free(json);
-//		return;
-//	}
-//	count = sj_array_get_count(commands);
-//	for (i = 0; i < count; i++)
-//	{
-//		value = sj_array_get_nth(commands, i);
-//		if (!value)continue;
-//		gf2d_input_parse_command_json(value);
-//	}
-//	sj_free(json);
-//}
+void gf2d_input_parse_command_json(SJson *command)
+{
+	SJson *value, *list;
+	const char * buffer;
+	Input *in;
+	int count, i;
+	SDL_Scancode kc = 0;
+	if (!command)return;
+	value = sj_object_get_value(command, "command");
+	if (!value)
+	{
+		slog("input command missing 'command' key");
+		return;
+	}
+	in = gf2d_input_new();
+	if (!in)return;
+	buffer = sj_get_string_value(value);
+	gf2d_line_cpy(in->command, buffer);
+	list = sj_object_get_value(command, "keys");
+	count = sj_array_get_count(list);
+	for (i = 0; i < count; i++)
+	{
+		value = sj_array_get_nth(list, i);
+		if (!value)continue;
+		buffer = sj_get_string_value(value);
+		if (strlen(buffer) == 0)
+		{
+			slog("error in key list, empty value");
+			continue;   //error
+		}
+		kc = gf2d_input_key_to_scancode(buffer);
+#pragma GCC diagnostic ignored "-Wint-to-pointer-cast"
+		if (kc != -1)
+		{
+			gf2d_list_append(in->keyCodes, (void *)kc);
+		}
+	}
+	gf2d_list_append(gf2d_input_list, (void *)in);
+}
+
+void gf2d_input_commands_load(char *configFile)
+{
+	SJson *json;
+	SJson *commands;
+	SJson *value;
+	int count, i;
+	if (!configFile)return;
+	json = sj_load(configFile);
+	if (!json)return;
+	commands = sj_object_get_value(json, "commands");
+	if (!commands)
+	{
+		slog("config file %s does not contain 'commands' object", configFile);
+		sj_free(json);
+		return;
+	}
+	count = sj_array_get_count(commands);
+	for (i = 0; i < count; i++)
+	{
+		value = sj_array_get_nth(commands, i);
+		if (!value)continue;
+		gf2d_input_parse_command_json(value);
+	}
+	sj_free(json);
+}
