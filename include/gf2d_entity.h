@@ -7,6 +7,13 @@
 #include "gf2d_actor.h"
 
 typedef enum {
+	ED_Up,
+	ED_Down,
+	ED_Right,
+	ED_Left
+}EntityDir;
+
+typedef enum {
 
 	ES_Idle,
 	ES_Walk,
@@ -21,6 +28,7 @@ typedef struct Entity_S {
 
 	TextLine name;
 	EntityState state;
+	EntityDir dir;
 	Action action;
 
 	//Physics
@@ -42,6 +50,9 @@ typedef struct Entity_S {
 	void(*free)(struct Entity_S *self);
 	int health;
 
+	//Game data
+	void *data;
+
 } Entity;
 
 void gf2d_entity_system_init(Uint32 maxEntities);
@@ -53,6 +64,10 @@ void gf2d_entity_free(Entity *self);
 //void gf2d_entity_draw(Entity *self);
 
 //void gf2d_entity_draw_all();
+
+void gf2d_entity_think(Entity *self);
+
+void gf2d_entity_think_all();
 
 void gf2d_entity_update(Entity *self);
 

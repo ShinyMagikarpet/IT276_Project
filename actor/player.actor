@@ -1,8 +1,8 @@
-sprite: images/character.png
+sprite: images/character_non_combat.png
 frameWidth: 16
 frameHeight: 32
-framesPerLine: 4
-scale: 1,1
+framesPerLine: 17
+scale: 2.0,2.0
 
 action: idle_up
 startFrame: 8
@@ -48,6 +48,6 @@ type: loop
 
 action: walk_left
 startFrame: 12
-endFrame: 15
+endFrame: 16
 frameRate: 0.05
 type: loop

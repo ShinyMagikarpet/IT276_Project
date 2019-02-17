@@ -8,6 +8,7 @@ static Entity *player = NULL;
 void player_think(Entity *self);
 void player_update(Entity *self);
 
+
 Entity *player_new(Vector2D position) {
 
 	//Entity *self;
@@ -22,12 +23,10 @@ Entity *player_new(Vector2D position) {
 	gf2d_actor_load(&player->actor, "actor/player.actor");
 	gf2d_actor_set_action(&player->actor, "idle_down");
 	vector2d_copy(player->position, position);
-	//player->sprite = gf2d_sprite_load_all("images/character.png", 16, 32, 4);
-	//vector2d_copy(player->scale, player->actor.al->scale);
-	player->scale.x = 2;
-	player->scale.y = 2;
+	vector2d_copy(player->scale, player->actor.al->scale);
 	//player->actor.frame = 0;
 	//vector2d_set(player->flip, 1, 0);
+	player->dir = ED_Down;
 	player->think = player_think;
 	player->update = player_update;
 	player->state = ES_Idle;
@@ -40,103 +39,142 @@ Entity *player_get() {
 
 void player_think(Entity *self) {
 
-}
+	int moveX = 0;
+	int moveY = 0;
 
-void player_update(Entity *self) {
-
-	const Uint8 *keys;
-
-	keys = SDL_GetKeyboardState(NULL);
-	
 	//Need to fix walking animation to easily
 	//transition from idle to walking
-	/*if (keys[SDL_SCANCODE_UP]) {
-		self->position.y -= 2;
 
-		if (self->state != ES_Walk)
-			gf2d_actor_set_action(&self->actor, "walk_up");
-		else
-			gf2d_actor_next_frame(&self->actor);
-
-		self->state = ES_Walk;
-		
-	}*/
-		
 	if (gf2d_input_command_held("walkup")) {
-		self->position.y -= 2;
+		if (self->state != ES_Attack)
+			moveY -= 2;
 
 		if (self->state == ES_Idle) {
+			self->dir = ED_Up;
 			self->state = ES_Walk;
 			gf2d_actor_set_action(&self->actor, "walk_up");
 		}
-		else
-			gf2d_actor_next_frame(&self->actor);
-		
+
+
+
 	}
-	else if (gf2d_input_command_get_state("walkup") == IE_Release) {
+	else if (gf2d_input_command_get_state("walkup") == IE_Release && self->state != ES_Attack) { //Need to check if player attacks to prevent action conflicts
 		gf2d_actor_set_action(&self->actor, "idle_up");
 		self->state = ES_Idle;
 	}
 
 	if (gf2d_input_command_held("walkdown")) {
-		self->position.y += 2;
+		if (self->state != ES_Attack)
+			moveY += 2;
 
 		if (self->state == ES_Idle) {
+			self->dir = ED_Down;
 			self->state = ES_Walk;
 			gf2d_actor_set_action(&self->actor, "walk_down");
 		}
-		else
-			gf2d_actor_next_frame(&self->actor);
+
 
 	}
-	else if (gf2d_input_command_get_state("walkdown") == IE_Release) {
+	else if (gf2d_input_command_get_state("walkdown") == IE_Release && self->state != ES_Attack) {
 		gf2d_actor_set_action(&self->actor, "idle_down");
 		self->state = ES_Idle;
 	}
 
-	/*if (keys[SDL_SCANCODE_DOWN]) {
-		self->position.y += 2;
-
-		if (self->state != ES_Walk)
-			gf2d_actor_set_action(&self->actor, "walk_down");
-		else
-			gf2d_actor_next_frame(&self->actor);
-
-		self->state = ES_Walk;
-		
-	}*/
-
 	if (gf2d_input_command_held("walkleft")) {
-		self->position.x -= 2;
+		if (self->state != ES_Attack)
+			moveX -= 2;
 
 		if (self->state == ES_Idle) {
+			self->dir = ED_Left;
 			self->state = ES_Walk;
 			gf2d_actor_set_action(&self->actor, "walk_left");
 		}
-		else
-			gf2d_actor_next_frame(&self->actor);
+
 
 	}
-	else if (gf2d_input_command_get_state("walkleft") == IE_Release) {
+	else if (gf2d_input_command_get_state("walkleft") == IE_Release && self->state != ES_Attack) {
 		gf2d_actor_set_action(&self->actor, "idle_left");
 		self->state = ES_Idle;
 	}
 
 	if (gf2d_input_command_held("walkright")) {
-		self->position.x += 2;
+		if (self->state != ES_Attack)
+			moveX += 2;
 
 		if (self->state == ES_Idle) {
+			self->dir = ED_Right;
 			self->state = ES_Walk;
 			gf2d_actor_set_action(&self->actor, "walk_right");
 		}
-		else
-			gf2d_actor_next_frame(&self->actor);
+
 
 	}
-	else if (gf2d_input_command_get_state("walkright") == IE_Release) {
+	else if (gf2d_input_command_get_state("walkright") == IE_Release && self->state != ES_Attack) {
 		gf2d_actor_set_action(&self->actor, "idle_right");
 		self->state = ES_Idle;
 	}
 
+	if (gf2d_input_command_pressed("melee")) {
+
+		if (self->state == ES_Walk) {
+			moveX = 0;
+			moveY = 0;
+		}
+
+		gf2d_actor_load(&player->actor, "actor/player_combat.actor");
+
+		switch (self->dir) {
+		case ED_Down:
+			gf2d_actor_set_action(&player->actor, "attack_down");
+			break;
+		case ED_Left:
+			gf2d_actor_set_action(&player->actor, "attack_left");
+			break;
+		case ED_Right:
+			gf2d_actor_set_action(&player->actor, "attack_right");
+			break;
+		case ED_Up:
+			gf2d_actor_set_action(&player->actor, "attack_up");
+			break;
+		default:
+			slog("WTF direction are you?!");
+		}
+		self->state = ES_Attack;
+	}
+
+	if (gf2d_input_command_held("walkup") && gf2d_input_command_held("walkdown")) {
+		gf2d_actor_set_action(&self->actor, "idle_down");
+		self->state = ES_Idle;
+	}
+
+	if (self->actor.at == ART_END && self->state == ES_Attack) {
+		gf2d_actor_load(&player->actor, "actor/player.actor");
+		switch (self->dir) {
+		case ED_Down:
+			gf2d_actor_set_action(&player->actor, "idle_down");
+			break;
+		case ED_Left:
+			gf2d_actor_set_action(&player->actor, "idle_left");
+			break;
+		case ED_Right:
+			gf2d_actor_set_action(&player->actor, "idle_right");
+			break;
+		case ED_Up:
+			gf2d_actor_set_action(&player->actor, "idle_up");
+			break;
+		default:
+			slog("WTF direction are you?!");
+		}
+		self->state = ES_Idle;
+	}
+	self->position.x += moveX;
+	self->position.y += moveY;
+	gf2d_actor_next_frame(&self->actor);
+}
+
+void player_update(Entity *self) {
+
+	
+	
 }
 

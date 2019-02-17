@@ -102,6 +102,26 @@ void gf2d_entity_draw_all() {
 	}
 }
 
+void gf2d_entity_think(Entity *self) {
+
+	if (!self)return;
+	if (!self->inuse)return;
+
+	if (self->think != NULL) {
+		self->think(self);
+	}
+}
+
+void gf2d_entity_think_all() {
+
+	int i;
+
+	for (i = 0; i < entityManager.maxEntities; i++) {
+		gf2d_entity_think(&entityManager.entityList[i]);
+	}
+
+}
+
 void gf2d_entity_update(Entity *self) {
 
 	if (!self)return;

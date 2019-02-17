@@ -1,11 +1,13 @@
 #include "Bug.h"
 
+Entity *bug = NULL;
+
 void bug_think(Entity *self);
 void bug_update(Entity *self);
 
-Entity *bug_new(Vector2D position, Entity *player) {
+Entity *bug_new(Vector2D position) {
 
-	Entity *bug = NULL;
+	
 	bug = gf2d_entity_new();
 
 	if (!bug) {
@@ -14,7 +16,8 @@ Entity *bug_new(Vector2D position, Entity *player) {
 	}
 
 	vector2d_copy(bug->position, position);
-	bug->sprite = gf2d_sprite_load_all("images/space_bug.png", 128, 128, 16);
+	gf2d_actor_load(&bug->actor, "actor/Bug.actor");
+	gf2d_actor_set_action(&bug->actor, "idle");
 	bug->update = bug_update;
 
 	slog("allocated new bug");
@@ -35,5 +38,7 @@ void bug_update(Entity *self) {
 
 	vector2d_normalize(&dir);
 	vector2d_copy(self->velocity, dir);
+
+	gf2d_actor_next_frame(&bug->actor);
 
 }

@@ -38,7 +38,8 @@ int main(int argc, char * argv[])
 	gf2d_entity_system_init(1024);
 	gf2d_input_init("config/input.cfg");
 	player = player_new(vector2d(600, 360));
-	bug_new(vector2d(1000, 0), player);
+	bug_new(vector2d(600, 400));
+
 
     /*demo setup*/
     sprite = gf2d_sprite_load_image("images/backgrounds/bg_flat.png");
@@ -53,6 +54,7 @@ int main(int argc, char * argv[])
         mf+=0.1;
         if (mf >= 16.0)mf = 0;
 		gf2d_input_update();
+		gf2d_entity_think_all();
 		gf2d_entity_update_all();
         
         gf2d_graphics_clear_screen();// clears drawing buffers
