@@ -5,6 +5,7 @@
 #include "gf2d_text.h"
 #include "gf2d_sprite.h"
 #include "gf2d_actor.h"
+#include "gf2d_collision.h"
 
 typedef enum {
 	ED_Up,
@@ -32,6 +33,8 @@ typedef struct Entity_S {
 	Action action;
 
 	//Physics
+	Shape shape;
+	Body body;
 	Vector2D velocity;
 	Vector2D position;
 
@@ -72,6 +75,10 @@ void gf2d_entity_think_all();
 void gf2d_entity_update(Entity *self);
 
 void gf2d_entity_update_all();
+
+void gf2d_entity_pre_sync_all();
+
+void gf2d_entity_post_sync_all();
 
 #endif
 

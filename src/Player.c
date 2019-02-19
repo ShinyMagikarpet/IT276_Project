@@ -19,6 +19,23 @@ Entity *player_new(Vector2D position) {
 		return NULL;
 	}
 
+	player->shape = gf2d_shape_rect(-16, -16, 30, 60);
+	gf2d_body_set(
+		&player->body,
+		"player",
+		//        0,//no layer
+		ALL_LAYERS &~PICKUP_LAYER,//player layers
+		1,
+		position,
+		vector2d(0, 0),
+		10,
+		1,
+		0,
+		&player->shape,
+		player,
+		NULL,
+		NULL);
+
 	gf2d_line_cpy(player->name, "player");
 	gf2d_actor_load(&player->actor, "actor/player.actor");
 	gf2d_actor_set_action(&player->actor, "idle_down");
@@ -174,7 +191,5 @@ void player_think(Entity *self) {
 
 void player_update(Entity *self) {
 
-	
-	
 }
 
