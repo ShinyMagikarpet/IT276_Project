@@ -138,8 +138,6 @@ void player_think(Entity *self) {
 			moveY = 0;
 		}
 
-		gf2d_actor_load(&player->actor, "actor/player_combat.actor");
-
 		switch (self->dir) {
 		case ED_Down:
 			gf2d_actor_set_action(&player->actor, "attack_down");
@@ -165,7 +163,6 @@ void player_think(Entity *self) {
 	}
 
 	if (self->actor.at == ART_END && self->state == ES_Attack) {
-		gf2d_actor_load(&player->actor, "actor/player.actor");
 		switch (self->dir) {
 		case ED_Down:
 			gf2d_actor_set_action(&player->actor, "idle_down");

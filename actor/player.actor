@@ -1,7 +1,7 @@
-sprite: images/character_non_combat.png
-frameWidth: 16
+sprite: images/character2.png
+frameWidth: 32
 frameHeight: 32
-framesPerLine: 17
+framesPerLine: 8
 scale: 2.0,2.0
 
 action: idle_up
@@ -51,3 +51,27 @@ startFrame: 12
 endFrame: 16
 frameRate: 0.05
 type: loop
+
+action: attack_down
+startFrame: 44
+endFrame: 48
+frameRate: 0.1
+type: pass
+
+action: attack_right
+startFrame: 48
+endFrame: 52
+frameRate: 0.1
+type: pass
+
+action: attack_up
+startFrame: 52
+endFrame: 56
+frameRate: 0.1
+type: pass
+
+action: attack_left
+startFrame: 56
+endFrame: 60
+frameRate: 0.1
+type: pass
