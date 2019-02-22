@@ -8,6 +8,8 @@ Entity *player_new(Vector2D position);
 
 Entity *player_get();
 
+void player_set_position(Vector2D position);
+
 
 
 

@@ -168,7 +168,7 @@ void gf2d_body_draw(Body *body, Vector2D offset)
 	// draw center point
 	gf2d_draw_pixel(body->position, color);
 
-	vector4d_set(color, 255, 0, 255, 255);
+	vector4d_set(color, 0, 255, 255, 255); //Originally (color, 255, 0, 255, 255);
 	gf2d_shape_copy(&shape, *body->shape);
 	gf2d_shape_move(&shape, body->position);
 	gf2d_shape_draw(shape, gf2d_color_from_vector4(color), offset);

@@ -5,7 +5,7 @@
 #include "gf2d_entity.h"
 
 
-Entity *bug_new(Vector2D position);
+Entity *bug_new(cpVect position);
 
 
 #endif 

@@ -1,6 +1,6 @@
 #ifndef __GF2D_ENTITY_H__
 #define __GF2D_ENTITY_H__
-
+#include <chipmunk.h>
 #include "gf2d_vector.h"
 #include "gf2d_text.h"
 #include "gf2d_sprite.h"
@@ -33,6 +33,9 @@ typedef struct Entity_S {
 	Action action;
 
 	//Physics
+	cpShape *cpshape;
+	cpBody *cpbody;
+
 	Shape shape;
 	Body body;
 	Vector2D velocity;

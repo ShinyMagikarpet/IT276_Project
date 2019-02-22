@@ -19,16 +19,21 @@ Entity *player_new(Vector2D position) {
 		return NULL;
 	}
 
-	player->shape = gf2d_shape_rect(-16, -16, 30, 60);
+	//Chipmunk physics here
+	player->cpbody = cpBodyNew(5, 1);
+	cpBodySetPosition(player->cpbody, cpv(600, 400));
+	player->cpshape = cpCircleShapeNew(player->cpbody, 5, cpvzero);
+
+	player->shape = gf2d_shape_rect(-16, -16, 32, 48);
 	gf2d_body_set(
 		&player->body,
 		"player",
 		//        0,//no layer
 		ALL_LAYERS &~PICKUP_LAYER,//player layers
 		1,
-		position,
+		vector2d(position.x + 32, position.y + 32), //Add the width/height amount to offset box
 		vector2d(0, 0),
-		10,
+		1,
 		1,
 		0,
 		&player->shape,
@@ -45,6 +50,7 @@ Entity *player_new(Vector2D position) {
 	//vector2d_set(player->flip, 1, 0);
 	player->dir = ED_Down;
 	player->think = player_think;
+	player->touch = player_think;
 	player->update = player_update;
 	player->state = ES_Idle;
 	return player;
@@ -52,6 +58,24 @@ Entity *player_new(Vector2D position) {
 
 Entity *player_get() {
 	return player;
+}
+
+void player_set_position(Vector2D position) {
+
+	if (!player) {
+		slog("player not loaded");
+		return;
+	}
+
+	vector2d_copy(player->position, position);
+	vector2d_copy(player->body.position, position);
+
+}
+
+void player_touch(Entity *self, Entity *other){
+
+	//When player touches something
+
 }
 
 void player_think(Entity *self) {
@@ -187,6 +211,9 @@ void player_think(Entity *self) {
 }
 
 void player_update(Entity *self) {
+
+	
+
 
 }
 
