@@ -77,6 +77,7 @@ int main(int argc, char * argv[])
 
 		//Draw Entity
 		gf2d_entity_draw_all();
+
 		cpBodyUpdateVelocity(bug->cpbody, gravity, 0.1, 1);
 		cpSpaceStep(space, timestep);
 

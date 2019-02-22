@@ -39,6 +39,7 @@ void bug_think(Entity *self) {
 		pos.x, pos.y, vel.x, vel.y
 	);
 
+
 }
 
 void bug_update(Entity *self) {

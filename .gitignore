@@ -58,3 +58,6 @@ gf2d
 *.log
 
 makefile.dep
+
+#win32 taking too much space
+.win32\
