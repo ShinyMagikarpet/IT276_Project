@@ -544,4 +544,16 @@ void vector3d_cross_product(Vector3D *out, Vector3D v1, Vector3D v2)
   out->z = v1.x*v2.y - v1.y*v2.x;
 }
 
+Vector2D cpvector_to_gf2dvector(cpVect cpvect) {
+
+	Vector2D newPosition;
+	
+	double invert_y_pos = cpvect.y;
+	double keep_x_pos = cpvect.x;
+	vector2d_copy(newPosition, vector2d(keep_x_pos, invert_y_pos));
+
+	return newPosition;
+
+}
+
 /*eol@eof*/

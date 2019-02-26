@@ -89,4 +89,5 @@ void gf2d_input_set_callbacks(
 	void *data
 );
 
+
 #endif // !__GF2D_INPUT_H__

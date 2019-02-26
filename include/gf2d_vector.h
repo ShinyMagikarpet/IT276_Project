@@ -23,6 +23,7 @@
  */
 
 #include "gf2d_types.h"
+#include <chipmunk.h>
 
 /*
  * The Vector Types
@@ -330,5 +331,7 @@ void vector3d_rotate_about_vector(Vector3D *dst, Vector3D dir, Vector3D point, f
 void vector3d_rotate_about_x(Vector3D *vect, float angle);
 void vector3d_rotate_about_y(Vector3D *vect, float angle);
 void vector3d_rotate_about_z(Vector3D *vect, float angle);
+
+Vector2D cpvector_to_gf2dvector(cpVect cpvect);
 
 #endif

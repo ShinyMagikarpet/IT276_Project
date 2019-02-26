@@ -1,11 +1,13 @@
 #ifndef __GF2D_ENTITY_H__
 #define __GF2D_ENTITY_H__
 #include <chipmunk.h>
+#include <chipmunk_structs.h>
 #include "gf2d_vector.h"
 #include "gf2d_text.h"
 #include "gf2d_sprite.h"
 #include "gf2d_actor.h"
 #include "gf2d_collision.h"
+#include "simple_json.h"
 
 typedef enum {
 	ED_Up,
@@ -35,6 +37,7 @@ typedef struct Entity_S {
 	//Physics
 	cpShape *cpshape;
 	cpBody *cpbody;
+	cpVect cpPos;
 
 	Shape shape;
 	Body body;
@@ -52,7 +55,7 @@ typedef struct Entity_S {
 	void(*update)(struct Entity_S *self);
 	void(*think)(struct Entity_S *self);
 	void(*draw)(struct Entity_S *self);
-	void(*touch)(struct Entity_S *self, struct Entity_S *other);
+	int(*touch)(struct Entity_S *self, struct Entity_S *other);
 	void(*free)(struct Entity_S *self);
 	int health;
 

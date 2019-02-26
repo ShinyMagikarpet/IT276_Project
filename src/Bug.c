@@ -14,9 +14,9 @@ Entity *bug_new(cpVect position) {
 		slog("failed to allocate new bug");
 		return;
 	}
-	bug->cpbody = cpBodyNew(5, 1);
+	bug->cpbody = cpBodyNewStatic();   //(1, cpMomentForBox(1, 60, 60));
 	cpBodySetPosition(bug->cpbody, position);
-	bug->cpshape = cpCircleShapeNew(bug->cpbody, 5, cpvzero);
+	bug->cpshape = cpBoxShapeNew(bug->cpbody, 60, 60, 60);
 	vector2d_copy(bug->position, position);
 	gf2d_actor_load(&bug->actor, "actor/Bug.actor");
 	gf2d_actor_set_action(&bug->actor, "idle");
@@ -32,14 +32,9 @@ Entity *bug_new(cpVect position) {
 
 void bug_think(Entity *self) {
 
-	cpVect pos = cpBodyGetPosition(bug->cpbody);
-	cpVect vel = cpBodyGetVelocity(bug->cpshape);
-	slog(
-		"Body is at (%5.2f, %5.2f). It's velocity is (%5.2f, %5.2f)\n",
-		pos.x, pos.y, vel.x, vel.y
-	);
+	/*cpVect playerPos = cpBodyGetPosition(bug->cpbody);
 
-
+	slog("position is %5.2f , %5.2f", playerPos.x, playerPos.y);*/
 }
 
 void bug_update(Entity *self) {

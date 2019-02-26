@@ -4,13 +4,16 @@
 #include "simple_logger.h"
 #include "gf2d_entity.h"
 
-Entity *player_new(Vector2D position);
+#define PLAYER_VELOCITY 100
+
+
+Entity *player_new(cpVect position);
 
 Entity *player_get();
 
 void player_set_position(Vector2D position);
 
-
+Entity *player_spawn(Vector2D position, SJson *args);
 
 
 #endif

@@ -1,6 +1,8 @@
 #include "Player.h"
 #include "simple_logger.h"
 #include "gf2d_input.h"
+#include "camera.h"
+#include "simple_json.h"
 
 
 static Entity *player = NULL;
@@ -9,9 +11,8 @@ void player_think(Entity *self);
 void player_update(Entity *self);
 
 
-Entity *player_new(Vector2D position) {
+Entity *player_new(cpVect position) {
 
-	//Entity *self;
 	player = gf2d_entity_new();
 
 	if (!player) {
@@ -20,31 +21,15 @@ Entity *player_new(Vector2D position) {
 	}
 
 	//Chipmunk physics here
-	player->cpbody = cpBodyNew(5, 1);
-	cpBodySetPosition(player->cpbody, cpv(600, 400));
+	cpFloat moment = cpMomentForCircle(20, 20, 20, cpv(16,16));
+	player->cpbody = cpBodyNew(5, moment);
+	cpBodySetPosition(player->cpbody, position);
 	player->cpshape = cpCircleShapeNew(player->cpbody, 5, cpvzero);
-
-	player->shape = gf2d_shape_rect(-16, -16, 32, 48);
-	gf2d_body_set(
-		&player->body,
-		"player",
-		//        0,//no layer
-		ALL_LAYERS &~PICKUP_LAYER,//player layers
-		1,
-		vector2d(position.x + 32, position.y + 32), //Add the width/height amount to offset box
-		vector2d(0, 0),
-		1,
-		1,
-		0,
-		&player->shape,
-		player,
-		NULL,
-		NULL);
-
+	player->shape = gf2d_shape_circle(32, 32, 20);
+	player->position = cpvector_to_gf2dvector(position);
 	gf2d_line_cpy(player->name, "player");
 	gf2d_actor_load(&player->actor, "actor/player.actor");
 	gf2d_actor_set_action(&player->actor, "idle_down");
-	vector2d_copy(player->position, position);
 	vector2d_copy(player->scale, player->actor.al->scale);
 	//player->actor.frame = 0;
 	//vector2d_set(player->flip, 1, 0);
@@ -72,7 +57,8 @@ void player_set_position(Vector2D position) {
 
 }
 
-void player_touch(Entity *self, Entity *other){
+
+int player_touch(Entity *self, Entity *other){
 
 	//When player touches something
 
@@ -80,15 +66,14 @@ void player_touch(Entity *self, Entity *other){
 
 void player_think(Entity *self) {
 
-	int moveX = 0;
-	int moveY = 0;
+	cpFloat moveX = 0;
+	cpFloat moveY = 0;
 
 	//Need to fix walking animation to easily
 	//transition from idle to walking
-
 	if (gf2d_input_command_held("walkup")) {
 		if (self->state != ES_Attack)
-			moveY -= 2;
+			moveY -= PLAYER_VELOCITY;
 
 		if (self->state == ES_Idle) {
 			self->dir = ED_Up;
@@ -101,12 +86,14 @@ void player_think(Entity *self) {
 	}
 	else if (gf2d_input_command_get_state("walkup") == IE_Release && self->state != ES_Attack) { //Need to check if player attacks to prevent action conflicts
 		gf2d_actor_set_action(&self->actor, "idle_up");
+		self->cpbody->v.x = 0;
+		self->cpbody->v.y = 0;
 		self->state = ES_Idle;
 	}
 
 	if (gf2d_input_command_held("walkdown")) {
 		if (self->state != ES_Attack)
-			moveY += 2;
+			moveY += PLAYER_VELOCITY;
 
 		if (self->state == ES_Idle) {
 			self->dir = ED_Down;
@@ -118,12 +105,14 @@ void player_think(Entity *self) {
 	}
 	else if (gf2d_input_command_get_state("walkdown") == IE_Release && self->state != ES_Attack) {
 		gf2d_actor_set_action(&self->actor, "idle_down");
+		self->cpbody->v.x = 0;
+		self->cpbody->v.y = 0;
 		self->state = ES_Idle;
 	}
 
 	if (gf2d_input_command_held("walkleft")) {
 		if (self->state != ES_Attack)
-			moveX -= 2;
+			moveX -= PLAYER_VELOCITY;
 
 		if (self->state == ES_Idle) {
 			self->dir = ED_Left;
@@ -135,12 +124,14 @@ void player_think(Entity *self) {
 	}
 	else if (gf2d_input_command_get_state("walkleft") == IE_Release && self->state != ES_Attack) {
 		gf2d_actor_set_action(&self->actor, "idle_left");
+		self->cpbody->v.x = 0;
+		self->cpbody->v.y = 0;
 		self->state = ES_Idle;
 	}
 
 	if (gf2d_input_command_held("walkright")) {
 		if (self->state != ES_Attack)
-			moveX += 2;
+			moveX += PLAYER_VELOCITY;
 
 		if (self->state == ES_Idle) {
 			self->dir = ED_Right;
@@ -152,6 +143,8 @@ void player_think(Entity *self) {
 	}
 	else if (gf2d_input_command_get_state("walkright") == IE_Release && self->state != ES_Attack) {
 		gf2d_actor_set_action(&self->actor, "idle_right");
+		self->cpbody->v.x = 0;
+		self->cpbody->v.y = 0;
 		self->state = ES_Idle;
 	}
 
@@ -160,6 +153,8 @@ void player_think(Entity *self) {
 		if (self->state == ES_Walk) {
 			moveX = 0;
 			moveY = 0;
+			self->cpbody->v.x = 0;
+			self->cpbody->v.y = 0;
 		}
 
 		switch (self->dir) {
@@ -205,15 +200,22 @@ void player_think(Entity *self) {
 		}
 		self->state = ES_Idle;
 	}
-	self->position.x += moveX;
-	self->position.y += moveY;
+	//Change velocity of player and copy it to position to update sprite???
+	self->cpbody->v.x = moveX;
+	self->cpbody->v.y = moveY;
+	self->position = cpvector_to_gf2dvector(cpBodyGetPosition(self->cpbody));
 	gf2d_actor_next_frame(&self->actor);
 }
 
 void player_update(Entity *self) {
-
 	
 
+	cpVect playercpPos = cpBodyGetPosition(player->cpbody);
 
+	slog("CPposition is %5.2f , %5.2f", playercpPos.x, playercpPos.y);
+
+	Vector2D playerPos = self->position;
+
+	slog("position is %5.2f , %5.2f", playerPos.x, playerPos.y);
 }
 

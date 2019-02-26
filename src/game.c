@@ -1,5 +1,6 @@
 #include <SDL.h>
 #include <chipmunk.h>
+#include <chipmunk_types.h>
 #include "gf2d_graphics.h"
 #include "gf2d_sprite.h"
 #include "simple_logger.h"
@@ -7,6 +8,10 @@
 #include "Bug.h"
 #include "gf2d_actor.h"
 #include "gf2d_input.h"
+#include <chipmunk_private.h>
+
+#define SCREENWIDTH 1280
+#define SCREENHEIGHT 720
 
 int main(int argc, char * argv[])
 {
@@ -19,20 +24,20 @@ int main(int argc, char * argv[])
     float mf = 0;
     Sprite *mouse;
     Vector4D mouseColor = {255,100,255,200};
+
+	//Chipmunk Physics
 	cpSpace *space = cpSpaceNew();
-	cpVect gravity = cpv(0, -100);
-	cpFloat timestep = 1 / 60;
-	cpSpaceSetGravity(space, gravity);
+	cpFloat dt = 1.0 / 60.0;
 
     /*program initializtion*/
     init_logger("gf2d.log");
     slog("---==== BEGIN ====---");
     gf2d_graphics_initialize(
         "gf2d",
-        1200,
-        720,
-        1200,
-        720,
+        SCREENWIDTH,
+        SCREENHEIGHT,
+        SCREENWIDTH,
+        SCREENHEIGHT,
         vector4d(0,0,0,255),
         0);
     gf2d_graphics_set_frame_delay(16);
@@ -42,19 +47,23 @@ int main(int argc, char * argv[])
 	gf2d_action_list_init(128);
 	gf2d_entity_system_init(1024);
 	gf2d_input_init("config/input.cfg");
-	player = player_new(vector2d(600, 360));
-	bug = bug_new(cpv(500, 400));
-
+	player = player_new(cpv(200, 200));
+	bug = bug_new(cpv(550, 360));
+	
     /*demo setup*/
     sprite = gf2d_sprite_load_image("images/backgrounds/bg_flat.png");
-    mouse = gf2d_sprite_load_all("images/pointer.png",32,32,16);
+    mouse = gf2d_sprite_load_all("images/pointer.png",32,32,16,0);
+
 	cpSpaceAddBody(space, player->cpbody);
-	cpSpaceAddShape(space, player->cpshape);
 	cpSpaceAddBody(space, bug->cpbody);
+	cpSpaceAddShape(space, player->cpshape);
 	cpSpaceAddShape(space, bug->cpshape);
-	cpShape *ground = cpSegmentShapeNew(cpSpaceGetStaticBody(space), cpv(-20, 5), cpv(20, -5), 0);
-	cpShapeSetFriction(ground, 1);
-	cpSpaceAddShape(space, ground);
+
+	cpBody *ground = cpBodyNewStatic();
+	cpShape *groundshape = cpSegmentShapeNew(ground, cpvzero, cpv(SCREENWIDTH, 0), 10);
+	groundshape->u = 1;
+	cpSpaceAddShape(space, groundshape);
+
 
     /*main game loop*/
     while(!done)
@@ -72,15 +81,14 @@ int main(int argc, char * argv[])
         gf2d_graphics_clear_screen();// clears drawing buffers
 		// all drawing should happen betweem clear_screen and next_frame
         //backgrounds drawn first
-         gf2d_sprite_draw_image(sprite,vector2d(0,0));
+         //gf2d_sprite_draw_image(sprite,vector2d(0,0));
 			
 
 		//Draw Entity
 		gf2d_entity_draw_all();
-
-		cpBodyUpdateVelocity(bug->cpbody, gravity, 0.1, 1);
-		cpSpaceStep(space, timestep);
-
+		gf2d_shape_draw(player->shape, gf2d_color(1, 1, 0, 1), player->position);
+		cpSpaceStep(space, dt);
+		
             //UI elements last
             gf2d_sprite_draw(
                 mouse,
