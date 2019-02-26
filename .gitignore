@@ -60,4 +60,4 @@ gf2d
 makefile.dep
 
 #win32 taking too much space
-. win32/*
+win32/*
