@@ -9,6 +9,17 @@
 #include "gf2d_collision.h"
 #include "simple_json.h"
 
+
+
+
+#define	PLAYER_TYPE 1
+#define MONSTER_TYPE 2
+#define INTERACTABLE_TYPE 4
+#define TRANSITION_TYPE 8
+#define STATIC_TYPE 16
+
+
+
 typedef enum {
 	ED_Up,
 	ED_Down,
@@ -55,7 +66,7 @@ typedef struct Entity_S {
 	void(*update)(struct Entity_S *self);
 	void(*think)(struct Entity_S *self);
 	void(*draw)(struct Entity_S *self);
-	int(*touch)(struct Entity_S *self, struct Entity_S *other);
+	int(*touch)(struct Entity_S *self);
 	void(*free)(struct Entity_S *self);
 	int health;
 

@@ -47,20 +47,19 @@ int main(int argc, char * argv[])
 	gf2d_action_list_init(128);
 	gf2d_entity_system_init(1024);
 	gf2d_input_init("config/input.cfg");
-	player = player_new(cpv(200, 200));
+	player = player_new(cpv(200, 200), space);
 	bug = bug_new(cpv(550, 360));
 	
     /*demo setup*/
     sprite = gf2d_sprite_load_image("images/backgrounds/bg_flat.png");
     mouse = gf2d_sprite_load_all("images/pointer.png",32,32,16,0);
 
-	cpSpaceAddBody(space, player->cpbody);
 	cpSpaceAddBody(space, bug->cpbody);
-	cpSpaceAddShape(space, player->cpshape);
 	cpSpaceAddShape(space, bug->cpshape);
 
 	cpBody *ground = cpBodyNewStatic();
-	cpShape *groundshape = cpSegmentShapeNew(ground, cpvzero, cpv(SCREENWIDTH, 0), 10);
+	cpShape *groundshape = cpSegmentShapeNew(ground, cpvzero, cpv(SCREENWIDTH, 0), 30);
+	groundshape->type = STATIC_TYPE;
 	groundshape->u = 1;
 	cpSpaceAddShape(space, groundshape);
 

@@ -8,10 +8,13 @@
 static Entity *player = NULL;
 
 void player_think(Entity *self);
+int player_touch(Entity *self);
 void player_update(Entity *self);
+void player_update_velocity(Entity *self, cpVect dir);
+cpBool player_touch_ground(cpArbiter *arb, cpSpace *space, void *data);
 
 
-Entity *player_new(cpVect position) {
+Entity *player_new(cpVect position, cpSpace *space) {
 
 	player = gf2d_entity_new();
 
@@ -21,11 +24,17 @@ Entity *player_new(cpVect position) {
 	}
 
 	//Chipmunk physics here
-	cpFloat moment = cpMomentForCircle(20, 20, 20, cpv(16,16));
-	player->cpbody = cpBodyNew(5, moment);
-	cpBodySetPosition(player->cpbody, position);
-	player->cpshape = cpCircleShapeNew(player->cpbody, 5, cpvzero);
+	player->cpbody = cpSpaceAddBody(space, cpBodyNew(5, INFINITY));
+	player->cpbody->p = position;
+	player->cpshape = cpSpaceAddShape(space, cpCircleShapeNew(player->cpbody, 5, cpvzero));
+	cpShapeSetCollisionType(player->cpshape, PLAYER_TYPE);
 	player->shape = gf2d_shape_circle(32, 32, 20);
+
+	//Handles Collision between types
+	cpCollisionHandler *handler = cpSpaceAddCollisionHandler(space, PLAYER_TYPE, STATIC_TYPE);
+	//Sets a function to be called when event happens
+	handler->preSolveFunc = (cpCollisionPreSolveFunc)player_touch_ground;
+
 	player->position = cpvector_to_gf2dvector(position);
 	gf2d_line_cpy(player->name, "player");
 	gf2d_actor_load(&player->actor, "actor/player.actor");
@@ -35,7 +44,7 @@ Entity *player_new(cpVect position) {
 	//vector2d_set(player->flip, 1, 0);
 	player->dir = ED_Down;
 	player->think = player_think;
-	player->touch = player_think;
+	player->touch = player_touch;
 	player->update = player_update;
 	player->state = ES_Idle;
 	return player;
@@ -57,10 +66,27 @@ void player_set_position(Vector2D position) {
 
 }
 
+static cpBool player_touch_ground(cpArbiter *arb, cpSpace *space, void *data) {
+	//Purely a testing function
+	CP_ARBITER_GET_BODIES(arb, playerbody, ground);
+	player_touch(player);
 
-int player_touch(Entity *self, Entity *other){
+	return cpTrue;
+
+}
+
+
+int player_touch(Entity *self){
 
 	//When player touches something
+	self->cpbody->v = cpvzero;
+	//slog("TOUCHING SOMETHING");
+
+}
+
+void player_update_velocity(Entity *self, cpVect dir) {
+
+	self->cpbody->v = dir;
 
 }
 
@@ -201,8 +227,7 @@ void player_think(Entity *self) {
 		self->state = ES_Idle;
 	}
 	//Change velocity of player and copy it to position to update sprite???
-	self->cpbody->v.x = moveX;
-	self->cpbody->v.y = moveY;
+	player_update_velocity(self, cpv(moveX, moveY));
 	self->position = cpvector_to_gf2dvector(cpBodyGetPosition(self->cpbody));
 	gf2d_actor_next_frame(&self->actor);
 }
@@ -210,12 +235,16 @@ void player_think(Entity *self) {
 void player_update(Entity *self) {
 	
 
-	cpVect playercpPos = cpBodyGetPosition(player->cpbody);
+	/*cpVect playercpPos = cpBodyGetPosition(player->cpbody);
 
 	slog("CPposition is %5.2f , %5.2f", playercpPos.x, playercpPos.y);
 
 	Vector2D playerPos = self->position;
 
-	slog("position is %5.2f , %5.2f", playerPos.x, playerPos.y);
+	slog("position is %5.2f , %5.2f", playerPos.x, playerPos.y);*/
+
+	//cpVect velocity = self->cpbody->v;
+	//slog("Velocity is %5.2f , %5.2f", velocity.x, velocity.y);
+
 }
 
