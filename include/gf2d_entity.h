@@ -67,6 +67,7 @@ typedef struct Entity_S {
 	void(*think)(struct Entity_S *self);
 	void(*draw)(struct Entity_S *self);
 	int(*touch)(struct Entity_S *self);
+	int(*cpTouch)(cpBody *self, cpBody *other);
 	void(*free)(struct Entity_S *self);
 	int health;
 

@@ -12,7 +12,8 @@ int player_touch(Entity *self);
 void player_update(Entity *self);
 void player_update_velocity(Entity *self, cpVect dir);
 cpBool player_touch_ground(cpArbiter *arb, cpSpace *space, void *data);
-
+cpBool player_touch_monster(cpArbiter *arb, cpSpace *space, void *data);
+int cpTouch_player(cpBody *self, cpBody *other);
 
 Entity *player_new(cpVect position, cpSpace *space) {
 
@@ -26,14 +27,20 @@ Entity *player_new(cpVect position, cpSpace *space) {
 	//Chipmunk physics here
 	player->cpbody = cpSpaceAddBody(space, cpBodyNew(5, INFINITY));
 	player->cpbody->p = position;
+	player->cpbody->userData = player;
 	player->cpshape = cpSpaceAddShape(space, cpCircleShapeNew(player->cpbody, 5, cpvzero));
 	cpShapeSetCollisionType(player->cpshape, PLAYER_TYPE);
 	player->shape = gf2d_shape_circle(32, 32, 20);
 
-	//Handles Collision between types
-	cpCollisionHandler *handler = cpSpaceAddCollisionHandler(space, PLAYER_TYPE, STATIC_TYPE);
+	//Handles Collision between player and ground
+	cpCollisionHandler *player_to_ground_handler = cpSpaceAddCollisionHandler(space, PLAYER_TYPE, STATIC_TYPE);
 	//Sets a function to be called when event happens
-	handler->preSolveFunc = (cpCollisionPreSolveFunc)player_touch_ground;
+	player_to_ground_handler->preSolveFunc = (cpCollisionPreSolveFunc)player_touch_ground;
+
+	//Handles Collision between types
+	cpCollisionHandler *player_to_monster_handler = cpSpaceAddCollisionHandler(space, PLAYER_TYPE, STATIC_TYPE);
+	//Sets a function to be called when event happens
+	player_to_monster_handler->beginFunc = (cpCollisionBeginFunc)player_touch_monster;
 
 	player->position = cpvector_to_gf2dvector(position);
 	gf2d_line_cpy(player->name, "player");
@@ -69,9 +76,26 @@ void player_set_position(Vector2D position) {
 static cpBool player_touch_ground(cpArbiter *arb, cpSpace *space, void *data) {
 	//Purely a testing function
 	CP_ARBITER_GET_BODIES(arb, playerbody, ground);
-	player_touch(player);
-
+	cpTouch_player(playerbody, ground);
 	return cpTrue;
+
+}
+
+cpBool player_touch_monster(cpArbiter *arb, cpSpace *space, void *data) {
+
+	CP_ARBITER_GET_BODIES(arb, playerbody, monster);
+	cpTouch_player(playerbody, monster);
+	return cpTrue;
+}
+
+int cpTouch_player(cpBody *self, cpBody *other) {
+
+	if (other->userData == NULL)
+		slog("TOUCHING GROUND");
+	else {
+		slog("TOUCHING MONSTER");
+	}
+	return 0;
 
 }
 
@@ -79,8 +103,13 @@ static cpBool player_touch_ground(cpArbiter *arb, cpSpace *space, void *data) {
 int player_touch(Entity *self){
 
 	//When player touches something
-	self->cpbody->v = cpvzero;
-	//slog("TOUCHING SOMETHING");
+	//self->cpbody->v = cpvzero;
+	if(player->cpbody->userData == NULL)
+		slog("TOUCHING GROUND");
+	else {
+		slog("TOUCHING MONSTER");
+	}
+	return 0;
 
 }
 

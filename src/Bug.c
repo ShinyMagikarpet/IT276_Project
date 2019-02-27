@@ -16,7 +16,9 @@ Entity *bug_new(cpVect position) {
 	}
 	bug->cpbody = cpBodyNewStatic();   //(1, cpMomentForBox(1, 60, 60));
 	cpBodySetPosition(bug->cpbody, position);
+	bug->cpbody->userData = bug;
 	bug->cpshape = cpBoxShapeNew(bug->cpbody, 60, 60, 60);
+	bug->cpshape->type = MONSTER_TYPE;
 	vector2d_copy(bug->position, position);
 	gf2d_actor_load(&bug->actor, "actor/Bug.actor");
 	gf2d_actor_set_action(&bug->actor, "idle");
