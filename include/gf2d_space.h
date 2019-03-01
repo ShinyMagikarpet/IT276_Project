@@ -1,41 +1,12 @@
-#ifndef __GF2D_COLLISION_H__
-#define __GF2D_COLLISION_H__
-
+#ifndef __SPACE_H__
+#define __SPACE_H__
 
 #include "gf2d_shape.h"
-#include "gf2d_list.h"
-#include "gf2d_text.h"
 #include "gf2d_body.h"
 
-#define ALL_LAYERS 0xffffffff
-#define WORLD_LAYER 1
-#define PICKUP_LAYER 2
-#define PLAYER_LAYER 4
-#define MONSTER_LAYER 8
-
-typedef struct Collision_S Collision;
-
-
 typedef struct
 {
-	Uint32      layer;          /**<layer mask to clip against*/
-	Uint32      team;           /**<ignore any team ==*/
-	Body       *ignore;         /**<if not null, the body will be ignored*/
-}ClipFilter;
-
-struct Collision_S
-{
-	Uint8    collided;          /**<true if the there as a collision*/
-	Vector2D pointOfContact;    /**<point in space that contact was made*/
-	Vector2D normal;            /**<normal vector at the point of contact*/
-	Shape   *shape;             /**<shape information on what what contacted*/
-	Body    *body;              /**<body information if a body was collided with*/
-	float    timeStep;          /**<at what time step contact was made*/
-};
-
-typedef struct
-{
-	List       *bodyList;       /**<list of bodies in the space*/
+	List       *dynamicBodyList;       /**<list of bodies in the space*/
 	List       *staticShapes;   /**<list of shapes that will collide that do not move*/
 	int         precision;      /**<number of backoff attempts before giving up*/
 	Rect        bounds;         /**<absolute bounds of the space*/
@@ -43,15 +14,8 @@ typedef struct
 	Vector2D    gravity;        /**<global gravity pull direction*/
 	float       dampening;      /**<rate of movement degrade  ambient frictions*/
 	float       slop;           /**<how much to correct for body overlap*/
+	Uint32      idpool;
 }Space;
-
-
-/**
- * @brief initializes a body to zero
- * @warning do not use this on a body in use
- */
-void gf2d_body_clear(Body *body);
-
 
 /**
  * @brief create a new space
@@ -105,14 +69,6 @@ void gf2d_space_add_body(Space *space, Body *body);
 void gf2d_space_remove_body(Space *space, Body *body);
 
 /**
- * @brief apply a force to a body taking into account momentum
- * @param body the body to move
- * @param direction a unit vector for direction (Does not have to be)
- * @param force the amount of force to apply
- */
-void gf2d_body_push(Body *body, Vector2D direction, float force);
-
-/**
  * @brief add a statuc shape to the space
  * @note the shape parameters need to be in absolute space, not relative to any body
  * @param space the space to add to
@@ -127,27 +83,11 @@ void gf2d_space_add_static_shape(Space *space, Shape shape);
 void gf2d_space_update(Space *space);
 
 /**
- * @brief check if a shape intersects with any static shape within the space
- * @param space the space to test
- * @param shape the shape to test with
- * @return the collision information
+ * @brief attempt to fix any bodies that are overlapping static shapes or clipping the space bounds
+ * @param space the space to update
+ * @param tries the number of tries to get everything clear before giving up
  */
-Collision gf2d_space_shape_test(Space *space, Shape shape);
+void gf2d_space_fix_overlaps(Space *space, Uint8 tries);
 
-/**
- * @brief check if a shape intersects with any body within the space
- * @param space the space to test
- * @param shape the shape to test with
- * @param filter a filter to limit results
- * @return the collision information
- */
-void gf2d_space_body_collision_test_filter(Space *space, Shape shape, Collision *collision, ClipFilter filter);
-
-/**
- * @brief get the shape, adjusted for position for the provided body
- * @param a the body to get the shape for
- * @return an empty {0} shape on error, or the body shape information otherwise
- */
-Shape gf2d_body_to_shape(Body *a);
 
 #endif

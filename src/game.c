@@ -10,6 +10,7 @@
 #include "gf2d_input.h"
 #include <chipmunk_private.h>
 #include <SDL_ttf.h>
+#include "level.h"
 
 #define SCREENWIDTH 1280
 #define SCREENHEIGHT 720
@@ -25,6 +26,8 @@ int main(int argc, char * argv[])
     float mf = 0;
     Sprite *mouse;
     Vector4D mouseColor = {255,100,255,200};
+
+	LevelInfo *linfo = NULL;
 
 	//Chipmunk Physics
 	cpSpace *space = cpSpaceNew();
@@ -50,6 +53,9 @@ int main(int argc, char * argv[])
 	gf2d_input_init("config/input.cfg");
 	player = player_new(cpv(200, 200), space);
 	bug = bug_new(cpv(550, 360));
+
+	linfo = level_info_load("levels/test.json");
+	level_init(linfo, 1);
 	
     /*demo setup*/
     sprite = gf2d_sprite_load_image("images/backgrounds/bg_flat.png");
@@ -68,6 +74,8 @@ int main(int argc, char * argv[])
     /*main game loop*/
     while(!done)
     {
+		
+
         //SDL_PumpEvents();   // update SDL's internal event structures
         keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
         /*update things here*/
@@ -83,7 +91,8 @@ int main(int argc, char * argv[])
         //backgrounds drawn first
          //gf2d_sprite_draw_image(sprite,vector2d(0,0));
 			
-
+		level_update();
+		level_draw();
 		//Draw Entity
 		gf2d_entity_draw_all();
 		gf2d_shape_draw(player->shape, gf2d_color(1, 1, 0, 1), player->position);
@@ -106,6 +115,9 @@ int main(int argc, char * argv[])
         //slog("Rendering at %f FPS",gf2d_graphics_get_frames_per_second());
     }
     slog("---==== END ====---");
+	level_info_free(linfo);
+
+	level_clear();
 	gf2d_entity_free(player);
 	gf2d_entity_free(bug);
 	cpSpaceFree(space);

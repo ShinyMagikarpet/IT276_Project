@@ -8,8 +8,6 @@ int entity_roof_check(Entity *self, float width);
 //int entity_ground_check(Entity *self, float width);
 int entity_left_check(Entity *self, float width);
 int entity_right_check(Entity *self, float width);
-void entity_world_snap(Entity *self);
-void entity_apply_gravity(Entity *self);
 
 /**
  * @brief push other entity away from self by amount
@@ -29,5 +27,7 @@ void entity_damage(Entity *target, Entity *killer, int damage, float kick);
  * @returns collision information
  */
 Collision entity_scan_hit(Entity *self, Vector2D start, Vector2D end);
+
+void entity_clear_all_but_player();
 
 #endif

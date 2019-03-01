@@ -4,41 +4,7 @@
 
 Uint8 gf2d_body_shape_collide(Body *a, Shape *s, Vector2D *poc, Vector2D *normal);
 
-void gf2d_body_clear(Body *body)
-{
-	if (!body)return;
-	memset(body, 0, sizeof(Body));
-}
 
-void gf2d_body_set(
-	Body       *body,
-	char       *name,
-	Uint32      layer,
-	Uint32      team,
-	Vector2D    position,
-	Vector2D    velocity,
-	float       mass,
-	float       gravity,
-	float       elasticity,
-	Shape      *shape,
-	void       *data,
-	int(*bodyTouch)(struct Body_S *self, struct Body_S *other, Collision *collision),
-	int(*worldTouch)(struct Body_S *self, Collision *collision))
-{
-	if (!body)return;
-	body->layer = layer;
-	body->team = team;
-	vector2d_copy(body->position, position);
-	vector2d_copy(body->velocity, velocity);
-	body->mass = mass;
-	body->gravity = gravity;
-	body->elasticity = elasticity;
-	body->shape = shape;
-	body->data = data;
-	body->bodyTouch = bodyTouch;
-	body->worldTouch = worldTouch;
-	gf2d_word_cpy(body->name, name);
-}
 
 void gf2d_free_shapes(void *data, void *context)
 {
@@ -112,16 +78,6 @@ void gf2d_space_add_static_shape(Space *space, Shape shape)
 	space->staticShapes = gf2d_list_append(space->staticShapes, (void *)newShape);
 }
 
-void gf2d_body_push(Body *body, Vector2D direction, float force)
-{
-	if (!body)return;
-	if (body->mass != 0)
-	{
-		force = force / body->mass;
-	}
-	vector2d_set_magnitude(&direction, force);
-	vector2d_add(body->velocity, body->velocity, direction);
-}
 
 void gf2d_space_remove_body(Space *space, Body *body)
 {
@@ -159,20 +115,6 @@ void gf2d_space_add_body(Space *space, Body *body)
 	space->bodyList = gf2d_list_append(space->bodyList, (void *)body);
 }
 
-void gf2d_body_draw(Body *body, Vector2D offset)
-{
-	Vector4D color;
-	Shape shape;
-	if (!body)return;
-	vector4d_set(color, 0, 255, 255, 255);
-	// draw center point
-	gf2d_draw_pixel(body->position, color);
-
-	vector4d_set(color, 0, 255, 255, 255); //Originally (color, 255, 0, 255, 255);
-	gf2d_shape_copy(&shape, *body->shape);
-	gf2d_shape_move(&shape, body->position);
-	gf2d_shape_draw(shape, gf2d_color_from_vector4(color), offset);
-}
 
 
 void gf2d_space_draw(Space *space, Vector2D offset)
@@ -340,15 +282,6 @@ void gf2d_body_adjust_collision_velocity(Body *a, Body *b, Vector2D poc, Vector2
 	vector2d_copy(a->newvelocity, nv);
 }
 
-Shape gf2d_body_to_shape(Body *a)
-{
-	Shape aS = { 0 };
-	if (!a)return aS;
-	gf2d_shape_copy(&aS, *a->shape);
-	gf2d_shape_move(&aS, a->position);
-	return aS;
-}
-
 Uint8 gf2d_body_shape_collide(Body *a, Shape *s, Vector2D *poc, Vector2D *normal)
 {
 	Shape aS;
@@ -364,7 +297,7 @@ Uint8 gf2d_body_collide_filter(Body *a, Body *b, Vector2D *poc, Vector2D *normal
 	Shape aS, bS;
 	if ((!a) || (!b))return 0;
 	// set shapes based on each body's current position
-	if (!(b->layer & filter.layer))return 0; // no common layers
+	if (!(b->touchlayer & filter.layer))return 0; // no common layers
 	if ((filter.team) && (b->team == filter.team)) return 0;  // same team
 	if (b == filter.ignore) return 0;
 	gf2d_shape_copy(&aS, *a->shape);
@@ -458,9 +391,9 @@ void gf2d_body_step(Body *body, Space *space, float step)
 		vector2d_scale(velocity, velocity, 1.0 / space->precision);
 	}
 
-	filter.layer = body->layer &~WORLD_LAYER;
+	filter.layer = body->touchlayer &~WORLD_LAYER;
 	filter.team = body->team;
-	world = WORLD_LAYER & body->layer;
+	world = WORLD_LAYER & body->touchlayer;
 	filter.ignore = body;
 
 	for (attempts = 0; attempts < space->precision; attempts++)
@@ -510,23 +443,23 @@ void gf2d_body_step(Body *body, Space *space, float step)
 	{
 		vector2d_set_magnitude(&velocity, -GF2D_EPSILON);
 		vector2d_add(body->position, body->position, velocity);
-		if (body->bodyTouch != NULL)
+		if (body->touch != NULL)
 		{
 			collision.shape = collider->shape;
 			collision.body = collider;
 			vector2d_copy(collision.pointOfContact, poc);
 			vector2d_copy(collision.normal, normal);
 			collision.timeStep = step;
-			body->bodyTouch(body, collider, &collision);
+			body->touch(body, collider, &collision);
 		}
-		if (collider->bodyTouch != NULL)
+		if (collider->touch != NULL)
 		{
 			collision.shape = body->shape;
 			collision.body = body;
 			vector2d_copy(collision.pointOfContact, poc);
 			vector2d_copy(collision.normal, normal);
 			collision.timeStep = step;
-			collider->bodyTouch(collider, body, &collision);
+			collider->touch(collider, body, &collision);
 		}
 
 		gf2d_body_adjust_collision_velocity(body, collider, poc, normal);
@@ -536,17 +469,17 @@ void gf2d_body_step(Body *body, Space *space, float step)
 	{
 		vector2d_set_magnitude(&velocity, -GF2D_EPSILON);
 		vector2d_add(body->position, body->position, velocity);
-		if (body->worldTouch != NULL)
+		if (body->touchlayer != NULL)
 		{
-			body->worldTouch(body, NULL);
+			body->touch(body, NULL);
 		}
 		gf2d_body_adjust_static_bounce_velocity(body, collisionShape, pocS, normalS);
 	}
 	if (collided)
 	{
-		if (body->worldTouch != NULL)
+		if (body->touchlayer != NULL)
 		{
-			body->worldTouch(body, NULL);
+			body->touch(body, NULL);
 		}
 		gf2d_body_adjust_collision_overlap(body, space->slop, space->bounds);
 	}
@@ -610,7 +543,7 @@ void gf2d_space_body_collision_test_filter(Space *space, Shape shape, Collision 
 	{
 		body = (Body*)gf2d_list_get_nth(space->bodyList, i);
 		if (!body)continue;
-		if (!(body->layer & filter.layer))continue;
+		if (!(body->touchlayer & filter.layer))continue;
 		if ((filter.team) && (body->team == filter.team))continue;
 		if (body == filter.ignore)continue;
 		if (gf2d_body_shape_collide(body, &shape, &collision->pointOfContact, &collision->normal))

@@ -61,6 +61,17 @@ Entity *player_get() {
 	return player;
 }
 
+Entity *player_spawn(cpVect position, SJson *args)
+{
+	if (player != NULL)
+	{
+		vector2d_copy(player->position, position);
+		level_add_entity(player);
+		return NULL;
+	}
+	return player_new(position, player->cpbody->space);
+}
+
 void player_set_position(Vector2D position) {
 
 	if (!player) {

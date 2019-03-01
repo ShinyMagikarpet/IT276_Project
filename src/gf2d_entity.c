@@ -174,3 +174,48 @@ void gf2d_entity_post_sync_all()
 		gf2d_entity_post_sync_body(&entityManager.entityList[i]);
 	}
 }
+
+
+Entity *gf2d_entity_get_by_id(Uint32 id)
+{
+	int i;
+	for (i = 0; i < entityManager.maxEntities; i++)
+	{
+		if (entityManager.entityList[i].inuse == 0)continue;
+		if (entityManager.entityList[i].id == id)
+		{
+			return &entityManager.entityList[i];
+		}
+	}
+	return NULL;
+}
+
+Entity *gf2d_entity_get_by_name_id(const char *name, Uint32 id)
+{
+	int i;
+	for (i = 0; i < entityManager.maxEntities; i++)
+	{
+		if (entityManager.entityList[i].inuse == 0)continue;
+		if ((gf2d_line_cmp(entityManager.entityList[i].name, name) == 0) && (entityManager.entityList[i].id == id))
+		{
+			return &entityManager.entityList[i];
+		}
+	}
+	return NULL;
+}
+
+Entity *gf2d_entity_iterate(Entity *start)
+{
+	Entity *p = NULL;
+	if (!start)p = entityManager.entityList;
+	else
+	{
+		p = start;
+		p++;
+	}
+	for (; p != &entityManager.entityList[entityManager.maxEntities]; p++)
+	{
+		if (p->inuse)return p;
+	}
+	return NULL;
+}
