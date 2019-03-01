@@ -252,12 +252,12 @@ void gf2d_sprite_draw_to_surface(
 		&target);
 }
 
-void gf2d_sprite_draw_image(Sprite *image, Vector2D position)
+void gf2d_sprite_draw_image(Sprite *image, Vector2D position, Vector2D scale)
 {
 	gf2d_sprite_draw(
 		image,
 		position,
-		NULL,
+		&scale,
 		NULL,
 		NULL,
 		NULL,
