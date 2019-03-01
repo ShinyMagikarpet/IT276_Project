@@ -9,6 +9,7 @@
 #include "gf2d_actor.h"
 #include "gf2d_input.h"
 #include <chipmunk_private.h>
+#include <SDL_ttf.h>
 
 #define SCREENWIDTH 1280
 #define SCREENHEIGHT 720
@@ -87,6 +88,7 @@ int main(int argc, char * argv[])
 		gf2d_entity_draw_all();
 		gf2d_shape_draw(player->shape, gf2d_color(1, 1, 0, 1), player->position);
 		cpSpaceStep(space, dt);
+
 		
             //UI elements last
             gf2d_sprite_draw(
