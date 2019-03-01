@@ -68,7 +68,10 @@ typedef struct Entity_S {
 	void(*draw)(struct Entity_S *self);
 	int(*touch)(struct Entity_S *self);
 	int(*cpTouch)(cpBody *self, cpBody *other);
+	int(*damage)(struct Entity_S *self, int amount, struct Entity_S *source);/**<when this entity takes damage*/
 	void(*free)(struct Entity_S *self);
+
+	//Stats stuff
 	int health;
 
 	//Game data

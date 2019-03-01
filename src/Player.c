@@ -49,6 +49,7 @@ Entity *player_new(cpVect position, cpSpace *space) {
 	vector2d_copy(player->scale, player->actor.al->scale);
 	//player->actor.frame = 0;
 	//vector2d_set(player->flip, 1, 0);
+	player->health = 10;
 	player->dir = ED_Down;
 	player->think = player_think;
 	player->touch = player_touch;
@@ -101,6 +102,8 @@ cpBool player_touch_monster(cpArbiter *arb, cpSpace *space, void *data) {
 
 int cpTouch_player(cpBody *self, cpBody *other) {
 
+	Entity *body1 = (Entity *)self->userData; //How to pull userdata Entity from body!!!
+	
 	if (other->userData == NULL)
 		slog("TOUCHING GROUND");
 	else {

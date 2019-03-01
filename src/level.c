@@ -2,7 +2,11 @@
 #include "camera.h"
 #include "spawn.h"
 #include "player.h"
+<<<<<<< HEAD
 #include "gf2d_entity_common.h"
+=======
+#include "entity_common.h"
+>>>>>>> ddeb3641cbf1a4ceeadcc6e0b4b1a34903caaa5d
 #include "simple_json.h"
 #include "simple_logger.h"
 #include "gf2d_graphics.h"
@@ -11,6 +15,10 @@
 
 typedef struct
 {
+<<<<<<< HEAD
+=======
+	Space      *space;
+>>>>>>> ddeb3641cbf1a4ceeadcc6e0b4b1a34903caaa5d
 	Sprite     *backgroundImage;
 	Sprite     *tileLayer;
 	Sprite     *tileSet;
@@ -23,6 +31,10 @@ int *level_alloc_tilemap(int w, int h);
 
 void level_clear()
 {
+<<<<<<< HEAD
+=======
+	gf2d_space_free(gamelevel.space);
+>>>>>>> ddeb3641cbf1a4ceeadcc6e0b4b1a34903caaa5d
 	gf2d_sprite_free(gamelevel.backgroundImage);
 	gf2d_sprite_free(gamelevel.tileSet);
 	gf2d_sprite_free(gamelevel.tileLayer);
@@ -133,9 +145,13 @@ LevelInfo *level_info_load(char *filename)
 		slog("failed to load level file %s", filename);
 		return NULL;
 	}
+<<<<<<< HEAD
 	slog("MADE IT HERE");
 	linfo = level_info_new();
 	slog("MADE IT HERE");
+=======
+	linfo = level_info_new();
+>>>>>>> ddeb3641cbf1a4ceeadcc6e0b4b1a34903caaa5d
 	if (!linfo)
 	{
 		return NULL;
@@ -148,6 +164,7 @@ LevelInfo *level_info_load(char *filename)
 		level_info_free(linfo);
 		return NULL;
 	}
+<<<<<<< HEAD
 	slog("MADE IT HERE");
 	gf2d_line_cpy(linfo->backgroundImage, sj_get_string_value(sj_object_get_value(world, "backgroundImage")));
 	slog("MADE IT HERE");
@@ -170,11 +187,39 @@ LevelInfo *level_info_load(char *filename)
 	linfo->spawnList = sj_copy(sj_object_get_value(world, "spawnList"));
 
 	slog("MADE IT HERE");
+=======
+	gf2d_line_cpy(linfo->backgroundImage, sj_get_string_value(sj_object_get_value(world, "backgroundImage")));
+	gf2d_line_cpy(linfo->backgroundMusic, sj_get_string_value(sj_object_get_value(world, "backgroundMusic")));
+	gf2d_line_cpy(linfo->tileSet, sj_get_string_value(sj_object_get_value(world, "tileSet")));
+
+	sj_value_as_vector2d(sj_object_get_value(world, "tileMapSize"), &linfo->tileMapSize);
+	slog("loaded tile size of %f,%f", linfo->tileMapSize.x, linfo->tileMapSize.y);
+
+	level_info_tilemap_load(linfo, sj_object_get_value(world, "tileMap"), (Uint32)linfo->tileMapSize.x, (Uint32)linfo->tileMapSize.y);
+
+	sj_value_as_vector2d(sj_object_get_value(world, "tileSize"), &linfo->tileSize);
+
+	linfo->spawnList = sj_copy(sj_object_get_value(world, "spawnList"));
+
+>>>>>>> ddeb3641cbf1a4ceeadcc6e0b4b1a34903caaa5d
 	sj_free(json);
 	slog("loaded level info for %s", filename);
 	return linfo;
 }
 
+<<<<<<< HEAD
+=======
+void level_make_space()
+{
+	gamelevel.space = gf2d_space_new_full(
+		3,
+		gf2d_rect(0, 0, gamelevel.tileLayer->surface->w, gamelevel.tileLayer->surface->h),
+		0.1,
+		vector2d(0, 0),
+		1,
+		0.1);
+}
+>>>>>>> ddeb3641cbf1a4ceeadcc6e0b4b1a34903caaa5d
 
 void level_make_tile_layer(LevelInfo *linfo)
 {
@@ -255,6 +300,21 @@ void level_make_tile_layer(LevelInfo *linfo)
 
 }
 
+<<<<<<< HEAD
+=======
+void level_build_tile_space(LevelInfo *linfo)
+{
+	int i, j;
+	for (j = 0; j < linfo->tileMapSize.y; j++)
+	{
+		for (i = 0; i < linfo->tileMapSize.x; i++)
+		{
+			if (!linfo->tileMap[j * (Uint32)linfo->tileMapSize.x + i])continue;
+			gf2d_space_add_static_shape(gamelevel.space, gf2d_shape_rect(i * linfo->tileSize.x, j * linfo->tileSize.y, linfo->tileSize.x, linfo->tileSize.y));
+		}
+	}
+}
+>>>>>>> ddeb3641cbf1a4ceeadcc6e0b4b1a34903caaa5d
 
 void level_spawn_entities(SJson *spawnList)
 {
@@ -342,17 +402,23 @@ void level_init(LevelInfo *linfo, Uint8 space)
 	{
 		return;
 	}
+<<<<<<< HEAD
 	slog("MADE IT HERE");
 	level_clear();
 	slog("MADE IT HERE");
 	gamelevel.backgroundImage = gf2d_sprite_load_image(linfo->backgroundImage);
 	slog("MADE IT HERE");
+=======
+	level_clear();
+	gamelevel.backgroundImage = gf2d_sprite_load_image(linfo->backgroundImage);
+>>>>>>> ddeb3641cbf1a4ceeadcc6e0b4b1a34903caaa5d
 	gamelevel.tileSet = gf2d_sprite_load_all(
 		linfo->tileSet,
 		linfo->tileSize.x,
 		linfo->tileSize.y,
 		16,
 		true);
+<<<<<<< HEAD
 	slog("MADE IT HERE");
 
 	gamelevel.backgroundMusic = Mix_LoadMUS(linfo->backgroundMusic);
@@ -368,6 +434,22 @@ void level_init(LevelInfo *linfo, Uint8 space)
 
 	level_spawn_entities(linfo->spawnList);
 	slog("Finished INIT");
+=======
+
+	gamelevel.backgroundMusic = Mix_LoadMUS(linfo->backgroundMusic);
+	if (gamelevel.backgroundMusic)Mix_PlayMusic(gamelevel.backgroundMusic, -1);
+
+	level_make_tile_layer(linfo);
+
+	camera_set_bounds(0, 0, gamelevel.tileLayer->surface->w, gamelevel.tileLayer->surface->h);
+
+	if (space)
+	{
+		level_make_space();
+		level_build_tile_space(linfo);
+	}
+	level_spawn_entities(linfo->spawnList);
+>>>>>>> ddeb3641cbf1a4ceeadcc6e0b4b1a34903caaa5d
 }
 
 void level_draw()
@@ -378,11 +460,16 @@ void level_draw()
 	gf2d_sprite_draw_image(gamelevel.tileLayer, vector2d(-cam.x, -cam.y));
 	gf2d_entity_draw_all();
 	gf2d_entity_draw(player_get());
+<<<<<<< HEAD
+=======
+	//    if (gamelevel.space)gf2d_space_draw(gamelevel.space,vector2d(-cam.x,-cam.y));
+>>>>>>> ddeb3641cbf1a4ceeadcc6e0b4b1a34903caaa5d
 }
 
 void level_update()
 {
 	gf2d_entity_pre_sync_all();
+<<<<<<< HEAD
 	gf2d_entity_post_sync_all();
 }
 
@@ -402,19 +489,54 @@ int body_body_touch(Body *self, List *collisionList)
 		if (!c->body)continue;
 		if (!c->body->data)continue;
 		selfEnt->touch(selfEnt, (Entity*)c->body->data);
+=======
+	gf2d_space_update(gamelevel.space);
+	gf2d_entity_post_sync_all();
+}
+
+int body_body_touch(Body *self, Body *other, Collision *collision)
+{
+	Entity *selfEnt, *otherEnt;
+	if ((!self) || (!other))return 0;
+	selfEnt = (Entity *)self->data;
+	if (!selfEnt)return 0;
+	otherEnt = (Entity *)other->data;
+	if (!otherEnt)return 0;
+	if (selfEnt->touch)
+	{
+		slog("%s is touching %s", selfEnt->name, otherEnt->name);
+		return selfEnt->touch(selfEnt, otherEnt);
+>>>>>>> ddeb3641cbf1a4ceeadcc6e0b4b1a34903caaa5d
 	}
 	return 0;
 }
 
+<<<<<<< HEAD
 
+=======
+void level_remove_entity(Entity *ent)
+{
+	if (!ent)return;
+	if (!gamelevel.space)
+	{//nothing to do
+		return;
+	}
+	gf2d_space_remove_body(gamelevel.space, &ent->body);
+}
+>>>>>>> ddeb3641cbf1a4ceeadcc6e0b4b1a34903caaa5d
 
 void level_add_entity(Entity *ent)
 {
 	if (!ent)return;
+<<<<<<< HEAD
+=======
+	if (!gamelevel.space)
+>>>>>>> ddeb3641cbf1a4ceeadcc6e0b4b1a34903caaa5d
 	{
 		slog("cannot add entity %s to level, no space defined!", ent->name);
 		return;
 	}
+<<<<<<< HEAD
 	if (ent->body.touch == NULL)
 	{
 		ent->body.touch = body_body_touch;
@@ -422,3 +544,17 @@ void level_add_entity(Entity *ent)
 }
 
 /*eol@eof*/
+=======
+	if (ent->body.bodyTouch == NULL)
+	{
+		ent->body.bodyTouch = body_body_touch;
+	}
+	gf2d_space_add_body(gamelevel.space, &ent->body);
+}
+
+Space *level_get_space()
+{
+	return gamelevel.space;
+}
+/*eol@eof*/
+>>>>>>> ddeb3641cbf1a4ceeadcc6e0b4b1a34903caaa5d

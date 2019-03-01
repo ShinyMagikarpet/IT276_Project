@@ -46,6 +46,32 @@ void gf2d_entity_system_init(Uint32 maxEntities) {
 
 }
 
+int gf2d_entity_validate_entity_pointer(void *p)
+{
+	Entity *ent;
+	if (!p)return 0;
+	ent = (Entity *)p;
+	if (ent < entityManager.entityList)return 0;
+	if (ent >= &entityManager.entityList[entityManager.maxEntities])return 0;
+	return 1;
+}
+
+Entity *gf2d_entity_iterate(Entity *start)
+{
+	Entity *p = NULL;
+	if (!start)p = entityManager.entityList;
+	else
+	{
+		p = start;
+		p++;
+	}
+	for (; p != &entityManager.entityList[entityManager.maxEntities]; p++)
+	{
+		if (p->inuse)return p;
+	}
+	return NULL;
+}
+
 Entity *gf2d_entity_new()
 {
 	int i;
