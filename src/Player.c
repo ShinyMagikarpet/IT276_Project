@@ -6,13 +6,13 @@
 
 
 static Entity *player = NULL;
+cpFloat moveX;
+cpFloat moveY;
 
 void player_think(Entity *self);
 int player_touch(Entity *self);
 void player_update(Entity *self);
-void player_update_velocity(Entity *self, cpVect dir);
-cpBool player_touch_ground(cpArbiter *arb, cpSpace *space, void *data);
-cpBool player_touch_monster(cpArbiter *arb, cpSpace *space, void *data);
+void player_update_velocity(cpBody *body, cpVect gravity, cpFloat damping, cpFloat dt);
 int cpTouch_player(cpBody *self, cpBody *other);
 
 Entity *player_new(cpVect position, cpSpace *space) {
@@ -28,19 +28,10 @@ Entity *player_new(cpVect position, cpSpace *space) {
 	player->cpbody = cpSpaceAddBody(space, cpBodyNew(5, INFINITY));
 	player->cpbody->p = position;
 	player->cpbody->userData = player;
+	player->cpbody->velocity_func = player_update_velocity;
 	player->cpshape = cpSpaceAddShape(space, cpCircleShapeNew(player->cpbody, 5, cpvzero));
 	cpShapeSetCollisionType(player->cpshape, PLAYER_TYPE);
 	player->shape = gf2d_shape_circle(32, 32, 20);
-
-	//Handles Collision between player and ground
-	cpCollisionHandler *player_to_ground_handler = cpSpaceAddCollisionHandler(space, PLAYER_TYPE, STATIC_TYPE);
-	//Sets a function to be called when event happens
-	player_to_ground_handler->preSolveFunc = (cpCollisionPreSolveFunc)player_touch_ground;
-
-	//Handles Collision between types
-	cpCollisionHandler *player_to_monster_handler = cpSpaceAddCollisionHandler(space, PLAYER_TYPE, STATIC_TYPE);
-	//Sets a function to be called when event happens
-	player_to_monster_handler->beginFunc = (cpCollisionBeginFunc)player_touch_monster;
 
 	player->position = cpvector_to_gf2dvector(position);
 	gf2d_line_cpy(player->name, "player");
@@ -85,21 +76,6 @@ void player_set_position(Vector2D position) {
 
 }
 
-static cpBool player_touch_ground(cpArbiter *arb, cpSpace *space, void *data) {
-	//Purely a testing function
-	CP_ARBITER_GET_BODIES(arb, playerbody, ground);
-	cpTouch_player(playerbody, ground);
-	return cpTrue;
-
-}
-
-cpBool player_touch_monster(cpArbiter *arb, cpSpace *space, void *data) {
-
-	CP_ARBITER_GET_BODIES(arb, playerbody, monster);
-	cpTouch_player(playerbody, monster);
-	return cpTrue;
-}
-
 int cpTouch_player(cpBody *self, cpBody *other) {
 
 	Entity *body1 = (Entity *)self->userData; //How to pull userdata Entity from body!!!
@@ -127,16 +103,16 @@ int player_touch(Entity *self){
 
 }
 
-void player_update_velocity(Entity *self, cpVect dir) {
+void player_update_velocity(cpBody *body, cpVect gravity, cpFloat damping, cpFloat dt) {
 
-	self->cpbody->v = dir;
+	body->v = cpv(moveX, moveY);
 
 }
 
 void player_think(Entity *self) {
 
-	cpFloat moveX = 0;
-	cpFloat moveY = 0;
+	 moveX = 0;
+	 moveY = 0;
 
 	//Need to fix walking animation to easily
 	//transition from idle to walking
@@ -270,24 +246,13 @@ void player_think(Entity *self) {
 		self->state = ES_Idle;
 	}
 	//Change velocity of player and copy it to position to update sprite???
-	player_update_velocity(self, cpv(moveX, moveY));
 	self->position = cpvector_to_gf2dvector(cpBodyGetPosition(self->cpbody));
 	gf2d_actor_next_frame(&self->actor);
 }
 
 void player_update(Entity *self) {
 	
-
-	/*cpVect playercpPos = cpBodyGetPosition(player->cpbody);
-
-	slog("CPposition is %5.2f , %5.2f", playercpPos.x, playercpPos.y);
-
-	Vector2D playerPos = self->position;
-
-	slog("position is %5.2f , %5.2f", playerPos.x, playerPos.y);*/
-
-	//cpVect velocity = self->cpbody->v;
-	//slog("Velocity is %5.2f , %5.2f", velocity.x, velocity.y);
+	
 
 }
 

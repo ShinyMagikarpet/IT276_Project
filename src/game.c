@@ -11,6 +11,7 @@
 #include <chipmunk_private.h>
 #include <SDL_ttf.h>
 #include "level.h"
+#include "gf2d_cpSpace.h"
 
 #define SCREENWIDTH 1280
 #define SCREENHEIGHT 720
@@ -30,7 +31,7 @@ int main(int argc, char * argv[])
 	LevelInfo *linfo = NULL;
 
 	//Chipmunk Physics
-	cpSpace *space = cpSpaceNew();
+	cpSpace *space = gf2d_cpSpace_init();
 	cpFloat dt = 1.0 / 60.0;
 
     /*program initializtion*/

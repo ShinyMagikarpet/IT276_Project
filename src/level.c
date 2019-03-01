@@ -452,7 +452,7 @@ void level_draw()
 {
 	Vector2D cam;
 	cam = camera_get_position();
-	gf2d_sprite_draw_image(gamelevel.backgroundImage, vector2d(-cam.x, -cam.y), NULL);
+	gf2d_sprite_draw_image(gamelevel.backgroundImage, vector2d(-cam.x, -cam.y), vector2d(1,1));
 	gf2d_sprite_draw_image(gamelevel.tileLayer, vector2d(-cam.x, -cam.y), vector2d(1.5, 1.5));
 	gf2d_entity_draw_all();
 	gf2d_entity_draw(player_get());

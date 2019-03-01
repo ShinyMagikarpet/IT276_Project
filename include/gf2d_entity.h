@@ -8,17 +8,7 @@
 #include "gf2d_actor.h"
 #include "gf2d_collision.h"
 #include "simple_json.h"
-
-
-
-
-#define	PLAYER_TYPE 1
-#define MONSTER_TYPE 2
-#define INTERACTABLE_TYPE 4
-#define TRANSITION_TYPE 8
-#define STATIC_TYPE 16
-
-
+#include "gf2d_cpSpace.h"
 
 typedef enum {
 	ED_Up,
