@@ -1,10 +1,7 @@
 #ifndef __LEVEL_H__
 #define __LEVEL_H__
 
-<<<<<<< HEAD
-=======
 #include "gf2d_collision.h"
->>>>>>> ddeb3641cbf1a4ceeadcc6e0b4b1a34903caaa5d
 #include "gf2d_sprite.h"
 #include "gf2d_audio.h"
 #include "gf2d_entity.h"
@@ -104,17 +101,6 @@ void level_remove_entity(Entity *ent);
  * @brief build the collision space
  * @note unneeded in editor mode
  */
-<<<<<<< HEAD
-
-
-void level_build_tile_space(LevelInfo *linfo);
-
-=======
-void level_make_space();
-void level_build_tile_space(LevelInfo *linfo);
-
-Space *level_get_space();
->>>>>>> ddeb3641cbf1a4ceeadcc6e0b4b1a34903caaa5d
 
 /**
  * @brief load up a new game level and move the player into it

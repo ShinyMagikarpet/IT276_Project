@@ -229,19 +229,3 @@ Entity *gf2d_entity_get_by_name_id(const char *name, Uint32 id)
 	}
 	return NULL;
 }
-
-Entity *gf2d_entity_iterate(Entity *start)
-{
-	Entity *p = NULL;
-	if (!start)p = entityManager.entityList;
-	else
-	{
-		p = start;
-		p++;
-	}
-	for (; p != &entityManager.entityList[entityManager.maxEntities]; p++)
-	{
-		if (p->inuse)return p;
-	}
-	return NULL;
-}
