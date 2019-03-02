@@ -128,6 +128,24 @@ void gf2d_entity_draw_all() {
 	}
 }
 
+void gf2d_entity_draw_shape(Entity *self) {
+
+	if (!self)return;
+	if (!self->inuse)return;
+
+	gf2d_shape_draw(self->shape, gf2d_color(1, 1, 0, 1), self->position);
+
+}
+
+void gf2d_entity_draw_shape_all() {
+	int i;
+
+	for (i = 0; i < entityManager.maxEntities; i++) {
+		//if (entityManager.entityList[i]._inuse == 0)continue;
+		gf2d_entity_draw_shape(&entityManager.entityList[i]);
+	}
+}
+
 void gf2d_entity_think(Entity *self) {
 
 	if (!self)return;

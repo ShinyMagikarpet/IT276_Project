@@ -32,7 +32,6 @@ int main(int argc, char * argv[])
 
 	//Chipmunk Physics
 	cpSpace *space = gf2d_cpSpace_init();
-	cpFloat dt = 1.0 / 60.0;
 
     /*program initializtion*/
     init_logger("gf2d.log");
@@ -91,13 +90,14 @@ int main(int argc, char * argv[])
 		// all drawing should happen betweem clear_screen and next_frame
         //backgrounds drawn first
          //gf2d_sprite_draw_image(sprite,vector2d(0,0));
-			
+
+		//Update and draw level	
 		level_update();
 		level_draw();
 		//Draw Entity
 		gf2d_entity_draw_all();
-		gf2d_shape_draw(player->shape, gf2d_color(1, 1, 0, 1), player->position);
-		cpSpaceStep(space, dt);
+		gf2d_entity_draw_shape_all();
+		gf2d_cpSpace_update(space);
 
 		
             //UI elements last
@@ -113,6 +113,7 @@ int main(int argc, char * argv[])
         gf2d_grahics_next_frame();// render current draw frame and skip to the next frame
         
         if (keys[SDL_SCANCODE_ESCAPE])done = 1; // exit condition
+		if (keys[SDL_SCANCODE_1])slog("PLAYER HEALTH: %i", player->health);
         //slog("Rendering at %f FPS",gf2d_graphics_get_frames_per_second());
     }
     slog("---==== END ====---");

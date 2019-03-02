@@ -75,9 +75,21 @@ Entity *gf2d_entity_new();
 
 void gf2d_entity_free(Entity *self);
 
-//void gf2d_entity_draw(Entity *self);
+void gf2d_entity_draw(Entity *self);
 
-//void gf2d_entity_draw_all();
+void gf2d_entity_draw_all();
+
+/**
+* @brief Draws the shape of an entity
+* @param The entity to be drawn
+*/
+void gf2d_entity_draw_shape(Entity *self);
+
+/**
+* @brief Draws the shape of all entities
+* @param The entity to be drawn
+*/
+void gf2d_entity_draw_shape_all();
 
 void gf2d_entity_think(Entity *self);
 
