@@ -18,7 +18,7 @@ Entity *bug_new(cpVect position) {
 		slog("failed to allocate new bug");
 		return;
 	}
-	bug->cpbody =  cpBodyNew(100000, INFINITY);
+	bug->cpbody =  cpBodyNew(1000, INFINITY);
 	cpBodySetPosition(bug->cpbody, cpv(position.x + 64, position.y + 64));
 	bug->cpbody->userData = bug;
 	bug->cpshape = cpBoxShapeNew(bug->cpbody, 128, 128, 1);
@@ -46,10 +46,6 @@ void bug_think(Entity *self) {
 		if (cpvnear(cpBodyGetPosition(self->cpbody), cpBodyGetPosition(player->cpbody), 200))
 			slog("BUG NEAR PLAYER!!!");
 	}*/
-
-
-	if(cpSpaceSegmentQueryFirst(self->cpbody->space, cpv(self->cpbody->p.x + 10, self->cpbody->p.y), cpv(self->cpbody->p.x + 10, self->cpbody->p.y) , 1, CP_SHAPE_FILTER_NONE , NULL))
-		slog("WAAAAAAAAAAAAAAAh");
 		
 	
 }

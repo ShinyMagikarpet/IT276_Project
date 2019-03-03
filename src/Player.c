@@ -46,14 +46,19 @@ Entity *player_new(cpVect position, cpSpace *space) {
 	//vector2d_set(player->flip, 1, 0);
 	player->dir = ED_Down;
 	player->state = ES_Idle;
-	player->iframes = 0;
+
 
 	//RPG stuff
 	player->rpg.level = 1;
 	player->rpg.xp = 0;
+	//Stats
 	player->rpg.stats.hp = 5;
-	//player->rpg->xp = 0;
-	//player->rpg->stats->hp = 5;
+	player->rpg.stats.str = 3;
+	player->rpg.stats.def = 2;
+	player->rpg.stats.agil = 3;
+
+	player->iframes = 0;
+	player->attack_rate = 10.0f / player->rpg.stats.agil;
 	
 
 	//player functions
@@ -124,34 +129,42 @@ void player_update_velocity(cpBody *body, cpVect gravity, cpFloat damping, cpFlo
 
 }
 
+/**
+* @brief Controls the player movement direction
+* @param player entity
+* @param direction that the player will move
+*/
+
+
 void player_think(Entity *self) {
 
 	 moveX = 0;
 	 moveY = 0;
+	 cpSegmentQueryInfo hit = { 0 };
+		 
+	
+	////Need to fix walking animation to easily
+	////transition from idle to walking
+	 if (gf2d_input_command_held("walk_up")) {
+		 if (self->state != ES_Attack)
+			 moveY -= PLAYER_VELOCITY;
 
-	//Need to fix walking animation to easily
-	//transition from idle to walking
-	if (gf2d_input_command_held("walkup")) {
-		if (self->state != ES_Attack)
-			moveY -= PLAYER_VELOCITY;
-
-		if (self->state == ES_Idle) {
-			self->dir = ED_Up;
-			self->state = ES_Walk;
-			gf2d_actor_set_action(&self->actor, "walk_up");
-		}
+		 if (self->state == ES_Idle) {
+			 self->dir = ED_Up;
+			 self->state = ES_Walk;
+			 gf2d_actor_set_action(&self->actor, "walk_up");
+		 }
 
 
+	 }
+	 else if (gf2d_input_command_get_state("walk_up") == IE_Release && self->state != ES_Attack) {
+		 gf2d_actor_set_action(&self->actor, "idle_up");
+		 self->cpbody->v.x = 0;
+		 self->cpbody->v.y = 0;
+		 self->state = ES_Idle;
+	 }
 
-	}
-	else if (gf2d_input_command_get_state("walkup") == IE_Release && self->state != ES_Attack) { //Need to check if player attacks to prevent action conflicts
-		gf2d_actor_set_action(&self->actor, "idle_up");
-		self->cpbody->v.x = 0;
-		self->cpbody->v.y = 0;
-		self->state = ES_Idle;
-	}
-
-	if (gf2d_input_command_held("walkdown")) {
+	if (gf2d_input_command_held("walk_down")) {
 		if (self->state != ES_Attack)
 			moveY += PLAYER_VELOCITY;
 
@@ -163,14 +176,14 @@ void player_think(Entity *self) {
 
 
 	}
-	else if (gf2d_input_command_get_state("walkdown") == IE_Release && self->state != ES_Attack) {
+	else if (gf2d_input_command_get_state("walk_down") == IE_Release && self->state != ES_Attack) {
 		gf2d_actor_set_action(&self->actor, "idle_down");
 		self->cpbody->v.x = 0;
 		self->cpbody->v.y = 0;
 		self->state = ES_Idle;
 	}
 
-	if (gf2d_input_command_held("walkleft")) {
+	if (gf2d_input_command_held("walk_left")) {
 		if (self->state != ES_Attack)
 			moveX -= PLAYER_VELOCITY;
 
@@ -182,14 +195,14 @@ void player_think(Entity *self) {
 
 
 	}
-	else if (gf2d_input_command_get_state("walkleft") == IE_Release && self->state != ES_Attack) {
+	else if (gf2d_input_command_get_state("walk_left") == IE_Release && self->state != ES_Attack) {
 		gf2d_actor_set_action(&self->actor, "idle_left");
 		self->cpbody->v.x = 0;
 		self->cpbody->v.y = 0;
 		self->state = ES_Idle;
 	}
 
-	if (gf2d_input_command_held("walkright")) {
+	if (gf2d_input_command_held("walk_right")) {
 		if (self->state != ES_Attack)
 			moveX += PLAYER_VELOCITY;
 
@@ -201,7 +214,7 @@ void player_think(Entity *self) {
 
 
 	}
-	else if (gf2d_input_command_get_state("walkright") == IE_Release && self->state != ES_Attack) {
+	else if (gf2d_input_command_get_state("walk_right") == IE_Release && self->state != ES_Attack) {
 		gf2d_actor_set_action(&self->actor, "idle_right");
 		self->cpbody->v.x = 0;
 		self->cpbody->v.y = 0;
@@ -210,34 +223,57 @@ void player_think(Entity *self) {
 
 	if (gf2d_input_command_pressed("melee")) {
 
-		if (self->state == ES_Walk) {
-			moveX = 0;
-			moveY = 0;
-			self->cpbody->v.x = 0;
-			self->cpbody->v.y = 0;
+		int offsetRayX = 0, offsetRayY = 0;
+		
+		if (self->cooldown <= 0) {
+			if (self->state == ES_Walk) {
+				moveX = 0;
+				moveY = 0;
+				self->cpbody->v.x = 0;
+				self->cpbody->v.y = 0;
+			}
+
+			switch (self->dir) {
+			case ED_Down:
+				gf2d_actor_set_action(&player->actor, "attack_down");
+				offsetRayY = 100;
+				break;
+			case ED_Left:
+				gf2d_actor_set_action(&player->actor, "attack_left");
+				offsetRayX = -100;
+				break;
+			case ED_Right:
+				gf2d_actor_set_action(&player->actor, "attack_right");
+				offsetRayX = 100;
+				break;
+			case ED_Up:
+				gf2d_actor_set_action(&player->actor, "attack_up");
+				offsetRayY = -100;
+				break;
+			default:
+				slog("WTF direction are you?!");
+			}
+
+			//Cast out a ray to check if we hit a monster
+			if (cpSpaceSegmentQueryFirst(self->cpbody->space, self->cpbody->p, cpv(self->cpbody->p.x + offsetRayX, self->cpbody->p.y + offsetRayY), 2, CP_SHAPE_FILTER_ALL, &hit)) {
+
+				if (hit.shape->type == MONSTER_TYPE)
+					slog("WAAAAAAAAAAAAAAAh");
+
+			}
+			self->state = ES_Attack;
+			self->cooldown = self->attack_rate;
+
+
+
 		}
 
-		switch (self->dir) {
-		case ED_Down:
-			gf2d_actor_set_action(&player->actor, "attack_down");
-			break;
-		case ED_Left:
-			gf2d_actor_set_action(&player->actor, "attack_left");
-			break;
-		case ED_Right:
-			gf2d_actor_set_action(&player->actor, "attack_right");
-			break;
-		case ED_Up:
-			gf2d_actor_set_action(&player->actor, "attack_up");
-			break;
-		default:
-			slog("WTF direction are you?!");
-		}
-		self->state = ES_Attack;
+
 	}
 
 	if (gf2d_input_command_held("walkup") && gf2d_input_command_held("walkdown")) {
 		gf2d_actor_set_action(&self->actor, "idle_down");
+		moveY = 0;
 		self->state = ES_Idle;
 	}
 
@@ -268,6 +304,16 @@ void player_think(Entity *self) {
 
 void player_update(Entity *self) {
 	
+	
+
+	
+
+
+	if (self->cooldown > 0) {
+		self->cooldown -= 0.025;
+	}
+		
+
 	if (self->iframes > 0) {
 		self->iframes -= 1;
 		if (self->iframes == 0)

@@ -80,6 +80,7 @@ typedef struct Entity_S {
 	//RPG stuff and stat stuff
 	RpgElements rpg;
 
+	float attack_rate;
 	float cooldown;
 	int iframes; /**<time of invicibility frames*/
 

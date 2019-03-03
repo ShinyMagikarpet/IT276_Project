@@ -9,6 +9,7 @@
 #define STATIC_TYPE 16		/**Statics*/
 #define WEAPON_TYPE 32		/**Weapons*/
 
+
 #define SPACE_STEP 1.0 / 60.0 /**Steps for space*/
 
 /**
@@ -42,3 +43,9 @@ cpBool player_touch_monster_presolve(cpArbiter *arb, cpSpace *space, void *data)
 * @brief Function to be called after player and monster end collision
 */
 void player_touch_monster_separate(cpArbiter *arb, cpSpace *space, void *data);
+
+
+/**
+* @brief Function to be called after monster touches monster
+*/
+cpBool monster_touch_monster_begin(cpArbiter *arb, cpSpace *space, void *data);

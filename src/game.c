@@ -102,6 +102,9 @@ int main(int argc, char * argv[])
 		gf2d_draw_line(vector2d(0, 0), vector2d(0, SCREENHEIGHT), vector4d(255, 0, 0, 255));
 		gf2d_draw_line(vector2d(0, SCREENHEIGHT - 1), vector2d(SCREENWIDTH -1, SCREENHEIGHT -1), vector4d(255, 0, 0, 255));
 		gf2d_draw_line(vector2d(SCREENWIDTH-1, 0), vector2d(SCREENWIDTH-1, SCREENHEIGHT-1), vector4d(255, 0, 0, 255));
+
+		
+			
 		
 
 		
