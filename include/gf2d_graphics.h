@@ -6,6 +6,10 @@
 #include "gf2d_types.h"
 #include "gf2d_vector.h"
 
+
+#define SCREENWIDTH 900
+#define SCREENHEIGHT 560
+
 /**
  * @brief initializes SDL and setups up basic window and rendering contexts
  * @param windowName the name that you would want displayed on the game window

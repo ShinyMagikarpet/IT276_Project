@@ -29,10 +29,14 @@ Entity *player_new(cpVect position, cpSpace *space) {
 	player->cpbody->p = position;
 	player->cpbody->userData = player;
 	player->cpbody->velocity_func = player_update_velocity;
-	player->cpshape = cpSpaceAddShape(space, cpCircleShapeNew(player->cpbody, 5, cpvzero));
+	player->cpshape = cpSpaceAddShape(space, cpCircleShapeNew(player->cpbody, 4, cpv(16, 16)));
 	cpShapeSetCollisionType(player->cpshape, PLAYER_TYPE);
-	player->shape = gf2d_shape_circle(32, 32, 20);
+	
+	//Debug for shape. otherwise useless
+	player->shape = gf2d_shape_circle(32, 32, 16);
 
+	//gf2d stuff
+	player->inuse = 1;
 	player->position = cpvector_to_gf2dvector(position);
 	gf2d_line_cpy(player->name, "player");
 	gf2d_actor_load(&player->actor, "actor/player.actor");
@@ -40,12 +44,23 @@ Entity *player_new(cpVect position, cpSpace *space) {
 	vector2d_copy(player->scale, player->actor.al->scale);
 	//player->actor.frame = 0;
 	//vector2d_set(player->flip, 1, 0);
-	player->health = 10;
 	player->dir = ED_Down;
+	player->state = ES_Idle;
+	player->iframes = 0;
+
+	//RPG stuff
+	player->rpg.level = 1;
+	player->rpg.xp = 0;
+	player->rpg.stats.hp = 5;
+	//player->rpg->xp = 0;
+	//player->rpg->stats->hp = 5;
+	
+
+	//player functions
 	player->think = player_think;
 	player->touch = player_touch;
 	player->update = player_update;
-	player->state = ES_Idle;
+
 	return player;
 }
 
@@ -247,12 +262,16 @@ void player_think(Entity *self) {
 	}
 	//Change velocity of player and copy it to position to update sprite???
 	self->position = cpvector_to_gf2dvector(cpBodyGetPosition(self->cpbody));
+	self->cpPos = cpBodyGetPosition(self->cpbody);
 	gf2d_actor_next_frame(&self->actor);
 }
 
 void player_update(Entity *self) {
 	
-	
-
+	if (self->iframes > 0) {
+		self->iframes -= 1;
+		if (self->iframes == 0)
+			slog("CAN BE ATTACKED AGAIN");
+	}
 }
 

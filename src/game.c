@@ -12,9 +12,8 @@
 #include <SDL_ttf.h>
 #include "level.h"
 #include "gf2d_cpSpace.h"
+#include "gf2d_draw.h"
 
-#define SCREENWIDTH 1280
-#define SCREENHEIGHT 720
 
 int main(int argc, char * argv[])
 {
@@ -65,7 +64,7 @@ int main(int argc, char * argv[])
 	cpSpaceAddShape(space, bug->cpshape);
 
 	cpBody *ground = cpBodyNewStatic();
-	cpShape *groundshape = cpSegmentShapeNew(ground, cpvzero, cpv(SCREENWIDTH, 0), 30);
+	cpShape *groundshape = cpSegmentShapeNew(ground, cpvzero, cpv(SCREENWIDTH, 0), 0);
 	groundshape->type = STATIC_TYPE;
 	groundshape->u = 1;
 	cpSpaceAddShape(space, groundshape);
@@ -99,6 +98,12 @@ int main(int argc, char * argv[])
 		gf2d_entity_draw_shape_all();
 		gf2d_cpSpace_update(space);
 
+		gf2d_draw_line(vector2d(0, 0), vector2d(SCREENWIDTH, 0), vector4d(255, 0, 0, 255));
+		gf2d_draw_line(vector2d(0, 0), vector2d(0, SCREENHEIGHT), vector4d(255, 0, 0, 255));
+		gf2d_draw_line(vector2d(0, SCREENHEIGHT - 1), vector2d(SCREENWIDTH -1, SCREENHEIGHT -1), vector4d(255, 0, 0, 255));
+		gf2d_draw_line(vector2d(SCREENWIDTH-1, 0), vector2d(SCREENWIDTH-1, SCREENHEIGHT-1), vector4d(255, 0, 0, 255));
+		
+
 		
             //UI elements last
             gf2d_sprite_draw(
@@ -113,15 +118,16 @@ int main(int argc, char * argv[])
         gf2d_grahics_next_frame();// render current draw frame and skip to the next frame
         
         if (keys[SDL_SCANCODE_ESCAPE])done = 1; // exit condition
-		if (keys[SDL_SCANCODE_1])slog("PLAYER HEALTH: %i", player->health);
+		if (keys[SDL_SCANCODE_1]) {
+			//Test here
+		}
         //slog("Rendering at %f FPS",gf2d_graphics_get_frames_per_second());
     }
     slog("---==== END ====---");
 	level_info_free(linfo);
 
 	level_clear();
-	gf2d_entity_free(player);
-	gf2d_entity_free(bug);
+	gf2d_entity_free_all();
 	cpSpaceFree(space);
     return 0;
 }

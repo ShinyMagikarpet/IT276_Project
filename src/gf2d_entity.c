@@ -97,6 +97,19 @@ void gf2d_entity_free(Entity *self)
 	memset(self, 0, sizeof(Entity));
 }
 
+void gf2d_entity_free_all() {
+	int i;
+
+	for (i = 0; i < entityManager.maxEntities; i++) {
+		
+		if (entityManager.entityList[i].sprite != NULL)
+		{
+			gf2d_sprite_free(entityManager.entityList[i].sprite);
+		}
+		memset(&entityManager.entityList[i], 0, sizeof(Entity));
+	}
+}
+
 void gf2d_entity_draw(Entity * self)
 {
 

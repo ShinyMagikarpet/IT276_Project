@@ -10,25 +10,41 @@
 #include "simple_json.h"
 #include "gf2d_cpSpace.h"
 
+
 typedef enum {
-	ED_Up,
-	ED_Down,
-	ED_Right,
-	ED_Left
+	ED_Up,		/**<entity is facing up*/
+	ED_Down,	/**<entity is facing down*/
+	ED_Right,	/**<entity is facing right*/
+	ED_Left		/**<entity is facing left*/
 }EntityDir;
 
 typedef enum {
 
-	ES_Idle,
-	ES_Walk,
-	ES_Attack
+	ES_Idle,	/**<entity is currently idle*/
+	ES_Walk,	/**<entity is currently walking*/
+	ES_Attack	/**<entity is currently attacking*/
 
 }EntityState;
+
+typedef struct {
+	int hp;
+	int str;
+	int def;
+	int agil;
+}Stats;
+
+typedef struct{
+
+	int xp;
+	int level;
+	Stats stats;
+
+}RpgElements;
 
 typedef struct Entity_S {
 
 	Uint8 inuse;
-	Uint64 id;
+	Uint32 id;
 
 	TextLine name;
 	EntityState state;
@@ -53,19 +69,22 @@ typedef struct Entity_S {
 	Vector2D flip;
 	Sprite *sprite;
 
-	void(*update)(struct Entity_S *self);
-	void(*think)(struct Entity_S *self);
-	void(*draw)(struct Entity_S *self);
-	int(*touch)(struct Entity_S *self);
-	int(*cpTouch)(cpBody *self, cpBody *other);
+	void(*update)(struct Entity_S *self); /**<update entity per frame*/
+	void(*think)(struct Entity_S *self); /**<think before update*/
+	void(*draw)(struct Entity_S *self); /**<render entity*/
+	int(*touch)(struct Entity_S *self); /**<currently not using*/
+	int(*cpTouch)(cpBody *self, cpBody *other); /**<called when player collides something*/
 	int(*damage)(struct Entity_S *self, int amount, struct Entity_S *source);/**<when this entity takes damage*/
-	void(*free)(struct Entity_S *self);
+	void(*free)(struct Entity_S *self); /**<free entity from game*/
 
-	//Stats stuff
-	int health;
+	//RPG stuff and stat stuff
+	RpgElements rpg;
+
+	float cooldown;
+	int iframes; /**<time of invicibility frames*/
 
 	//Game data
-	void *data;
+	void *data; /**<data pointer*/
 
 } Entity;
 
@@ -74,6 +93,11 @@ void gf2d_entity_system_init(Uint32 maxEntities);
 Entity *gf2d_entity_new();
 
 void gf2d_entity_free(Entity *self);
+
+/**
+* @brief free all entities
+*/
+void gf2d_entity_free_all();
 
 void gf2d_entity_draw(Entity *self);
 
