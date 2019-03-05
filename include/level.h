@@ -6,6 +6,7 @@
 #include "gf2d_audio.h"
 #include "gf2d_entity.h"
 #include "simple_json.h"
+#include "gf2d_cpSpace.h"
 
 /**
  * @Purpose game specific level code
@@ -102,6 +103,7 @@ void level_remove_entity(Entity *ent);
  * @brief build the collision space
  * @note unneeded in editor mode
  */
+void level_make_space();
 
 /**
  * @brief load up a new game level and move the player into it

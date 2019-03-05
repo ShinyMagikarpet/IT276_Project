@@ -30,8 +30,8 @@ void level_clear()
 {
 
 	
-	gf2d_space_free(gamelevel.space);
-
+	//gf2d_space_free(gamelevel.space);
+	cpSpaceFree(gamelevel.space);
 	gf2d_sprite_free(gamelevel.backgroundImage);
 	gf2d_sprite_free(gamelevel.tileSet);
 	gf2d_sprite_free(gamelevel.tileLayer);
@@ -143,17 +143,15 @@ LevelInfo *level_info_load(char *filename)
 		return NULL;
 	}
 
-
-	linfo = level_info_new();
-
-
 	linfo = level_info_new();
 
 	if (!linfo)
 	{
 		return NULL;
 	}
+
 	world = sj_object_get_value(json, "world");
+
 	if (!world)
 	{
 		slog("missing world object in level file %s", filename);
@@ -162,26 +160,11 @@ LevelInfo *level_info_load(char *filename)
 		return NULL;
 	}
 
-
-	gf2d_line_cpy(linfo->backgroundImage, sj_get_string_value(sj_object_get_value(world, "backgroundImage")));
-
-	gf2d_line_cpy(linfo->backgroundMusic, sj_get_string_value(sj_object_get_value(world, "backgroundMusic")));
-
-	gf2d_line_cpy(linfo->tileSet, sj_get_string_value(sj_object_get_value(world, "tileSet")));
-
-
-	sj_value_as_vector2d(sj_object_get_value(world, "tileMapSize"), &linfo->tileMapSize);
-
-	slog("loaded tile size of %f,%f", linfo->tileMapSize.x, linfo->tileMapSize.y);
-
-
 	level_info_tilemap_load(linfo, sj_object_get_value(world, "tileMap"), (Uint32)linfo->tileMapSize.x, (Uint32)linfo->tileMapSize.y);
 
 
 	sj_value_as_vector2d(sj_object_get_value(world, "tileSize"), &linfo->tileSize);
 
-
-	linfo->spawnList = sj_copy(sj_object_get_value(world, "spawnList"));
 
 	gf2d_line_cpy(linfo->backgroundImage, sj_get_string_value(sj_object_get_value(world, "backgroundImage")));
 	gf2d_line_cpy(linfo->backgroundMusic, sj_get_string_value(sj_object_get_value(world, "backgroundMusic")));
@@ -198,7 +181,8 @@ LevelInfo *level_info_load(char *filename)
 	slog("Frames per line: %i", linfo->framesperline);
 
 	linfo->spawnList = sj_copy(sj_object_get_value(world, "spawnList"));
-
+	int count = sj_array_get_count(linfo->spawnList);
+	slog("Spawn list count = %i", count);
 	sj_free(json);
 	slog("loaded level info for %s", filename);
 	
@@ -209,13 +193,7 @@ LevelInfo *level_info_load(char *filename)
 
 void level_make_space()
 {
-	gamelevel.space = gf2d_space_new_full(
-		3,
-		gf2d_rect(0, 0, gamelevel.tileLayer->surface->w, gamelevel.tileLayer->surface->h),
-		0.1,
-		vector2d(0, 0),
-		1,
-		0.1);
+	gamelevel.space = gf2d_cpSpace_init();
 }
 
 
@@ -314,26 +292,6 @@ void level_build_tile_space(LevelInfo *linfo)
 }
 
 
-void level_spawn_entities(SJson *spawnList)
-{
-	int i = 0, count = 0;
-	SJson *item;
-	Vector2D position;
-	int id = 0;
-	count = sj_array_get_count(spawnList);
-	for (i = 0; i < count; i++)
-	{
-		item = sj_array_get_nth(spawnList, i);
-		if (!item)continue;
-		sj_value_as_vector2d(sj_object_get_value(item, "position"), &position);
-		if (!sj_get_integer_value(sj_object_get_value(item, "name"), &id))
-		{
-			id = 0;
-		}
-		spawn_entity(sj_get_string_value(sj_object_get_value(item, "name")), position, id, sj_object_get_value(item, "args"));
-	}
-}
-
 void level_update_tile(LevelInfo *linfo, Vector2D position, Uint32 tile)
 {
 	if (!linfo)
@@ -367,32 +325,26 @@ Vector2D level_position_to_tile(LevelInfo *linfo, Vector2D position)
 	return tile;
 }
 
-void level_transition(char *filename, const char *playerTarget, Uint32 targetId)
+void level_spawn_entities(SJson *spawnList)
 {
-	Entity *target;
-	TextLine filepath;
-	TextLine targetname;
-	Uint32 id;
-	LevelInfo *linfo = NULL;
-
-	snprintf(filepath, GF2DLINELEN, "levels/%s", filename);
-	gf2d_line_cpy(targetname, playerTarget);
-	id = targetId;
-
-	linfo = level_info_load(filepath);
-	if (!linfo)return;
-
-	entity_clear_all_but_player();
-	level_init(linfo, 1);
-
-	target = gf2d_entity_get_by_name_id(targetname, id);
-	if (!target)
+	int i = 0, count = 0;
+	SJson *item;
+	cpVect position;
+	int id = 0;
+	count = sj_array_get_count(spawnList);
+	for (i = 0; i < count; i++)
 	{
-		slog("expected target %s, %i not found", target, id);
-		return;
+		item = sj_array_get_nth(spawnList, i);
+		if (!item)continue;
+		sj_value_as_vector2d(sj_object_get_value(item, "position"), &position);
+		if (!sj_get_integer_value(sj_object_get_value(item, "name"), &id))
+		{
+			id = 0;
+		}
+		spawn_entity(sj_get_string_value(sj_object_get_value(item, "name")), position, id, sj_object_get_value(item, "args"));
 	}
-	player_set_position(vector2d(target->position.x, target->position.y - 16));
 }
+
 
 void level_init(LevelInfo *linfo, Uint8 space)
 {
@@ -400,11 +352,6 @@ void level_init(LevelInfo *linfo, Uint8 space)
 	{
 		return;
 	}
-
-
-	level_clear();
-
-	gamelevel.backgroundImage = gf2d_sprite_load_image(linfo->backgroundImage);
 
 
 	level_clear();
@@ -424,13 +371,6 @@ void level_init(LevelInfo *linfo, Uint8 space)
 	if (gamelevel.backgroundMusic)Mix_PlayMusic(gamelevel.backgroundMusic, -1);
 
 
-	level_make_tile_layer(linfo);
-
-
-	camera_set_bounds(0, 0, gamelevel.tileLayer->surface->w, gamelevel.tileLayer->surface->h);
-
-
-	level_spawn_entities(linfo->spawnList);
 
 
 	gamelevel.backgroundMusic = Mix_LoadMUS(linfo->backgroundMusic);
@@ -442,11 +382,10 @@ void level_init(LevelInfo *linfo, Uint8 space)
 
 	if (space)
 	{
-		level_make_space();
-		level_build_tile_space(linfo);
+		//level_make_space();
+		//level_build_tile_space(linfo);
 	}
 	level_spawn_entities(linfo->spawnList);
-
 }
 
 void level_draw()
@@ -468,6 +407,9 @@ void level_update()
 	gf2d_entity_pre_sync_all();
 
 	gf2d_entity_post_sync_all();
+
+	if(gamelevel.space)
+		gf2d_cpSpace_update(gamelevel.space);
 }
 
 

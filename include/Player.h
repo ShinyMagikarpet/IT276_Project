@@ -10,9 +10,9 @@ Entity *player_new(cpVect position, cpSpace *space);
 
 Entity *player_get();
 
-void player_set_position(Vector2D position);
+void player_set_position(cpVect position);
 
-Entity *player_spawn(Vector2D position, SJson *args);
+Entity *player_spawn(cpVect position, SJson *args);
 
 
 #endif

@@ -1,10 +1,13 @@
 #include "gf2d_cpSpace.h"
 #include "gf2d_entity.h"
+#include "gf2d_graphics.h"
 #include "simple_logger.h"
 
 cpSpace* gf2d_cpSpace_init(void) {
 
 	cpSpace *newSpace = cpSpaceNew();
+
+	setup_boundaries(newSpace);
 
 	//Handles Collision between player and Statics
 	cpCollisionHandler *static_handler = cpSpaceAddWildcardHandler(newSpace, STATIC_TYPE);
@@ -85,4 +88,29 @@ void player_touch_monster_separate(cpArbiter *arb, cpSpace *space, void *data) {
 cpBool monster_touch_monster_begin(cpArbiter *arb, cpSpace *space, void *data) {
 
 	return cpFalse;
+}
+
+void setup_boundaries(cpSpace *space) {
+
+	cpBody *ground = cpBodyNewStatic();
+	cpShape *groundshape = cpSegmentShapeNew(ground, cpvzero, cpv(SCREENWIDTH, 0), 1);
+	groundshape->type = STATIC_TYPE;
+	groundshape->u = 1;
+	cpSpaceAddShape(space, groundshape);
+
+	groundshape = cpSegmentShapeNew(ground, cpv(0, SCREENHEIGHT), cpv(SCREENWIDTH, SCREENHEIGHT), 1);
+	groundshape->type = STATIC_TYPE;
+	groundshape->u = 1;
+	cpSpaceAddShape(space, groundshape);
+
+	groundshape = cpSegmentShapeNew(ground, cpvzero, cpv(0, SCREENHEIGHT), 1);
+	groundshape->type = STATIC_TYPE;
+	groundshape->u = 1;
+	cpSpaceAddShape(space, groundshape);
+
+	groundshape = cpSegmentShapeNew(ground, cpv(SCREENWIDTH, 0), cpv(SCREENWIDTH, SCREENHEIGHT), 1);
+	groundshape->type = STATIC_TYPE;
+	groundshape->u = 1;
+	cpSpaceAddShape(space, groundshape);
+
 }

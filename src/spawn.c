@@ -12,7 +12,7 @@ static Spawn spawnlist[] =
 	{0}
 };
 
-void spawn_entity(const char *name, Vector2D position, Uint32 id, SJson *args)
+void spawn_entity(const char *name, cpVect position, Uint32 id, SJson *args)
 {
 	Spawn *spawn;
 	Entity *ent;

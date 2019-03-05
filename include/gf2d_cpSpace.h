@@ -25,6 +25,12 @@ cpSpace *gf2d_cpSpace_init(void);
 void *gf2d_cpSpace_update(cpSpace *space);
 
 /**
+* @brief Sets up the boundaries for the level
+* @param Chipmunk space
+*/
+void setup_boundaries(cpSpace *space);
+
+/**
 * @brief Function to be called when player hits type static
 */
 cpBool touch_ground(cpArbiter *arb, cpSpace *space, void *data);

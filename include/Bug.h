@@ -6,7 +6,7 @@
 
 
 
-Entity *bug_new(cpVect position);
+Entity *bug_new(cpVect position, cpSpace *space);
 
 
 #endif 

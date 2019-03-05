@@ -30,7 +30,7 @@ int main(int argc, char * argv[])
 	LevelInfo *linfo = NULL;
 
 	//Chipmunk Physics
-	cpSpace *space = gf2d_cpSpace_init();
+	//cpSpace *space = gf2d_cpSpace_init();
 
     /*program initializtion*/
     init_logger("gf2d.log");
@@ -50,8 +50,9 @@ int main(int argc, char * argv[])
 	gf2d_action_list_init(128);
 	gf2d_entity_system_init(1024);
 	gf2d_input_init("config/input.cfg");
-	player = player_new(cpv(200, 200), space);
-	bug = bug_new(cpv(550, 360));
+	//player = player_new(cpv(200, 200), space);
+	//bug = bug_new(cpv(550, 360), space);
+	
 
 	linfo = level_info_load("levels/new_test..json");
 	level_init(linfo, 1);
@@ -59,15 +60,6 @@ int main(int argc, char * argv[])
     /*demo setup*/
     sprite = gf2d_sprite_load_image("images/backgrounds/bg_flat.png");
     mouse = gf2d_sprite_load_all("images/pointer.png",32,32,16,0);
-
-	cpSpaceAddBody(space, bug->cpbody);
-	cpSpaceAddShape(space, bug->cpshape);
-
-	cpBody *ground = cpBodyNewStatic();
-	cpShape *groundshape = cpSegmentShapeNew(ground, cpvzero, cpv(SCREENWIDTH, 0), 0);
-	groundshape->type = STATIC_TYPE;
-	groundshape->u = 1;
-	cpSpaceAddShape(space, groundshape);
 
 
     /*main game loop*/
@@ -96,7 +88,7 @@ int main(int argc, char * argv[])
 		//Draw Entity
 		gf2d_entity_draw_all();
 		gf2d_entity_draw_shape_all();
-		gf2d_cpSpace_update(space);
+		//gf2d_cpSpace_update(space);
 
 		gf2d_draw_line(vector2d(0, 0), vector2d(SCREENWIDTH, 0), vector4d(255, 0, 0, 255));
 		gf2d_draw_line(vector2d(0, 0), vector2d(0, SCREENHEIGHT), vector4d(255, 0, 0, 255));
@@ -131,7 +123,7 @@ int main(int argc, char * argv[])
 
 	level_clear();
 	gf2d_entity_free_all();
-	cpSpaceFree(space);
+	//cpSpaceFree(space);
     return 0;
 }
 /*eol@eof*/

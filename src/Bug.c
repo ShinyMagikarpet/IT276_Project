@@ -9,7 +9,7 @@ void bug_think(Entity *self);
 void bug_update(Entity *self);
 
 
-Entity *bug_new(cpVect position) {
+Entity *bug_new(cpVect position, cpSpace *space) {
 
 	
 	bug = gf2d_entity_new();
@@ -22,6 +22,8 @@ Entity *bug_new(cpVect position) {
 	cpBodySetPosition(bug->cpbody, position);
 	bug->cpbody->userData = bug;
 	bug->cpshape = cpCircleShapeNew(bug->cpbody, 50, cpv(64, 64));
+	cpSpaceAddBody(space, bug->cpbody);
+	cpSpaceAddShape(space, bug->cpshape);
 	bug->cpshape->type = MONSTER_TYPE;
 	bug->cpshape->u = 1.0f;
 	bug->cpshape->e = 0;
