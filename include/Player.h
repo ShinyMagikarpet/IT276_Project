@@ -3,6 +3,7 @@
 
 #include "simple_logger.h"
 #include "gf2d_entity.h"
+#include "gf2d_rpg_mechanics.h"
 
 #define PLAYER_VELOCITY 100
 

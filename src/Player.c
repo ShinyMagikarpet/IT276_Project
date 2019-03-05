@@ -270,12 +270,18 @@ void player_think(Entity *self) {
 				if (hit.shape->type == MONSTER_TYPE) {
 					Entity *inflicted = hit.shape->body->userData;
 					if (inflicted) {
-						inflicted->rpg.stats.hp -= 1;
 						slog("Hit the monster!");
+						inflicted->rpg.stats.hp -= 1;
 						if (inflicted->rpg.stats.hp == 0) {
+
+							//give_player_xp(&self, &inflicted);
 							self->rpg.xp += inflicted->rpg.xp;
-							gf2d_entity_free(inflicted);
+							//Makes sure that the process is handled after space step to avoid
+							//body/shape removal errors
+							player_touch_monster_postsolve(NULL, self->cpbody->space, inflicted);
 						}
+						
+
 							
 					}
 					
@@ -317,6 +323,13 @@ void player_think(Entity *self) {
 			slog("WTF direction are you?!");
 		}
 		self->state = ES_Idle;
+	}
+
+	//DEBUG
+	const Uint8 * keys;
+	keys = SDL_GetKeyboardState(NULL);
+	if (keys[SDL_SCANCODE_1]) {
+		slog("XP: %i", self->rpg.xp);
 	}
 	//Change velocity of player and copy it to position to update sprite???
 	self->position = cpvector_to_gf2dvector(cpBodyGetPosition(self->cpbody));

@@ -46,6 +46,11 @@ cpBool player_touch_monster_begin(cpArbiter *arb, cpSpace *space, void *data);
 cpBool player_touch_monster_presolve(cpArbiter *arb, cpSpace *space, void *data);
 
 /**
+* @brief Calculates physics after step to avoid problems
+*/
+void player_touch_monster_postsolve(cpArbiter *arb, cpSpace *space, void *data);
+
+/**
 * @brief Function to be called after player and monster end collision
 */
 void player_touch_monster_separate(cpArbiter *arb, cpSpace *space, void *data);

@@ -17,6 +17,7 @@ cpSpace* gf2d_cpSpace_init(void) {
 	cpCollisionHandler *player_to_monster_handler = cpSpaceAddCollisionHandler(newSpace, PLAYER_TYPE, MONSTER_TYPE);
 	player_to_monster_handler->beginFunc = (cpCollisionBeginFunc)player_touch_monster_begin;
 	player_to_monster_handler->preSolveFunc = (cpCollisionPreSolveFunc)player_touch_monster_presolve;
+	player_to_monster_handler->postSolveFunc = (cpCollisionPostSolveFunc)player_touch_monster_postsolve;
 	player_to_monster_handler->separateFunc = (cpCollisionSeparateFunc)player_touch_monster_separate;
 
 	//Handles Collision between player and Statics
@@ -73,6 +74,23 @@ cpBool player_touch_monster_presolve(cpArbiter *arb, cpSpace *space, void *data)
 	
 	monster->v = cpvzero;
 	return cpTrue;
+}
+
+void player_touch_monster_postsolve(cpArbiter *arb, cpSpace *space, void *data) {
+
+	Entity *inflicted = (Entity *)data;
+	
+	if (inflicted) {
+		//self->rpg.xp += inflicted->rpg.xp;
+		cpSpaceRemoveShape(inflicted->cpbody->space, inflicted->cpshape);
+		cpShapeFree(inflicted->cpshape);
+		cpSpaceRemoveBody(inflicted->cpbody->space, inflicted->cpbody);
+		cpBodyFree(inflicted->cpbody);
+		gf2d_entity_free(inflicted);
+	}
+	
+
+	
 }
 
 void player_touch_monster_separate(cpArbiter *arb, cpSpace *space, void *data) {
