@@ -43,6 +43,21 @@ Entity *bug_new(cpVect position, cpSpace *space) {
 
 }
 
+Entity *bug_spawn(cpVect position, SJson *args, cpSpace *space)
+{
+	if (bug != NULL)
+	{
+		vector2d_copy(bug->position, position);
+		level_add_entity(bug);
+		return NULL;
+	}
+	if (!space) {
+		slog("Space not there");
+		return NULL;
+	}
+	return bug_new(position, space);
+}
+
 
 void bug_think(Entity *self) {
 
@@ -59,12 +74,12 @@ void bug_think(Entity *self) {
 
 		if (cpvnear(cpBodyGetPosition(self->cpbody), cpBodyGetPosition(player->cpbody), 200)) {
 
-			/*if (dirX > 0)
+			if (dirX > 0)
 				self->flip.x = 1;
 			else
 				self->flip.x = 0;
 			self->cpbody->v.x = dirX * 0.3;
-			self->cpbody->v.y = dirY * 0.3;*/;
+			self->cpbody->v.y = dirY * 0.3;;
 
 		}
 		else if(self->cpbody->p.x != self->cpPos.x || self->cpbody->p.y != self->cpPos.y){

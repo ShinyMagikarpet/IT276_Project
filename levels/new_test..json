@@ -30,6 +30,10 @@
       {
         "name": "player_start",
         "position": [ 128, 128 ]
+      },
+      {
+        "name": "bug_start",
+        "position": [ 550, 360 ]
       }
     ]
   }

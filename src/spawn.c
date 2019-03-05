@@ -1,6 +1,7 @@
 #include "spawn.h"
 #include "level.h"
 #include "player.h"
+#include "Bug.h"
 #include "simple_logger.h"
 
 static Spawn spawnlist[] =
@@ -8,6 +9,10 @@ static Spawn spawnlist[] =
 	{
 		"player_start",
 		player_spawn
+	},
+	{
+		"bug_start",
+		bug_spawn
 	},
 	{0}
 };

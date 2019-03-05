@@ -50,6 +50,8 @@ int main(int argc, char * argv[])
 	gf2d_action_list_init(128);
 	gf2d_entity_system_init(1024);
 	gf2d_input_init("config/input.cfg");
+
+	//Deprecated as it is now being done in level
 	//player = player_new(cpv(200, 200), space);
 	//bug = bug_new(cpv(550, 360), space);
 	
