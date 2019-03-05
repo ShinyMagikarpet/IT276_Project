@@ -24,6 +24,7 @@ typedef struct
 	Vector2D    tileMapSize;        /**<how tile space width & height*/
 	int        *tileMap;            /**<tile data*/
 	SJson      *spawnList;
+	int			*framesperline;		/**<how many tiles per line in set*/
 }LevelInfo;
 
 /**

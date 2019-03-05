@@ -66,8 +66,9 @@ cpBool player_touch_monster_presolve(cpArbiter *arb, cpSpace *space, void *data)
 	cpContactPointSet set = cpArbiterGetContactPointSet(arb);
 
 	//Knockback player after getting hit
-	cpArbiterSetSurfaceVelocity(arb, cpv(2000 * -set.normal.x, 2000 * -set.normal.y));
+	cpArbiterSetSurfaceVelocity(arb, cpv(2500 * -set.normal.x, 2500 * -set.normal.y));
 	
+	monster->v = cpvzero;
 	return cpTrue;
 }
 

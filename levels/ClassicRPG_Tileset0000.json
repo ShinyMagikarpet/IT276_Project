@@ -1,0 +1,14 @@
+{ "columns":80,
+ "image":"..\/images\/ClassicRPGTileset\/ClassicRPG_Tileset0000.png",
+ "imageheight":16,
+ "imagewidth":1280,
+ "margin":0,
+ "name":"ClassicRPG_Tileset0000",
+ "spacing":0,
+ "tilecount":80,
+ "tiledversion":"1.2.2",
+ "tileheight":16,
+ "tilewidth":16,
+ "type":"tileset",
+ "version":1.2
+}

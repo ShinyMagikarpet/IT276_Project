@@ -14,6 +14,7 @@ int player_touch(Entity *self);
 void player_update(Entity *self);
 void player_update_velocity(cpBody *body, cpVect gravity, cpFloat damping, cpFloat dt);
 int cpTouch_player(cpBody *self, cpBody *other);
+int player_damage(Entity *attacker, int damage, Entity *inflicted);
 
 Entity *player_new(cpVect position, cpSpace *space) {
 
@@ -65,6 +66,7 @@ Entity *player_new(cpVect position, cpSpace *space) {
 	player->think = player_think;
 	player->touch = player_touch;
 	player->update = player_update;
+	player->damage = player_damage;
 
 	return player;
 }
@@ -106,6 +108,10 @@ int cpTouch_player(cpBody *self, cpBody *other) {
 		slog("TOUCHING MONSTER");
 	}
 	return 0;
+
+}
+
+int player_damage(Entity *attacker, int damage, Entity *inflicted) {
 
 }
 
@@ -257,8 +263,20 @@ void player_think(Entity *self) {
 			//Cast out a ray to check if we hit a monster
 			if (cpSpaceSegmentQueryFirst(self->cpbody->space, self->cpbody->p, cpv(self->cpbody->p.x + offsetRayX, self->cpbody->p.y + offsetRayY), 2, CP_SHAPE_FILTER_ALL, &hit)) {
 
-				if (hit.shape->type == MONSTER_TYPE)
-					slog("WAAAAAAAAAAAAAAAh");
+				if (hit.shape->type == MONSTER_TYPE) {
+					Entity *inflicted = hit.shape->body->userData;
+					if (inflicted) {
+						inflicted->rpg.stats.hp -= 1;
+						slog("Hit the monster!");
+						if (inflicted->rpg.stats.hp == 0) {
+							self->rpg.xp += inflicted->rpg.xp;
+							gf2d_entity_free(inflicted);
+						}
+							
+					}
+					
+				}
+					
 
 			}
 			self->state = ES_Attack;

@@ -53,7 +53,7 @@ int main(int argc, char * argv[])
 	player = player_new(cpv(200, 200), space);
 	bug = bug_new(cpv(550, 360));
 
-	linfo = level_info_load("levels/test.json");
+	linfo = level_info_load("levels/new_test..json");
 	level_init(linfo, 1);
 	
     /*demo setup*/
@@ -122,7 +122,7 @@ int main(int argc, char * argv[])
         
         if (keys[SDL_SCANCODE_ESCAPE])done = 1; // exit condition
 		if (keys[SDL_SCANCODE_1]) {
-			//Test here
+			slog("XP: %i", player->rpg.xp);
 		}
         //slog("Rendering at %f FPS",gf2d_graphics_get_frames_per_second());
     }

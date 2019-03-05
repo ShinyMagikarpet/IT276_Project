@@ -74,7 +74,7 @@ typedef struct Entity_S {
 	void(*draw)(struct Entity_S *self); /**<render entity*/
 	int(*touch)(struct Entity_S *self); /**<currently not using*/
 	int(*cpTouch)(cpBody *self, cpBody *other); /**<called when player collides something*/
-	int(*damage)(struct Entity_S *self, int amount, struct Entity_S *source);/**<when this entity takes damage*/
+	int(*damage)(struct Entity_S *attacker, int amount, struct Entity_S *inflicted);/**<when this entity takes damage*/
 	void(*free)(struct Entity_S *self); /**<free entity from game*/
 
 	//RPG stuff and stat stuff

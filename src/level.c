@@ -29,7 +29,7 @@ int *level_alloc_tilemap(int w, int h);
 void level_clear()
 {
 
-
+	
 	gf2d_space_free(gamelevel.space);
 
 	gf2d_sprite_free(gamelevel.backgroundImage);
@@ -183,24 +183,25 @@ LevelInfo *level_info_load(char *filename)
 
 	linfo->spawnList = sj_copy(sj_object_get_value(world, "spawnList"));
 
-
-
 	gf2d_line_cpy(linfo->backgroundImage, sj_get_string_value(sj_object_get_value(world, "backgroundImage")));
 	gf2d_line_cpy(linfo->backgroundMusic, sj_get_string_value(sj_object_get_value(world, "backgroundMusic")));
 	gf2d_line_cpy(linfo->tileSet, sj_get_string_value(sj_object_get_value(world, "tileSet")));
 
 	sj_value_as_vector2d(sj_object_get_value(world, "tileMapSize"), &linfo->tileMapSize);
-	slog("loaded tile size of %f,%f", linfo->tileMapSize.x, linfo->tileMapSize.y);
+	slog("loaded tile size of %f,%f", linfo->tileMapSize.x, &linfo->tileMapSize.y);
 
 	level_info_tilemap_load(linfo, sj_object_get_value(world, "tileMap"), (Uint32)linfo->tileMapSize.x, (Uint32)linfo->tileMapSize.y);
 
-	sj_value_as_vector2d(sj_object_get_value(world, "tileSize"), &linfo->tileSize);
+	//Changed Code to allow frames per line for spritesheets
+	sj_get_integer_value(sj_object_get_value(world, "tilesPerLine"), &linfo->framesperline);
+
+	slog("Frames per line: %i", linfo->framesperline);
 
 	linfo->spawnList = sj_copy(sj_object_get_value(world, "spawnList"));
 
-
 	sj_free(json);
 	slog("loaded level info for %s", filename);
+	
 	return linfo;
 }
 
@@ -241,7 +242,7 @@ void level_make_tile_layer(LevelInfo *linfo)
 		0,
 		linfo->tileMapSize.x*linfo->tileSize.x,
 		linfo->tileMapSize.y*linfo->tileSize.y,
-		32,
+		linfo->framesperline,
 		format);
 
 	clear = SDL_MapRGBA(sprite->surface->format, 0, 0, 0, 0);
@@ -413,7 +414,7 @@ void level_init(LevelInfo *linfo, Uint8 space)
 		linfo->tileSet,
 		linfo->tileSize.x,
 		linfo->tileSize.y,
-		16,
+		linfo->framesperline,
 		true);
 
 
@@ -453,7 +454,7 @@ void level_draw()
 	Vector2D cam;
 	cam = camera_get_position();
 	gf2d_sprite_draw_image(gamelevel.backgroundImage, vector2d(-cam.x, -cam.y), vector2d(1,1));
-	gf2d_sprite_draw_image(gamelevel.tileLayer, vector2d(-cam.x, -cam.y), vector2d(1.5, 1.5));
+	gf2d_sprite_draw_image(gamelevel.tileLayer, vector2d(-cam.x, -cam.y), vector2d(2, 2)); //Changed last one to be scale
 	gf2d_entity_draw_all();
 	gf2d_entity_draw(player_get());
 
