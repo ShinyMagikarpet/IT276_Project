@@ -12,7 +12,7 @@ static Spawn spawnlist[] =
 	{0}
 };
 
-void spawn_entity(const char *name, cpVect position, Uint32 id, SJson *args)
+void spawn_entity(const char *name, cpVect position, Uint32 id, SJson *args, cpSpace *space)
 {
 	Spawn *spawn;
 	Entity *ent;
@@ -27,7 +27,7 @@ void spawn_entity(const char *name, cpVect position, Uint32 id, SJson *args)
 		{
 			if (spawn->spawn)
 			{
-				ent = spawn->spawn(position, args);
+				ent = spawn->spawn(position, args, space);
 				if (ent)
 				{
 					ent->id = id;

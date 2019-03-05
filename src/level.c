@@ -341,7 +341,7 @@ void level_spawn_entities(SJson *spawnList)
 		{
 			id = 0;
 		}
-		spawn_entity(sj_get_string_value(sj_object_get_value(item, "name")), position, id, sj_object_get_value(item, "args"));
+		spawn_entity(sj_get_string_value(sj_object_get_value(item, "name")), position, id, sj_object_get_value(item, "args"), gamelevel.space);
 	}
 }
 
@@ -355,6 +355,8 @@ void level_init(LevelInfo *linfo, Uint8 space)
 
 
 	level_clear();
+
+	level_make_space();
 	gamelevel.backgroundImage = gf2d_sprite_load_image(linfo->backgroundImage);
 
 	gamelevel.tileSet = gf2d_sprite_load_all(
@@ -408,8 +410,7 @@ void level_update()
 
 	gf2d_entity_post_sync_all();
 
-	if(gamelevel.space)
-		gf2d_cpSpace_update(gamelevel.space);
+	gf2d_cpSpace_update(gamelevel.space);
 }
 
 

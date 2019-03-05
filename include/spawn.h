@@ -7,9 +7,9 @@
 typedef struct
 {
 	const char *name;
-	Entity *(*spawn)(cpVect, SJson *args);
+	Entity *(*spawn)(cpVect, SJson *args, cpSpace *space);
 }Spawn;
 
-void spawn_entity(const char *name, cpVect position, Uint32 id, SJson *args);
+void spawn_entity(const char *name, cpVect position, Uint32 id, SJson *args, cpSpace *space);
 
 #endif

@@ -75,7 +75,7 @@ Entity *player_get() {
 	return player;
 }
 
-Entity *player_spawn(cpVect position, SJson *args)
+Entity *player_spawn(cpVect position, SJson *args, cpSpace *space)
 {
 	if (player != NULL)
 	{
@@ -83,7 +83,11 @@ Entity *player_spawn(cpVect position, SJson *args)
 		level_add_entity(player);
 		return NULL;
 	}
-	return player_new(position, player->cpbody->space);
+	if (!space) {
+		slog("Space not there");
+		return NULL;
+	}
+	return player_new(position, space);
 }
 
 void player_set_position(Vector2D position) {
