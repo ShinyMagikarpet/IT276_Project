@@ -52,11 +52,7 @@ Entity *player_new(cpVect position, cpSpace *space) {
 	//RPG stuff
 	player->rpg.level = 1;
 	player->rpg.xp = 0;
-	//Stats
-	player->rpg.stats.hp = 5;
-	player->rpg.stats.str = 3;
-	player->rpg.stats.def = 2;
-	player->rpg.stats.agil = 3;
+	gf2d_rpg_set_stats(player, 5, 1, 1, 1);
 
 	player->iframes = 0;
 	player->attack_rate = 10.0f / player->rpg.stats.agil;
@@ -271,11 +267,11 @@ void player_think(Entity *self) {
 					Entity *inflicted = hit.shape->body->userData;
 					if (inflicted) {
 						slog("Hit the monster!");
-						inflicted->rpg.stats.hp -= 1;
-						if (inflicted->rpg.stats.hp == 0) {
+						inflicted->rpg.stats.hp_current -= 1;
+						if (inflicted->rpg.stats.hp_current == 0) {
 
-							//give_player_xp(&self, &inflicted);
-							self->rpg.xp += inflicted->rpg.xp;
+							give_player_xp(self, inflicted);
+							
 							//Makes sure that the process is handled after space step to avoid
 							//body/shape removal errors
 							player_touch_monster_postsolve(NULL, self->cpbody->space, inflicted);
@@ -330,6 +326,11 @@ void player_think(Entity *self) {
 	keys = SDL_GetKeyboardState(NULL);
 	if (keys[SDL_SCANCODE_1]) {
 		slog("XP: %i", self->rpg.xp);
+	}
+	if (keys[SDL_SCANCODE_2]) {
+		slog("Level: %i", self->rpg.level);
+		slog("XP to next: %i", xp_to_next_level(self->rpg.level));
+		slog("XP Remaing: %i", xp_remaining(self->rpg.level, self->rpg.level));
 	}
 	//Change velocity of player and copy it to position to update sprite???
 	self->position = cpvector_to_gf2dvector(cpBodyGetPosition(self->cpbody));

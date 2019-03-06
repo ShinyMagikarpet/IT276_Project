@@ -36,8 +36,8 @@ Entity *bug_new(cpVect position, cpSpace *space) {
 	bug->update = bug_update;
 	bug->shape = gf2d_shape_circle(64, 64, 50);
 
-	bug->rpg.stats.hp = 3;
-	bug->rpg.xp = 10;
+	gf2d_rpg_set_stats(bug, 3, 1, 1, 1);
+	bug->rpg.xp = 100;
 	return bug;
 
 

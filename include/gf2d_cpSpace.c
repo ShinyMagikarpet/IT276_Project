@@ -52,11 +52,11 @@ cpBool player_touch_monster_begin(cpArbiter *arb, cpSpace *space, void *data) {
 
 	//Handles damage and invincibility frames here
 	if (player->iframes <= 0) {
-		player->rpg.stats.hp -= 1;
+		player->rpg.stats.hp_current -= 1;
 		player->iframes = 120;
 	}
 
-	if (player->rpg.stats.hp == 0) {
+	if (player->rpg.stats.hp_current == 0) {
 		slog("PLAYER SHOULD DIE");
 	}
 
@@ -132,3 +132,5 @@ void setup_boundaries(cpSpace *space) {
 	cpSpaceAddShape(space, groundshape);
 
 }
+
+/*eol@eof*/

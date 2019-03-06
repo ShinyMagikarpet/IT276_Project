@@ -43,3 +43,5 @@ void spawn_entity(const char *name, cpVect position, Uint32 id, SJson *args, cpS
 	}
 	slog("failed to spawn entity %s", name);
 }
+
+/*eol@eof*/

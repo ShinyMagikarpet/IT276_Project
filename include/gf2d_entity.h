@@ -27,17 +27,18 @@ typedef enum {
 }EntityState;
 
 typedef struct {
-	int hp;
-	int str;
-	int def;
-	int agil;
+	int hp_max;		/**<entity's max health*/
+	int hp_current;	/**<entity's health*/
+	int str;		/**<entity's strength*/
+	int def;		/**<entity's defence*/
+	int agil;		/**<entity's agility*/
 }Stats;
 
 typedef struct{
 
-	int xp;
-	int level;
-	Stats stats;
+	int xp; /**<xp of entity*/
+	int level; /**<level of entity*/
+	Stats stats; /**<stat struct for entity*/
 
 }RpgElements;
 
@@ -80,8 +81,8 @@ typedef struct Entity_S {
 	//RPG stuff and stat stuff
 	RpgElements rpg;
 
-	float attack_rate;
-	float cooldown;
+	float attack_rate; /**<rate of which an entity can attack*/
+	float cooldown; /**<cooldown for attacks*/
 	int iframes; /**<time of invicibility frames*/
 
 	//Game data
