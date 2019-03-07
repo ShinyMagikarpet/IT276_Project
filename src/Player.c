@@ -52,7 +52,7 @@ Entity *player_new(cpVect position, cpSpace *space) {
 	//RPG stuff
 	player->rpg.level = 1;
 	player->rpg.xp = 0;
-	gf2d_rpg_set_stats(player, 5, 1, 1, 1);
+	gf2d_rpg_set_stats(player, 5, 1, 1, 3);
 
 	player->iframes = 0;
 	player->attack_rate = 10.0f / player->rpg.stats.agil;
@@ -339,9 +339,6 @@ void player_think(Entity *self) {
 }
 
 void player_update(Entity *self) {
-	
-	
-
 	
 
 

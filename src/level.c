@@ -14,7 +14,7 @@ typedef struct
 {
 
 
-	Space      *space;
+	cpSpace     *space;
 
 	Sprite     *backgroundImage;
 	Sprite     *tileLayer;
@@ -160,20 +160,19 @@ LevelInfo *level_info_load(char *filename)
 		return NULL;
 	}
 
-	level_info_tilemap_load(linfo, sj_object_get_value(world, "tileMap"), (Uint32)linfo->tileMapSize.x, (Uint32)linfo->tileMapSize.y);
-
-
-	sj_value_as_vector2d(sj_object_get_value(world, "tileSize"), &linfo->tileSize);
 
 
 	gf2d_line_cpy(linfo->backgroundImage, sj_get_string_value(sj_object_get_value(world, "backgroundImage")));
+
 	gf2d_line_cpy(linfo->backgroundMusic, sj_get_string_value(sj_object_get_value(world, "backgroundMusic")));
 	gf2d_line_cpy(linfo->tileSet, sj_get_string_value(sj_object_get_value(world, "tileSet")));
 
 	sj_value_as_vector2d(sj_object_get_value(world, "tileMapSize"), &linfo->tileMapSize);
-	slog("loaded tile size of %f,%f", linfo->tileMapSize.x, &linfo->tileMapSize.y);
+	slog("loaded tile size of %f,%f", linfo->tileMapSize.x, linfo->tileMapSize.y);
 
 	level_info_tilemap_load(linfo, sj_object_get_value(world, "tileMap"), (Uint32)linfo->tileMapSize.x, (Uint32)linfo->tileMapSize.y);
+
+	sj_value_as_vector2d(sj_object_get_value(world, "tileSize"), &linfo->tileSize);
 
 	//Changed Code to allow frames per line for spritesheets
 	sj_get_integer_value(sj_object_get_value(world, "tilesPerLine"), &linfo->framesperline);
@@ -380,7 +379,7 @@ void level_init(LevelInfo *linfo, Uint8 space)
 
 	level_make_tile_layer(linfo);
 
-	camera_set_bounds(0, 0, gamelevel.tileLayer->surface->w, gamelevel.tileLayer->surface->h);
+	camera_set_bounds(100, 100, gamelevel.tileLayer->surface->w, gamelevel.tileLayer->surface->h);
 
 	if (space)
 	{
@@ -393,14 +392,15 @@ void level_init(LevelInfo *linfo, Uint8 space)
 void level_draw()
 {
 	Vector2D cam;
+	Entity *player = player_get();
 	cam = camera_get_position();
 	gf2d_sprite_draw_image(gamelevel.backgroundImage, vector2d(-cam.x, -cam.y), vector2d(1,1));
 	gf2d_sprite_draw_image(gamelevel.tileLayer, vector2d(-cam.x, -cam.y), vector2d(2, 2)); //Changed last one to be scale
 	gf2d_entity_draw_all();
 	gf2d_entity_draw(player_get());
 
-
-	//    if (gamelevel.space)gf2d_space_draw(gamelevel.space,vector2d(-cam.x,-cam.y));
+	camera_move(cpvector_to_gf2dvector(cpBodyGetPosition(&player->cpbody)));
+	//if (gamelevel.space)gf2d_space_draw(gamelevel.space,vector2d(-cam.x,-cam.y));
 
 }
 

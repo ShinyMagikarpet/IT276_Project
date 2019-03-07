@@ -14,6 +14,7 @@ typedef struct Sprite_S
 	SDL_Surface *surface;
 	Uint32 frames_per_line;
 	Uint32 frame_w, frame_h;
+	Vector2D image_size;
 }Sprite;
 
 /**

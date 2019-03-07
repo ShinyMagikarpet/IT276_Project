@@ -45,12 +45,6 @@ Entity *bug_new(cpVect position, cpSpace *space) {
 
 Entity *bug_spawn(cpVect position, SJson *args, cpSpace *space)
 {
-	if (bug != NULL)
-	{
-		vector2d_copy(bug->position, position);
-		level_add_entity(bug);
-		return NULL;
-	}
 	if (!space) {
 		slog("Space not there");
 		return NULL;

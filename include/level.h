@@ -14,8 +14,8 @@
  */
 
  /**
-  * @brief The level structure holds data for a given game level.
-  */
+ * @brief The level structure holds data for a given game level.
+ */
 typedef struct
 {
 	TextLine    backgroundImage;    /**<background image for this level*/

@@ -97,7 +97,8 @@ void player_touch_monster_separate(cpArbiter *arb, cpSpace *space, void *data) {
 	CP_ARBITER_GET_BODIES(arb, playerbody, monster);
 	CP_ARBITER_GET_SHAPES(arb, playershape, monstershape);
 
-
+	//TODO: make counter for when monster attacks player as a cooldown so that they don't move
+	//after they touch the player
 	cpBodySetVelocity(monster, cpvzero);
 
 }

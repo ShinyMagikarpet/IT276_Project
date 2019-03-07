@@ -13,6 +13,7 @@
 #include "level.h"
 #include "gf2d_cpSpace.h"
 #include "gf2d_draw.h"
+#include "camera.h"
 
 
 int main(int argc, char * argv[])
@@ -54,7 +55,6 @@ int main(int argc, char * argv[])
 	//Deprecated as it is now being done in level
 	//player = player_new(cpv(200, 200), space);
 	//bug = bug_new(cpv(550, 360), space);
-	
 
 	linfo = level_info_load("levels/new_test..json");
 	level_init(linfo, 1);
@@ -105,7 +105,7 @@ int main(int argc, char * argv[])
 
 		
             //UI elements last
-            gf2d_sprite_draw(
+           /* gf2d_sprite_draw(
                 mouse,
                 vector2d(mx,my),
                 NULL,
@@ -113,7 +113,7 @@ int main(int argc, char * argv[])
                 NULL,
                 NULL,
                 &mouseColor,
-                (int)mf);
+                (int)mf);*/
         gf2d_grahics_next_frame();// render current draw frame and skip to the next frame
         
         if (keys[SDL_SCANCODE_ESCAPE])done = 1; // exit condition
