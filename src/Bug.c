@@ -27,8 +27,7 @@ Entity *bug_new(cpVect position, cpSpace *space) {
 	bug->cpshape->type = MONSTER_TYPE;
 	bug->cpshape->u = 1.0f;
 	bug->cpshape->e = 0;
-	bug->cpPos = position;
-
+	bug->spawnpos = position;
 	vector2d_copy(bug->position, position);
 	gf2d_actor_load(&bug->actor, "actor/Bug.actor");
 	gf2d_actor_set_action(&bug->actor, "idle");
@@ -76,11 +75,11 @@ void bug_think(Entity *self) {
 			self->cpbody->v.y = dirY * 0.3;;
 
 		}
-		else if(self->cpbody->p.x != self->cpPos.x || self->cpbody->p.y != self->cpPos.y){
+		else if(self->cpbody->p.x != self->spawnpos.x || self->cpbody->p.y != self->spawnpos.y){
 
-			//Get distance between player and bug
-			dirX = self->cpPos.x - self->cpbody->p.x;
-			dirY = self->cpPos.y - self->cpbody->p.y;
+			//Get distance between bug current position to spawn position
+			dirX = self->spawnpos.x - self->cpbody->p.x;
+			dirY = self->spawnpos.y - self->cpbody->p.y;
 
 			//Normalize
 			cpVect normal = cpvnormalize(cpv(dirX, dirY));
@@ -91,8 +90,8 @@ void bug_think(Entity *self) {
 				self->flip.x = 0;
 			self->cpbody->v.x = dirX * 0.3;
 			self->cpbody->v.y = dirY * 0.3;
-			if(cpvnear(cpBodyGetPosition(self->cpbody), self->cpPos, 5))
-				self->cpbody->p = self->cpPos;
+			if(cpvnear(cpBodyGetPosition(self->cpbody), self->cpbody->p, 5))
+				self->cpbody->p = self->cpbody->p;
 		}
 		else {
 			self->cpbody->v = cpvzero;
@@ -100,12 +99,14 @@ void bug_think(Entity *self) {
 			
 	}
 		
+
+	self->position = cpvector_to_gf2dvector(cpBodyGetPosition(self->cpbody));
+	gf2d_actor_next_frame(&self->actor);
 	
 }
 
 void bug_update(Entity *self) {
 
-	self->position = cpvector_to_gf2dvector(cpBodyGetPosition(self->cpbody));
-	gf2d_actor_next_frame(&bug->actor);
+	
 
 }

@@ -67,7 +67,7 @@ void camera_move(Vector2D v)
 	camera_bind();
 }
 
-void camera_set_position(Vector2D position)
+void camera_set_position(cpVect position)
 {
 	vector2d_copy(_camera.view, position);
 	camera_bind();

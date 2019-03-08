@@ -35,7 +35,6 @@ Entity *player_new(cpVect position, cpSpace *space) {
 	
 	//Debug for shape. otherwise useless
 	player->shape = gf2d_shape_circle(32, 32, 16);
-
 	//gf2d stuff
 	player->inuse = 1;
 	player->position = cpvector_to_gf2dvector(position);
@@ -86,15 +85,16 @@ Entity *player_spawn(cpVect position, SJson *args, cpSpace *space)
 	return player_new(position, space);
 }
 
-void player_set_position(Vector2D position) {
+void player_set_position(cpVect position) {
 
 	if (!player) {
 		slog("player not loaded");
 		return;
 	}
+	/*vector2d_copy(player->position, position);
+	vector2d_copy(player->body.position, position);*/
 
-	vector2d_copy(player->position, position);
-	vector2d_copy(player->body.position, position);
+	
 
 }
 
@@ -334,13 +334,12 @@ void player_think(Entity *self) {
 	}
 	//Change velocity of player and copy it to position to update sprite???
 	self->position = cpvector_to_gf2dvector(cpBodyGetPosition(self->cpbody));
-	self->cpPos = cpBodyGetPosition(self->cpbody);
 	gf2d_actor_next_frame(&self->actor);
 }
 
 void player_update(Entity *self) {
 	
-
+	
 
 	if (self->cooldown > 0) {
 		self->cooldown -= 0.025;

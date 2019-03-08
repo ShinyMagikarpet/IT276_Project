@@ -9,6 +9,7 @@
 #include "gf2d_collision.h"
 #include "simple_json.h"
 #include "gf2d_cpSpace.h"
+#include "camera.h"
 
 
 typedef enum {
@@ -55,8 +56,8 @@ typedef struct Entity_S {
 	//Physics
 	cpShape *cpshape;
 	cpBody *cpbody;
-	cpVect cpPos;
 
+	cpVect spawnpos; /**<Spawn position of entity*/
 	Shape shape;
 	Body body;
 	Vector2D velocity;

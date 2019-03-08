@@ -112,22 +112,22 @@ cpBool monster_touch_monster_begin(cpArbiter *arb, cpSpace *space, void *data) {
 void setup_boundaries(cpSpace *space) {
 
 	cpBody *ground = cpBodyNewStatic();
-	cpShape *groundshape = cpSegmentShapeNew(ground, cpvzero, cpv(SCREENWIDTH, 0), 1);
+	cpShape *groundshape = cpSegmentShapeNew(ground, cpvzero, cpv(1600, 0), 1);
 	groundshape->type = STATIC_TYPE;
 	groundshape->u = 1;
 	cpSpaceAddShape(space, groundshape);
 
-	groundshape = cpSegmentShapeNew(ground, cpv(0, SCREENHEIGHT), cpv(SCREENWIDTH, SCREENHEIGHT), 1);
+	groundshape = cpSegmentShapeNew(ground, cpv(0, 1600), cpv(1600, 1600), 1);
 	groundshape->type = STATIC_TYPE;
 	groundshape->u = 1;
 	cpSpaceAddShape(space, groundshape);
 
-	groundshape = cpSegmentShapeNew(ground, cpvzero, cpv(0, SCREENHEIGHT), 1);
+	groundshape = cpSegmentShapeNew(ground, cpvzero, cpv(0, 1600), 1);
 	groundshape->type = STATIC_TYPE;
 	groundshape->u = 1;
 	cpSpaceAddShape(space, groundshape);
 
-	groundshape = cpSegmentShapeNew(ground, cpv(SCREENWIDTH, 0), cpv(SCREENWIDTH, SCREENHEIGHT), 1);
+	groundshape = cpSegmentShapeNew(ground, cpv(1600, 0), cpv(1600, 1600), 1);
 	groundshape->type = STATIC_TYPE;
 	groundshape->u = 1;
 	cpSpaceAddShape(space, groundshape);

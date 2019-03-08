@@ -379,7 +379,8 @@ void level_init(LevelInfo *linfo, Uint8 space)
 
 	level_make_tile_layer(linfo);
 
-	camera_set_bounds(100, 100, gamelevel.tileLayer->surface->w, gamelevel.tileLayer->surface->h);
+
+	camera_set_bounds(0, 0, 1600, 1600);
 
 	if (space)
 	{
@@ -387,6 +388,9 @@ void level_init(LevelInfo *linfo, Uint8 space)
 		//level_build_tile_space(linfo);
 	}
 	level_spawn_entities(linfo->spawnList);
+
+
+	camera_set_dimensions(0, 0, SCREENWIDTH, SCREENHEIGHT);
 }
 
 void level_draw()
@@ -395,22 +399,37 @@ void level_draw()
 	Entity *player = player_get();
 	cam = camera_get_position();
 	gf2d_sprite_draw_image(gamelevel.backgroundImage, vector2d(-cam.x, -cam.y), vector2d(1,1));
-	gf2d_sprite_draw_image(gamelevel.tileLayer, vector2d(-cam.x, -cam.y), vector2d(2, 2)); //Changed last one to be scale
+	//gf2d_sprite_draw_image(gamelevel.tileLayer, vector2d(-cam.x, -cam.y), vector2d(2, 2)); //Changed last one to be scale
 	gf2d_entity_draw_all();
-	gf2d_entity_draw(player_get());
+	gf2d_entity_draw_shape_all();
+	//gf2d_entity_draw(player_get());
+	camera_set_position(cpv(player->cpbody->p.x - (SCREENWIDTH / 2), player->cpbody->p.y - (SCREENHEIGHT / 2) ));
 
-	camera_move(cpvector_to_gf2dvector(cpBodyGetPosition(&player->cpbody)));
+
+
 	//if (gamelevel.space)gf2d_space_draw(gamelevel.space,vector2d(-cam.x,-cam.y));
 
 }
 
 void level_update()
 {
+
+	Entity *player = player_get();
+
 	gf2d_entity_pre_sync_all();
 
 	gf2d_entity_post_sync_all();
 
+	gf2d_entity_think_all();
+
+	gf2d_entity_update_all();
+
 	gf2d_cpSpace_update(gamelevel.space);
+	
+	//slog("Camera Pos: %f, %f", camera_get_position().x, camera_get_position().y);
+	//slog("Camera Offset: %f, %f", camera_get_offset().x, camera_get_offset().y);
+	slog("Player Body: %f, %f", player_get()->cpbody->p.x, player_get()->cpbody->p.y);
+	slog("Player rend: %f, %f", player_get()->position.x, player_get()->position.y);
 }
 
 

@@ -115,10 +115,11 @@ void gf2d_entity_draw(Entity * self)
 
 	if (!self)return;
 	if (!self->inuse)return;
-
+	Vector2D cam = camera_get_position();
 	gf2d_sprite_draw(
 		self->actor.sprite,
-		self->position,
+		vector2d(self->position.x - cam.x, self->position.y - cam.y),
+		//self->position,
 		&self->scale,
 		&self->scalecenter,
 		&self->rotation,
@@ -145,8 +146,9 @@ void gf2d_entity_draw_shape(Entity *self) {
 
 	if (!self)return;
 	if (!self->inuse)return;
+	Vector2D cam = camera_get_position();
 
-	gf2d_shape_draw(self->shape, gf2d_color(1, 1, 0, 1), self->position);
+	gf2d_shape_draw(self->shape, gf2d_color(1, 1, 0, 1), vector2d(self->position.x - cam.x, self->position.y - cam.y));
 
 }
 

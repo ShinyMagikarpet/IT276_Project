@@ -38,7 +38,7 @@ Vector2D camera_get_offset();
  * @param x the minimum x position for the camera
  * @param y the minimum y position for the camera
  * @param w the right bounds
- * @param w the bottom bounds
+ * @param h the bottom bounds
  */
 void camera_set_bounds(Sint32 x, Sint32 y, Uint32 w, Uint32 h);
 
@@ -58,7 +58,7 @@ void camera_move(Vector2D v);
  * @brief move the camera to new position, but respect bounds
  * @param position the ideal new top left position of the camera
  */
-void camera_set_position(Vector2D position);
+void camera_set_position(cpVect position);
 
 /**
  * @brief move the camera to ne position, but do not respect bounds
