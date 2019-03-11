@@ -426,10 +426,6 @@ void level_update()
 
 	gf2d_cpSpace_update(gamelevel.space);
 	
-	//slog("Camera Pos: %f, %f", camera_get_position().x, camera_get_position().y);
-	//slog("Camera Offset: %f, %f", camera_get_offset().x, camera_get_offset().y);
-	slog("Player Body: %f, %f", player_get()->cpbody->p.x, player_get()->cpbody->p.y);
-	slog("Player rend: %f, %f", player_get()->position.x, player_get()->position.y);
 }
 
 

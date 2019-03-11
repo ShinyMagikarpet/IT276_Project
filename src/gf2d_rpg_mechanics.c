@@ -7,13 +7,16 @@
 void check_if_level_up(Entity *self) {
 
 	if (!self)return;
-	int nextlevel = xp_to_next_level(self->rpg.level);
+	
+	int playerXP = self->rpg.xp;
+	int playerLevel = self->rpg.level;
 
-	while (self->rpg.xp > nextlevel) {
-		self->rpg.level++;
-		nextlevel = xp_to_next_level(self->rpg.level);
+
+	while (playerXP >= xp_to_next_level(playerLevel)) {
+		playerLevel++;
 	}
-	slog("XP to next: %i", nextlevel);
+
+	self->rpg.level = playerLevel;
 
 }
 

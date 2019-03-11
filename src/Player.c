@@ -30,7 +30,7 @@ Entity *player_new(cpVect position, cpSpace *space) {
 	player->cpbody->p = position;
 	player->cpbody->userData = player;
 	player->cpbody->velocity_func = player_update_velocity;
-	player->cpshape = cpSpaceAddShape(space, cpCircleShapeNew(player->cpbody, 4, cpv(16, 16)));
+	player->cpshape = cpSpaceAddShape(space, cpCircleShapeNew(player->cpbody, 16, cpv(32, 32)));
 	cpShapeSetCollisionType(player->cpshape, PLAYER_TYPE);
 	
 	//Debug for shape. otherwise useless
@@ -242,19 +242,19 @@ void player_think(Entity *self) {
 			switch (self->dir) {
 			case ED_Down:
 				gf2d_actor_set_action(&player->actor, "attack_down");
-				offsetRayY = 100;
+				offsetRayY = 75;
 				break;
 			case ED_Left:
 				gf2d_actor_set_action(&player->actor, "attack_left");
-				offsetRayX = -100;
+				offsetRayX = -75;
 				break;
 			case ED_Right:
 				gf2d_actor_set_action(&player->actor, "attack_right");
-				offsetRayX = 100;
+				offsetRayX = 75;
 				break;
 			case ED_Up:
 				gf2d_actor_set_action(&player->actor, "attack_up");
-				offsetRayY = -100;
+				offsetRayY = -75;
 				break;
 			default:
 				slog("WTF direction are you?!");
@@ -330,7 +330,8 @@ void player_think(Entity *self) {
 	if (keys[SDL_SCANCODE_2]) {
 		slog("Level: %i", self->rpg.level);
 		slog("XP to next: %i", xp_to_next_level(self->rpg.level));
-		slog("XP Remaing: %i", xp_remaining(self->rpg.level, self->rpg.level));
+		slog("XP Remaing: %i", xp_remaining(self->rpg.level, self->rpg.xp));
+
 	}
 	//Change velocity of player and copy it to position to update sprite???
 	self->position = cpvector_to_gf2dvector(cpBodyGetPosition(self->cpbody));
