@@ -1,0 +1,11 @@
+sprite: images/beehive.png
+frameWidth: 800
+frameHeight: 530
+framesPerLine: 1
+scale: 0.2, 0.2
+
+action: idle
+startFrame: 0
+endFrame: 1
+frameRate: 0.1
+type: loop

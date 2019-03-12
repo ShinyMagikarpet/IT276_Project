@@ -31,6 +31,7 @@ Entity *bug_new(cpVect position, cpSpace *space) {
 	vector2d_copy(bug->position, position);
 	gf2d_actor_load(&bug->actor, "actor/Bug.actor");
 	gf2d_actor_set_action(&bug->actor, "idle");
+	vector2d_copy(bug->scale, bug->actor.al->scale);
 	bug->think = bug_think;
 	bug->update = bug_update;
 	bug->shape = gf2d_shape_circle(64, 64, 50);

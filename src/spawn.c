@@ -2,6 +2,7 @@
 #include "level.h"
 #include "player.h"
 #include "Bug.h"
+#include "bug_hive.h"
 #include "simple_logger.h"
 
 static Spawn spawnlist[] =
@@ -13,6 +14,10 @@ static Spawn spawnlist[] =
 	{
 		"bug_start",
 		bug_spawn
+	},
+	{
+		"bug_hive_start",
+		bug_hive_spawn
 	},
 	{0}
 };

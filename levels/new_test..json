@@ -39,6 +39,10 @@
       {
         "name": "bug_start",
         "position": [ 850, 760 ]
+      },
+      {
+        "name": "bug_hive_start",
+        "position": [ 1000, 1000 ]
       }
     ]
   }

@@ -46,9 +46,14 @@ cpBool player_touch_monster_begin(cpArbiter *arb, cpSpace *space, void *data) {
 	CP_ARBITER_GET_BODIES(arb, playerbody, monster);
 	//Calls player function when collision is continous
 	//cpTouch_player(playerbody, monster);
-	slog("TOUCHED MONSTER");
+
 	Entity *player = (Entity *)playerbody->userData;
 	Entity *other = (Entity *)monster->userData;
+
+	//TODO: Find better way to check if to ignore damage + knockback
+	if (strcmp(other->name, "bug_hive") == 0) {
+		return cpTrue;
+	}
 
 	//Handles damage and invincibility frames here
 	if (player->iframes <= 0) {
@@ -66,6 +71,13 @@ cpBool player_touch_monster_begin(cpArbiter *arb, cpSpace *space, void *data) {
 cpBool player_touch_monster_presolve(cpArbiter *arb, cpSpace *space, void *data) {
 	CP_ARBITER_GET_BODIES(arb, playerbody, monster);
 	CP_ARBITER_GET_SHAPES(arb, playershape, monstershape);
+
+	Entity *player = (Entity *)playerbody->userData;
+	Entity *other = (Entity *)monster->userData;
+
+	if (strcmp(other->name, "bug_hive") == 0) {
+		return cpTrue;
+	}
 
 	cpContactPointSet set = cpArbiterGetContactPointSet(arb);
 
