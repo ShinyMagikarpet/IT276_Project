@@ -60,17 +60,11 @@ int main(int argc, char * argv[])
 	level_init(linfo, 1);
 	
     /*demo setup*/
-    sprite = gf2d_sprite_load_image("images/backgrounds/bg_flat.png");
-    mouse = gf2d_sprite_load_all("images/pointer.png",32,32,16,0);
+    //sprite = gf2d_sprite_load_image("images/beehive.png");
+    //mouse = gf2d_sprite_load_all("images/pointer.png",32,32,16,0);
 
     /*main game loop*/
 
-	int j = 0;
-	for (int i = 1; i < 6; i++) {
-		slog("Level xp to next level from Level %i is: %i", i, xp_to_next_level(i));
-		slog("XP remaining: %i", xp_remaining(i, j));
-		j = xp_to_next_level(i);
-	}
     while(!done)
     {
 		
@@ -99,9 +93,6 @@ int main(int argc, char * argv[])
 		//Deprecated as it is now updated in level
 		//gf2d_cpSpace_update(space);
 
-		
-			
-		
 
 		
             //UI elements last
