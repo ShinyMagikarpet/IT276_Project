@@ -31,6 +31,8 @@ Entity *bug_hive_new(cpVect position, cpSpace *space) {
 	//Info
 	gf2d_line_cpy(bug_hive->name, "bug_hive");
 	gf2d_rpg_set_stats(bug_hive, 10, 0, 1, 0);
+	bug_hive->cooldown = 0;
+	bug_hive->rpg.xp = 1000;
 
 	//Functions
 	bug_hive->update = bug_hive_update;
@@ -48,10 +50,28 @@ Entity *bug_hive_spawn(cpVect position, SJson *args, cpSpace *space) {
 	return bug_hive_new(position, space);
 }
 
+void bug_hive_spawn_bug(Entity *self) {
+
+	if (!self)return;
+	cpVect position = self->cpbody->p;
+	
+	bug_spawn(cpv(position.x + 30, position.y + 55), NULL, self->cpbody->space);
+}
+
 void bug_hive_update(Entity *self) {
+
+	if (cpvnear(cpBodyGetPosition(self->cpbody), cpBodyGetPosition(player_get()->cpbody), 250) && self->cooldown == 0) {
+
+		bug_hive_spawn_bug(self);
+		self->cooldown = 10000;
+
+	}
 
 }
 
 void bug_hive_think(Entity *self) {
-
+	if (self->cooldown > 0)
+		self->cooldown -= 0.1;
+	else
+		self->cooldown = 0;
 }

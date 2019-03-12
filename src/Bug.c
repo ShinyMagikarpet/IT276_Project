@@ -89,13 +89,14 @@ void bug_think(Entity *self) {
 				self->flip.x = 1;
 			else
 				self->flip.x = 0;
-			self->cpbody->v.x = dirX * 0.3;
-			self->cpbody->v.y = dirY * 0.3;
+			self->cpbody->v.x = dirX * 0.4;
+			self->cpbody->v.y = dirY * 0.4;
 			if(cpvnear(cpBodyGetPosition(self->cpbody), self->cpbody->p, 5))
 				self->cpbody->p = self->cpbody->p;
+
 		}
 		else {
-			self->cpbody->v = cpvzero;
+			//TODO: safely despawn bug when returning home
 		}
 			
 	}
