@@ -6,6 +6,6 @@ scale: 1,1
 
 action: idle
 startFrame: 0
-endFrame: 12
-frameRate: 0.1
+endFrame: 9
+frameRate: 0.08
 type: loop

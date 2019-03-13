@@ -9,6 +9,7 @@
 #include "gf2d_graphics.h"
 #include "gf2d_config.h"
 #include <stdio.h>
+#include <SDL_mixer.h>
 
 typedef struct
 {
@@ -365,21 +366,12 @@ void level_init(LevelInfo *linfo, Uint8 space)
 		linfo->framesperline,
 		true);
 
-
-
-	gamelevel.backgroundMusic = Mix_LoadMUS(linfo->backgroundMusic);
-
-	if (gamelevel.backgroundMusic)Mix_PlayMusic(gamelevel.backgroundMusic, -1);
-
-
-
-
 	gamelevel.backgroundMusic = Mix_LoadMUS(linfo->backgroundMusic);
 	if (gamelevel.backgroundMusic)Mix_PlayMusic(gamelevel.backgroundMusic, -1);
 
 	level_make_tile_layer(linfo);
 
-
+	//Bounds of camera = background/tilemap size
 	camera_set_bounds(0, 0, 1600, 1600);
 
 	if (space)

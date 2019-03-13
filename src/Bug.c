@@ -65,18 +65,21 @@ void bug_think(Entity *self) {
 
 		//Normalize
 		cpVect normal = cpvnormalize(cpv(dirX, dirY));
-
 		if (cpvnear(cpBodyGetPosition(self->cpbody), cpBodyGetPosition(player->cpbody), 200)) {
+
+			self->state = ES_Walk;
 
 			if (dirX > 0)
 				self->flip.x = 1;
 			else
 				self->flip.x = 0;
-			self->cpbody->v.x = dirX * 0.3;
-			self->cpbody->v.y = dirY * 0.3;;
+			self->cpbody->v.x = normal.x * 50.0;
+			self->cpbody->v.y = normal.y * 50.0; 
 
 		}
 		else if(self->cpbody->p.x != self->spawnpos.x || self->cpbody->p.y != self->spawnpos.y){
+
+			self->state = ES_Walk;
 
 			//Get distance between bug current position to spawn position
 			dirX = self->spawnpos.x - self->cpbody->p.x;
@@ -89,14 +92,18 @@ void bug_think(Entity *self) {
 				self->flip.x = 1;
 			else
 				self->flip.x = 0;
-			self->cpbody->v.x = dirX * 0.4;
-			self->cpbody->v.y = dirY * 0.4;
-			if(cpvnear(cpBodyGetPosition(self->cpbody), self->cpbody->p, 5))
-				self->cpbody->p = self->cpbody->p;
+			self->cpbody->v.x = normal.x * 50.0;
+			self->cpbody->v.y = normal.y * 50.0;
+			
+			//Make sure the bug is close enough to spawn point 
+			if (cpvnear(self->cpbody->p, self->spawnpos, 1))
+				self->cpbody->p = self->spawnpos;
 
 		}
 		else {
-			//TODO: safely despawn bug when returning home
+			self->state = ES_Idle;
+			self->cpbody->v = cpvzero;
+			slog("Returned home");
 		}
 			
 	}

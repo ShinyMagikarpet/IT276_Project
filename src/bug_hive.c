@@ -55,7 +55,7 @@ void bug_hive_spawn_bug(Entity *self) {
 	if (!self)return;
 	cpVect position = self->cpbody->p;
 	
-	bug_spawn(cpv(position.x + 30, position.y + 55), NULL, self->cpbody->space);
+	Entity *bug = bug_spawn(cpv(position.x + 30, position.y + 55), NULL, self->cpbody->space);
 }
 
 void bug_hive_update(Entity *self) {

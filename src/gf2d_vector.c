@@ -544,6 +544,10 @@ void vector3d_cross_product(Vector3D *out, Vector3D v1, Vector3D v2)
   out->z = v1.x*v2.y - v1.y*v2.x;
 }
 
+/**
+* @brief quickly convert cpvect to gf2d vector
+* @param cpVector to convert
+*/
 Vector2D cpvector_to_gf2dvector(cpVect cpvect) {
 
 	Vector2D newPosition;

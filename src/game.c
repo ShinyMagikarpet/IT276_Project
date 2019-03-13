@@ -47,7 +47,7 @@ int main(int argc, char * argv[])
     gf2d_graphics_set_frame_delay(16);
     gf2d_sprite_init(1024);
     SDL_ShowCursor(SDL_DISABLE);
-   
+	gf2d_audio_init(256, 16, 4, 1, 1, 1);
 	gf2d_action_list_init(128);
 	gf2d_entity_system_init(1024);
 	gf2d_input_init("config/input.cfg");
@@ -58,6 +58,7 @@ int main(int argc, char * argv[])
 
 	linfo = level_info_load("levels/new_test..json");
 	level_init(linfo, 1);
+
 	
     /*demo setup*/
     //sprite = gf2d_sprite_load_image("images/beehive.png");
@@ -92,8 +93,6 @@ int main(int argc, char * argv[])
 
 		//Deprecated as it is now updated in level
 		//gf2d_cpSpace_update(space);
-
-
 		
             //UI elements last
            /* gf2d_sprite_draw(
@@ -107,6 +106,7 @@ int main(int argc, char * argv[])
                 (int)mf);*/
         gf2d_grahics_next_frame();// render current draw frame and skip to the next frame
         
+		
         if (keys[SDL_SCANCODE_ESCAPE])done = 1; // exit condition
         //slog("Rendering at %f FPS",gf2d_graphics_get_frames_per_second());
     }

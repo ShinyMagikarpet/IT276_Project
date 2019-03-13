@@ -339,8 +339,6 @@ void player_think(Entity *self) {
 }
 
 void player_update(Entity *self) {
-	
-	
 
 	if (self->cooldown > 0) {
 		self->cooldown -= 0.025;
