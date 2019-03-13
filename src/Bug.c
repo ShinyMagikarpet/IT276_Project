@@ -58,7 +58,7 @@ void bug_think(Entity *self) {
 	Entity *player = player_get();
 
 	if (player) {
-
+		
 		//Get distance between player and bug
 		float dirX = player->cpbody->p.x - self->cpbody->p.x;
 		float dirY = player->cpbody->p.y - self->cpbody->p.y;
@@ -103,7 +103,7 @@ void bug_think(Entity *self) {
 		else {
 			self->state = ES_Idle;
 			self->cpbody->v = cpvzero;
-			slog("Returned home");
+			//slog("Returned home");
 		}
 			
 	}

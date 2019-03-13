@@ -14,6 +14,7 @@
 #include "gf2d_cpSpace.h"
 #include "gf2d_draw.h"
 #include "camera.h"
+#include "gf2d_windows.h"
 
 
 int main(int argc, char * argv[])
@@ -59,11 +60,10 @@ int main(int argc, char * argv[])
 	linfo = level_info_load("levels/new_test..json");
 	level_init(linfo, 1);
 
-	
     /*demo setup*/
-    //sprite = gf2d_sprite_load_image("images/beehive.png");
+    sprite = gf2d_sprite_load_image("images/menu3.png");
     //mouse = gf2d_sprite_load_all("images/pointer.png",32,32,16,0);
-
+	Window *window = gf2d_window_new();
     /*main game loop*/
 
     while(!done)
@@ -90,10 +90,11 @@ int main(int argc, char * argv[])
 		level_draw();
 		//Draw Entity
 		//gf2d_entity_draw_all();
-
+		gf2d_windows_update_all();
+		gf2d_windows_draw_all();
 		//Deprecated as it is now updated in level
 		//gf2d_cpSpace_update(space);
-		
+		gf2d_sprite_draw_image(sprite, vector2d(0, SCREENHEIGHT - 160), vector2d(1, 1));
             //UI elements last
            /* gf2d_sprite_draw(
                 mouse,

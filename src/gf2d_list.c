@@ -90,6 +90,33 @@ List *gf2d_list_append(List *list, void *data) {
 	return list;
 }
 
+List *gf2d_list_concat(List *a, List *b)
+{
+	int i, count;
+	void *data;
+	if ((!a) || (!b))
+	{
+		slog("missing list data");
+		return NULL;
+	}
+	count = gf2d_list_get_count(b);
+	for (i = 0; i < count; i++)
+	{
+		data = gf2d_list_get_nth(b, i);
+		a = gf2d_list_append(a, data);
+		if (a == NULL)return NULL;
+	}
+	return a;
+}
+
+List *gf2d_list_concat_free(List *a, List *b)
+{
+	a = gf2d_list_concat(a, b);
+	if (a == NULL)return NULL;
+	gf2d_list_delete(b);
+	return a;
+}
+
 List *gf2d_list_prepend(List *list, void *data) {
 	return gf2d_list_insert(list, data, 0);
 }

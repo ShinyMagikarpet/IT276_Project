@@ -34,6 +34,10 @@ int gf2d_list_delete_data(List *list, void *data);
 
 Uint32 gf2d_list_get_count(List *list);
 
+List *gf2d_list_concat(List *a, List *b);
+
+List *gf2d_list_concat_free(List *a, List *b);
+
 void gf2d_list_foreach(List *list, void(*function)(void *data, void *context), void *contextData);
 
 

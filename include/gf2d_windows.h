@@ -73,6 +73,11 @@ Window *gf2d_window_load(char *filename);
 void gf2d_window_free(Window *win);
 
 /**
+ * @brief free all windows no longer in use
+ */
+void gf2d_window_free_all();
+
+/**
  * @brief add a gui element to the window
  * @param win the window to add an element to
  * @param w the element to add
