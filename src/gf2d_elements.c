@@ -4,7 +4,7 @@
 #include "gf2d_element_actor.h"
 //#include "gf2d_element_button.h"
 //#include "gf2d_element_entry.h"
-//#include "gf2d_element_list.h"
+#include "gf2d_element_list.h"
 //#include "gf2d_element_label.h"
 #include "simple_logger.h"
 
@@ -160,7 +160,7 @@ Element *gf2d_element_load_from_config(SJson *json, Element *parent, Window *win
 	type = sj_get_string_value(value);
 	if (strcmp(type, "list") == 0)
 	{
-		//gf2d_element_load_list_from_config(e, json, win);
+		gf2d_element_load_list_from_config(e, json, win);
 	}
 	else if (strcmp(type, "label") == 0)
 	{

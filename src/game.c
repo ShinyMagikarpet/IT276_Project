@@ -49,6 +49,7 @@ int main(int argc, char * argv[])
     gf2d_sprite_init(1024);
     SDL_ShowCursor(SDL_DISABLE);
 	gf2d_audio_init(256, 16, 4, 1, 1, 1);
+	gf2d_windows_init(128);
 	gf2d_action_list_init(128);
 	gf2d_entity_system_init(1024);
 	gf2d_input_init("config/input.cfg");
@@ -65,7 +66,7 @@ int main(int argc, char * argv[])
     //mouse = gf2d_sprite_load_all("images/pointer.png",32,32,16,0);
 	Window *window = gf2d_window_new();
     /*main game loop*/
-
+	window = gf2d_window_load("config/testwindow.cfg");
     while(!done)
     {
 		
@@ -94,7 +95,7 @@ int main(int argc, char * argv[])
 		gf2d_windows_draw_all();
 		//Deprecated as it is now updated in level
 		//gf2d_cpSpace_update(space);
-		gf2d_sprite_draw_image(sprite, vector2d(0, SCREENHEIGHT - 160), vector2d(1, 1));
+		//gf2d_sprite_draw_image(sprite, vector2d(0, SCREENHEIGHT - 160), vector2d(1, 1));
             //UI elements last
            /* gf2d_sprite_draw(
                 mouse,
@@ -109,6 +110,8 @@ int main(int argc, char * argv[])
         
 		
         if (keys[SDL_SCANCODE_ESCAPE])done = 1; // exit condition
+		if (gf2d_graphics_get_frames_per_second < 55)
+			slog("Frame drop");
         //slog("Rendering at %f FPS",gf2d_graphics_get_frames_per_second());
     }
     slog("---==== END ====---");
@@ -116,6 +119,7 @@ int main(int argc, char * argv[])
 
 	level_clear();
 	gf2d_entity_free_all();
+	gf2d_window_free_all();
 	//cpSpaceFree(space);
     return 0;
 }
