@@ -2,6 +2,7 @@
 #include <stdio.h>
 #include "gf2d_element_label.h"
 #include "simple_logger.h"
+#include "Player.h"
 
 void gf2d_element_label_draw(Element *element, Vector2D offset)
 {
@@ -115,7 +116,7 @@ void gf2d_element_load_label_from_config(Element *e, SJson *json)
 	SJson *value;
 	Vector4D vector;
 	Color color;
-	const char *buffer;
+	const char *buffer, *stat;
 	int style = FT_Normal;
 	int justify = LJ_Left;
 	int align = LA_Top;
@@ -202,9 +203,40 @@ void gf2d_element_load_label_from_config(Element *e, SJson *json)
 	sj_value_as_vector4d(value, &vector);
 	color = gf2d_color_from_vector4(vector);
 
-	value = sj_object_get_value(json, "text");
+	value = sj_object_get_value(json, "name");
 	buffer = sj_get_string_value(value);
+	
+	int statvalue = check_if_player_stat(buffer);
+	if (statvalue) {
+		slog("Health is currently: %i", statvalue);
+	}
+
+	value = sj_object_get_value(json, "text");
+	buffer = malloc(512 * (sizeof(char*)));
+		
+	stat = sj_get_string_value(value);
+	//TODO: FIX UI TO TAKE VARIABLE
+	sprintf(buffer, "%s: %i", stat, statvalue);
+	
 	gf2d_element_make_label(e, gf2d_element_label_new_full((char *)buffer, color, style, justify, align));
+
+	free(buffer);
+	
 }
+
+int check_if_player_stat(char *buffer) {
+	int playerStat;
+
+	if (strcmp(buffer, "health") == 0) {
+		playerStat = player_get()->rpg.stats.hp_current;
+	}
+		
+	if (!playerStat)
+		return 0;
+	else
+		return playerStat;
+
+}
+
 
 /*eol@eof*/

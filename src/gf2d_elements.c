@@ -5,7 +5,7 @@
 //#include "gf2d_element_button.h"
 //#include "gf2d_element_entry.h"
 #include "gf2d_element_list.h"
-//#include "gf2d_element_label.h"
+#include "gf2d_element_label.h"
 #include "simple_logger.h"
 
 Element *gf2d_element_new()
@@ -164,11 +164,11 @@ Element *gf2d_element_load_from_config(SJson *json, Element *parent, Window *win
 	}
 	else if (strcmp(type, "label") == 0)
 	{
-		//gf2d_element_load_label_from_config(e, json);
+		gf2d_element_load_label_from_config(e, json);
 	}
 	else if (strcmp(type, "actor") == 0)
 	{
-		//gf2d_element_load_actor_from_config(e, json);
+		gf2d_element_load_actor_from_config(e, json);
 	}
 	else if (strcmp(type, "button") == 0)
 	{
@@ -199,7 +199,7 @@ Element *gf2d_element_get_by_id(Element *e, int id)
 	switch (e->type)
 	{
 	case ET_List:
-		//return gf2d_element_list_get_item_by_id(e, id);
+		return gf2d_element_list_get_item_by_id(e, id);
 		break;
 	case ET_Button:
 	case ET_Entry:

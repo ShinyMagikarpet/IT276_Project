@@ -3,7 +3,6 @@
 #include "spawn.h"
 #include "player.h"
 #include "gf2d_entity_common.h"
-#include "entity_common.h"
 #include "simple_json.h"
 #include "simple_logger.h"
 #include "gf2d_graphics.h"

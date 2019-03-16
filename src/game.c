@@ -50,6 +50,7 @@ int main(int argc, char * argv[])
     SDL_ShowCursor(SDL_DISABLE);
 	gf2d_audio_init(256, 16, 4, 1, 1, 1);
 	gf2d_windows_init(128);
+	gf2d_text_init("config/font.cfg");
 	gf2d_action_list_init(128);
 	gf2d_entity_system_init(1024);
 	gf2d_input_init("config/input.cfg");

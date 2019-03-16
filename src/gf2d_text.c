@@ -275,7 +275,7 @@ Vector2D gf2d_font_get_bounds(char *text, Font *font)
 	}
 	if (!font)
 	{
-		slog("cannot size text, no font provided");
+		//slog("cannot size text, no font provided");
 		return vector2d(-1, -1);
 	}
 
