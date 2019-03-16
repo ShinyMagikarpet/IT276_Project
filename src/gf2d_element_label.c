@@ -226,21 +226,27 @@ void gf2d_element_load_label_from_config(Element *e, SJson *json)
 
 void change_text_based_on_name(LabelElement *label) {
 	int playerStat;
-	const char *text;
+	char buffer[0x200];
 	Entity *player = player_get();
 
 	if (!label)return;
-	text = "";
-	if (strcmp(label->name, "health") == 0) {
+	if (strcmp(label->name, "Health") == 0) {
 		playerStat = player->rpg.stats.hp_current;
-		text = "bob";
+	}
+	else if(strcmp(label->name, "Level") == 0){
+		playerStat = player->rpg.level;
+	}
+	else if(strcmp(label->name, "XP") == 0){
+		playerStat = player->rpg.xp;
 	}
 	else {
 		//This is a message
 		return;
 	}
-
-	gf2d_block_cpy(label->text, text);
+	
+	snprintf(buffer, sizeof(buffer), "%s: %i", label->name, playerStat);
+	
+	gf2d_block_cpy(label->text, buffer);
 
 }
 
