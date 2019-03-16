@@ -1,7 +1,7 @@
 #include "gf2d_cpSpace.h"
-#include "gf2d_entity.h"
 #include "gf2d_graphics.h"
 #include "simple_logger.h"
+#include "gf2d_entity.h"
 
 cpSpace* gf2d_cpSpace_init(void) {
 
@@ -94,10 +94,7 @@ void player_touch_monster_postsolve(cpArbiter *arb, cpSpace *space, void *data) 
 	
 	if (inflicted) {
 		//self->rpg.xp += inflicted->rpg.xp;
-		cpSpaceRemoveShape(inflicted->cpbody->space, inflicted->cpshape);
-		cpShapeFree(inflicted->cpshape);
-		cpSpaceRemoveBody(inflicted->cpbody->space, inflicted->cpbody);
-		cpBodyFree(inflicted->cpbody);
+		gf2d_entity_free_physics(inflicted);
 		gf2d_entity_free(inflicted);
 	}
 	
@@ -114,6 +111,8 @@ void player_touch_monster_separate(cpArbiter *arb, cpSpace *space, void *data) {
 	cpBodySetVelocity(monster, cpvzero);
 
 }
+
+
 
 
 cpBool monster_touch_monster_begin(cpArbiter *arb, cpSpace *space, void *data) {

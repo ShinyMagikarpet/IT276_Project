@@ -104,6 +104,7 @@ void entity_clear_all_but_player()
 	for (ent = gf2d_entity_iterate(NULL); ent != NULL; ent = gf2d_entity_iterate(ent))
 	{
 		if (ent == player_get())continue;
+		gf2d_entity_free_physics(ent);
 		gf2d_entity_free(ent);
 	}
 }

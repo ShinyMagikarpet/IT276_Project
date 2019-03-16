@@ -232,21 +232,26 @@ void change_text_based_on_name(LabelElement *label) {
 	if (!label)return;
 	if (strcmp(label->name, "Health") == 0) {
 		playerStat = player->rpg.stats.hp_current;
+		snprintf(buffer, sizeof(buffer), "%s: %i/%i", label->name, playerStat, player->rpg.stats.hp_max);
 	}
 	else if(strcmp(label->name, "Level") == 0){
 		playerStat = player->rpg.level;
+		snprintf(buffer, sizeof(buffer), "%s: %i", label->name, playerStat);
 	}
 	else if(strcmp(label->name, "XP") == 0){
 		playerStat = player->rpg.xp;
+		snprintf(buffer, sizeof(buffer), "%s: %i", label->name, playerStat);
 	}
 	else {
 		//This is a message
 		return;
 	}
 	
-	snprintf(buffer, sizeof(buffer), "%s: %i", label->name, playerStat);
+	
 	
 	gf2d_block_cpy(label->text, buffer);
+
+	//free(buffer);
 
 }
 

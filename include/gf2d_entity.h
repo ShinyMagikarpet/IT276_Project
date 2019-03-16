@@ -8,8 +8,8 @@
 #include "gf2d_actor.h"
 #include "gf2d_collision.h"
 #include "simple_json.h"
-#include "gf2d_cpSpace.h"
 #include "camera.h"
+#include "gf2d_cpSpace.h"
 
 
 typedef enum {
@@ -106,6 +106,12 @@ void gf2d_entity_system_init(Uint32 maxEntities);
 Entity *gf2d_entity_new();
 
 void gf2d_entity_free(Entity *self);
+
+/**
+* @brief safely frees chipmunk physics
+* @param Entity to be freed
+*/
+void gf2d_entity_free_physics(Entity *self);
 
 /**
 * @brief free all entities

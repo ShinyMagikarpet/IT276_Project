@@ -1,6 +1,7 @@
 #include <chipmunk.h>
 #include <chipmunk_types.h>
 
+
 //Types of collisions throughout the game 
 #define	PLAYER_TYPE 1		/**Player themself*/
 #define MONSTER_TYPE 2		/**Enemies*/
@@ -60,3 +61,5 @@ void player_touch_monster_separate(cpArbiter *arb, cpSpace *space, void *data);
 * @brief Function to be called after monster touches monster
 */
 cpBool monster_touch_monster_begin(cpArbiter *arb, cpSpace *space, void *data);
+
+

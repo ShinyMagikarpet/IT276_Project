@@ -97,6 +97,14 @@ void gf2d_entity_free(Entity *self)
 	memset(self, 0, sizeof(Entity));
 }
 
+void gf2d_entity_free_physics(Entity *self) {
+	if (!self)return;
+	cpSpaceRemoveShape(self->cpbody->space, self->cpshape);
+	cpSpaceRemoveBody(self->cpbody->space, self->cpbody);
+	cpShapeFree(self->cpshape);
+	cpBodyFree(self->cpbody);
+}
+
 void gf2d_entity_free_all() {
 	int i;
 
@@ -212,6 +220,7 @@ void gf2d_entity_post_sync_body(Entity *self)
 //    slog("entity %li : %s old position(%f,%f) => new position (%f,%f)",self->id,self->name,self->position,self->body.position);
 	vector2d_copy(self->position, self->body.position);
 	vector2d_copy(self->velocity, self->body.velocity);
+	
 }
 
 void gf2d_entity_pre_sync_all()

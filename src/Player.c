@@ -3,6 +3,7 @@
 #include "gf2d_input.h"
 #include "camera.h"
 #include "simple_json.h"
+#include "gf2d_entity_common.h"
 
 
 static Entity *player = NULL;
@@ -331,6 +332,7 @@ void player_think(Entity *self) {
 		slog("Level: %i", self->rpg.level);
 		slog("XP to next: %i", xp_to_next_level(self->rpg.level));
 		slog("XP Remaing: %i", xp_remaining(self->rpg.level, self->rpg.xp));
+		entity_clear_all_but_player();
 
 	}
 	//Change velocity of player and copy it to position to update sprite???
