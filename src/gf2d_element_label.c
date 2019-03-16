@@ -12,6 +12,7 @@ void gf2d_element_label_draw(Element *element, Vector2D offset)
 	if (!element)return;
 	label = (LabelElement*)element->data;
 	if (!label)return;
+	change_text_based_on_name(label); //Write text here if stat
 	if (strlen(label->text) <= 0)return;
 	size = gf2d_text_get_bounds(label->text, label->style);
 	if (size.x < 0)
@@ -75,7 +76,7 @@ LabelElement *gf2d_element_label_new()
 }
 
 
-LabelElement *gf2d_element_label_new_full(char *text, Color color, int style, int justify, int align)
+LabelElement *gf2d_element_label_new_full(char *name, char *text, Color color, int style, int justify, int align)
 {
 	LabelElement *label;
 	label = gf2d_element_label_new();
@@ -83,6 +84,7 @@ LabelElement *gf2d_element_label_new_full(char *text, Color color, int style, in
 	{
 		return NULL;
 	}
+	gf2d_block_cpy(label->name, name);
 	gf2d_block_cpy(label->text, text);
 	label->bgcolor = color;
 	label->style = style;
@@ -116,7 +118,7 @@ void gf2d_element_load_label_from_config(Element *e, SJson *json)
 	SJson *value;
 	Vector4D vector;
 	Color color;
-	const char *buffer, *stat;
+	const char *name, *buffer;
 	int style = FT_Normal;
 	int justify = LJ_Left;
 	int align = LA_Top;
@@ -204,37 +206,41 @@ void gf2d_element_load_label_from_config(Element *e, SJson *json)
 	color = gf2d_color_from_vector4(vector);
 
 	value = sj_object_get_value(json, "name");
-	buffer = sj_get_string_value(value);
-	
-	int statvalue = check_if_player_stat(buffer);
-	if (statvalue) {
-		slog("Health is currently: %i", statvalue);
-	}
+	name = sj_get_string_value(value);
+	if (!name)
+		name = "";
 
 	value = sj_object_get_value(json, "text");
-	buffer = malloc(512 * (sizeof(char*)));
-		
-	stat = sj_get_string_value(value);
-	//TODO: FIX UI TO TAKE VARIABLE
-	sprintf(buffer, "%s: %i", stat, statvalue);
+	buffer = sj_get_string_value(value);
+	if (!buffer)
+		buffer = "";
 	
-	gf2d_element_make_label(e, gf2d_element_label_new_full((char *)buffer, color, style, justify, align));
+	//stat = sj_get_string_value(value);
+	//TODO: FIX UI TO TAKE VARIABLE
+	//sprintf(buffer, "%s: %i", stat, statvalue);
+	
+	gf2d_element_make_label(e, gf2d_element_label_new_full((char *)name, (char *)buffer, color, style, justify, align));
 
-	free(buffer);
 	
 }
 
-int check_if_player_stat(char *buffer) {
+void change_text_based_on_name(LabelElement *label) {
 	int playerStat;
+	const char *text;
+	Entity *player = player_get();
 
-	if (strcmp(buffer, "health") == 0) {
-		playerStat = player_get()->rpg.stats.hp_current;
+	if (!label)return;
+	text = "";
+	if (strcmp(label->name, "health") == 0) {
+		playerStat = player->rpg.stats.hp_current;
+		text = "bob";
 	}
-		
-	if (!playerStat)
-		return 0;
-	else
-		return playerStat;
+	else {
+		//This is a message
+		return;
+	}
+
+	gf2d_block_cpy(label->text, text);
 
 }
 

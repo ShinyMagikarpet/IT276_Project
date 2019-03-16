@@ -19,6 +19,7 @@ typedef enum
 
 typedef struct
 {
+	TextBlock name;		/**<name of label*/
 	TextBlock text;     /**<the label text*/
 	Color bgcolor;      /**<background color for the text*/
 	int style;          /**<which font style to use*/
@@ -35,7 +36,7 @@ typedef struct
  * @param align the vertical alignment
  * @return NULL on error or a new label element
  */
-LabelElement *gf2d_element_label_new_full(char *text, Color color, int style, int justify, int align);
+LabelElement *gf2d_element_label_new_full(char *name, char *text, Color color, int style, int justify, int align);
 
 /**
  * @brief set an element to be the label provided
@@ -57,6 +58,12 @@ void gf2d_element_load_label_from_config(Element *e, SJson *json);
  * @param text the text
  */
 void gf2d_element_label_set_text(Element *e, char *text);
+
+/**
+ * @brief changes text based on label name
+ * @param label the label to be changed
+ */
+void change_text_based_on_name(LabelElement *label);
 
 
 #endif
