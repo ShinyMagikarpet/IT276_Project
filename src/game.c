@@ -15,6 +15,7 @@
 #include "gf2d_draw.h"
 #include "camera.h"
 #include "gf2d_windows.h"
+#include "gf2d_elements.h"
 
 static int done = 0;
 static int pause = 0;
@@ -118,7 +119,6 @@ int main(int argc, char * argv[])
 			
 			slog("paused");
 			pause = 1;
-			
 			
 			transition_window_to_black();
 			gf2d_window_free_all(); //may need to use free all in the future

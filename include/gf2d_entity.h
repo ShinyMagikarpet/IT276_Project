@@ -94,7 +94,7 @@ typedef struct Entity_S {
 
 	float attack_rate; /**<rate of which an entity can attack*/
 	float cooldown; /**<cooldown for attacks*/
-	int iframes; /**<time of invicibility frames*/
+	float iframes; /**<time of invicibility frames*/
 
 	//Game data
 	void *data; /**<data pointer*/

@@ -1,0 +1,12 @@
+sprite: images/hand_cursor.png
+frameWidth: 32
+frameHeight: 32
+framesPerLine: 1
+scale: 1, 1
+color: 255,255,255,255
+
+action: idle
+startFrame: 0
+endFrame: 1
+frameRate: 0.1
+type: loop

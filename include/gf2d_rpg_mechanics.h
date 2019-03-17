@@ -39,4 +39,10 @@ int xp_remaining(int level, int xp);
 */
 void gf2d_rpg_set_stats(Entity *self, int max_hp, int strength, int defence, int agility);
 
+/**
+* @brief decides what happens at level up
+* @param entity the entity that is leveling up
+*/
+void on_level_up(Entity *self);
+
 #endif // ! __GF2D__RPG_MECHANICS__

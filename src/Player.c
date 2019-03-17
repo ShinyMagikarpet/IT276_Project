@@ -52,7 +52,7 @@ Entity *player_new(cpVect position, cpSpace *space) {
 	//RPG stuff
 	player->rpg.level = 1;
 	player->rpg.xp = 0;
-	gf2d_rpg_set_stats(player, 5, 1, 1, 3);
+	gf2d_rpg_set_stats(player, 10, 1, 1, 3);
 
 	player->iframes = 0;
 	player->attack_rate = 10.0f / player->rpg.stats.agil;
@@ -268,6 +268,7 @@ void player_think(Entity *self) {
 					Entity *inflicted = hit.shape->body->userData;
 					if (inflicted) {
 						slog("Hit the monster!");
+						inflicted->cpbody->p = cpvadd(inflicted->cpbody->p, cpv(50 * -hit.normal.x, 50 * -hit.normal.y));
 						inflicted->rpg.stats.hp_current -= 1;
 						if (inflicted->rpg.stats.hp_current == 0) {
 
@@ -347,10 +348,10 @@ void player_update(Entity *self) {
 	}
 		
 
-	if (self->iframes > 0) {
-		self->iframes -= 0.0000001;
-		slog("iframes: %i", self->iframes);
-		if (self->iframes == 0)
+	if (self->iframes > 0.0) {
+		self->iframes -= 0.01;
+		slog("iframes: %f", self->iframes);
+		if (self->iframes == 0.0)
 			slog("CAN BE ATTACKED AGAIN");
 	}
 }

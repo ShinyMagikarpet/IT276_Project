@@ -3,6 +3,7 @@ frameWidth: 32
 frameHeight: 32
 framesPerLine: 8
 scale: 2.0,2.0
+color: 255,255,255,255
 
 action: idle_up
 startFrame: 8

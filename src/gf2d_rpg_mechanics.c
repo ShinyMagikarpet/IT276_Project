@@ -52,4 +52,24 @@ void gf2d_rpg_set_stats(Entity *self, int max_hp, int strength, int defence, int
 
 }
 
+void on_level_up(Entity *self) {
+	int hpgrowth, strgrowth, defgrowth, agilgrowth;
+	hpgrowth	= roll_die(6, 4);
+	strgrowth	= roll_die(4, 1);
+	defgrowth	= roll_die(3, 4);
+	agilgrowth	= roll_die(3, 1);
+
+}
+
+int roll_die(int numsides, int numrolls) {
+	int i,total;
+
+	for (i = 0; i < numrolls; i++) {
+		total = total + rand(1, numsides);
+	}
+	
+	return total;
+
+}
+
 /*eol@eof*/

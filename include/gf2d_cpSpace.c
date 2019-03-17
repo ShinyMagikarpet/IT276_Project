@@ -58,7 +58,7 @@ cpBool player_touch_monster_begin(cpArbiter *arb, cpSpace *space, void *data) {
 	//Handles damage and invincibility frames here
 	if (player->iframes <= 0) {
 		player->rpg.stats.hp_current -= 1;
-		player->iframes = 60;
+		player->iframes = 2.0;
 	}
 
 	if (player->rpg.stats.hp_current == 0) {
@@ -82,7 +82,8 @@ cpBool player_touch_monster_presolve(cpArbiter *arb, cpSpace *space, void *data)
 	cpContactPointSet set = cpArbiterGetContactPointSet(arb);
 
 	//Knockback player after getting hit
-	cpArbiterSetSurfaceVelocity(arb, cpv(2500 * -set.normal.x, 2500 * -set.normal.y));
+	playerbody->p = cpvadd(playerbody->p, cpv(50 * -set.normal.x, 50 * -set.normal.y));
+	//cpArbiterSetSurfaceVelocity(arb, cpv(2500 * -set.normal.x, 2500 * -set.normal.y));
 	
 	monster->v = cpvzero;
 	return cpTrue;

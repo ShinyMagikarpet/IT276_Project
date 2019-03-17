@@ -246,6 +246,14 @@ void change_text_based_on_name(LabelElement *label) {
 		playerStat = player->rpg.stats.str;
 		snprintf(buffer, sizeof(buffer), "%s: %i", label->name, playerStat);
 	}
+	else if (strcmp(label->name, "DEF") == 0) {
+		playerStat = player->rpg.stats.def;
+		snprintf(buffer, sizeof(buffer), "%s: %i", label->name, playerStat);
+	}
+	else if (strcmp(label->name, "AGI") == 0) {
+		playerStat = player->rpg.stats.agil;
+		snprintf(buffer, sizeof(buffer), "%s: %i", label->name, playerStat);
+	}
 	else {
 		//This is a message
 		return;
