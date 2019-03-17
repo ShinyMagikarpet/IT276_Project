@@ -113,13 +113,21 @@ int main(int argc, char * argv[])
                 &mouseColor,
                 (int)mf);*/
         gf2d_grahics_next_frame();// render current draw frame and skip to the next frame
-		if (gf2d_input_command_pressed("pause"))
+		if (gf2d_input_command_pressed("pause")) {
+			slog("paused");
 			pause = 1;
+			window = gf2d_window_load("config/pause_window.cfg");
+		}
+			
 		while (pause) {
 			gf2d_input_update();
-			slog("paused");
-			if (gf2d_input_command_pressed("pause"))
+			gf2d_windows_update_all();
+			gf2d_windows_draw_all();
+			if (gf2d_input_command_pressed("pause")) {
 				pause = 0;
+				slog("unpaused");
+			}
+
 		}
 		
         if (keys[SDL_SCANCODE_ESCAPE])done = 1; // exit condition
