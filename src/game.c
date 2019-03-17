@@ -16,11 +16,15 @@
 #include "camera.h"
 #include "gf2d_windows.h"
 
+static int done = 0;
+static int pause = 0;
+
+static Window *window = NULL;
 
 int main(int argc, char * argv[])
 {
     /*variable declarations*/
-    int done = 0;
+
     const Uint8 * keys;
     Sprite *sprite;
 	Entity *player, *bug;
@@ -62,16 +66,17 @@ int main(int argc, char * argv[])
 	linfo = level_info_load("levels/new_test..json");
 	level_init(linfo, 1);
 
-    /*demo setup*/
-    sprite = gf2d_sprite_load_image("images/menu3.png");
-    //mouse = gf2d_sprite_load_all("images/pointer.png",32,32,16,0);
-	Window *window = gf2d_window_new();
-    /*main game loop*/
 	window = gf2d_window_load("config/testwindow.cfg");
+
+    /*demo setup*/
+    //sprite = gf2d_sprite_load_image("images/menu3.png");
+    //mouse = gf2d_sprite_load_all("images/pointer.png",32,32,16,0);
+
+    /*main game loop*/
     while(!done)
     {
 		
-
+		
         //SDL_PumpEvents();   // update SDL's internal event structures
         keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
         /*update things here*/
@@ -108,11 +113,16 @@ int main(int argc, char * argv[])
                 &mouseColor,
                 (int)mf);*/
         gf2d_grahics_next_frame();// render current draw frame and skip to the next frame
-        
+		if (gf2d_input_command_pressed("pause"))
+			pause = 1;
+		while (pause) {
+			gf2d_input_update();
+			slog("paused");
+			if (gf2d_input_command_pressed("pause"))
+				pause = 0;
+		}
 		
         if (keys[SDL_SCANCODE_ESCAPE])done = 1; // exit condition
-		if (gf2d_graphics_get_frames_per_second < 55)
-			slog("Frame drop");
         //slog("Rendering at %f FPS",gf2d_graphics_get_frames_per_second());
     }
     slog("---==== END ====---");

@@ -97,9 +97,6 @@ void player_touch_monster_postsolve(cpArbiter *arb, cpSpace *space, void *data) 
 		gf2d_entity_free_physics(inflicted);
 		gf2d_entity_free(inflicted);
 	}
-	
-
-	
 }
 
 void player_touch_monster_separate(cpArbiter *arb, cpSpace *space, void *data) {
