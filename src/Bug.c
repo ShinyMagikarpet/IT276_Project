@@ -96,14 +96,16 @@ void bug_think(Entity *self) {
 			self->cpbody->v.y = normal.y * 50.0;
 			
 			//Make sure the bug is close enough to spawn point 
-			if (cpvnear(self->cpbody->p, self->spawnpos, 1))
+			if (cpvnear(self->cpbody->p, self->spawnpos, 1)) {
 				self->cpbody->p = self->spawnpos;
+				self->cpbody->v = cpvzero;
+			}
+				
 
 		}
 		else {
 			self->state = ES_Idle;
-			self->cpbody->v = cpvzero;
-			//slog("Returned home");
+			slog("Returned home");
 		}
 			
 	}

@@ -89,6 +89,11 @@ typedef struct Entity_S {
 	int(*damage)(struct Entity_S *attacker, int amount, struct Entity_S *inflicted);/**<when this entity takes damage*/
 	void(*free)(struct Entity_S *self); /**<free entity from game*/
 
+	/*game specific data*/
+	TextLine    targetLevel;
+	TextLine    targetEntity;
+	Uint32      targetId;
+
 	//RPG stuff and stat stuff
 	RpgElements rpg;
 
