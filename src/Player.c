@@ -343,12 +343,13 @@ void player_think(Entity *self) {
 void player_update(Entity *self) {
 
 	if (self->cooldown > 0) {
-		self->cooldown -= 0.025;
+		self->cooldown -= 0.015;
 	}
 		
 
 	if (self->iframes > 0) {
-		self->iframes -= 1;
+		self->iframes -= 0.0000001;
+		slog("iframes: %i", self->iframes);
 		if (self->iframes == 0)
 			slog("CAN BE ATTACKED AGAIN");
 	}

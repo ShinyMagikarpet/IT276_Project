@@ -487,4 +487,25 @@ Element *gf2d_window_get_element_by_id(Window *win, int id)
 	return NULL;
 }
 
+void transition_window_to_black() {
+	
+	Window *win = gf2d_window_load("config/transition_window.cfg");
+
+	int alpha = 0;
+	for (int i = 0; i < 45; i++) {
+		alpha += 255 / 45;
+		if (alpha > 255)
+			alpha = 255;
+		win->color = vector4d(0, 0, 0, alpha);
+		slog("alpha: %i", alpha);
+		gf2d_windows_update_all();
+		level_draw();
+		gf2d_windows_draw_all();
+		gf2d_grahics_next_frame();
+
+
+	}
+
+}
+
 /*eol@eof*/

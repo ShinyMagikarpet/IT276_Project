@@ -58,7 +58,7 @@ cpBool player_touch_monster_begin(cpArbiter *arb, cpSpace *space, void *data) {
 	//Handles damage and invincibility frames here
 	if (player->iframes <= 0) {
 		player->rpg.stats.hp_current -= 1;
-		player->iframes = 120;
+		player->iframes = 60;
 	}
 
 	if (player->rpg.stats.hp_current == 0) {
