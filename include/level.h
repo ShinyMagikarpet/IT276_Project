@@ -26,6 +26,7 @@ typedef struct
 	int        *tileMap;            /**<tile data*/
 	SJson      *spawnList;
 	int			*framesperline;		/**<how many tiles per line in set*/
+	Vector2D	backgroundSize;		/**<size of background image*/
 }LevelInfo;
 
 /**

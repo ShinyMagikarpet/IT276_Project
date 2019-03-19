@@ -1,7 +1,10 @@
 #include "gf2d_cpSpace.h"
 #include "gf2d_graphics.h"
 #include "simple_logger.h"
-#include "gf2d_entity.h"
+#include "level.h"
+#include "gf2d_windows.h"
+#include "gf2d_entity_common.h"
+#include "Player.h"
 
 cpSpace* gf2d_cpSpace_init(void) {
 
@@ -24,6 +27,9 @@ cpSpace* gf2d_cpSpace_init(void) {
 	cpCollisionHandler *monster_to_monster_handler = cpSpaceAddCollisionHandler(newSpace, MONSTER_TYPE, MONSTER_TYPE);
 	monster_to_monster_handler->beginFunc = (cpCollisionBeginFunc)monster_touch_monster_begin;
 
+	//Handles Collision between player and shapes meant for level transition
+	cpCollisionHandler *player_to_transition_handler = cpSpaceAddCollisionHandler(newSpace, PLAYER_TYPE, TRANSITION_TYPE);
+	player_to_transition_handler->beginFunc = (cpCollisionBeginFunc)player_touch_transition_begin;
 	return newSpace;
 
 }
@@ -97,6 +103,7 @@ void player_touch_monster_postsolve(cpArbiter *arb, cpSpace *space, void *data) 
 		//self->rpg.xp += inflicted->rpg.xp;
 		gf2d_entity_free_physics(inflicted);
 		gf2d_entity_free(inflicted);
+		//cpSpaceAddPostStepCallback(space, (cpPostStepFunc)post_step_remove, NULL, NULL);
 	}
 }
 
@@ -111,11 +118,28 @@ void player_touch_monster_separate(cpArbiter *arb, cpSpace *space, void *data) {
 }
 
 
-
-
 cpBool monster_touch_monster_begin(cpArbiter *arb, cpSpace *space, void *data) {
 
 	return cpFalse;
+}
+
+
+void player_touch_transition_begin(cpArbiter *arb, cpSpace *space, void *data) {
+	
+	slog("Transition Time!!!");
+	CP_ARBITER_GET_BODIES(arb, playerbody, transitioner);
+	CP_ARBITER_GET_SHAPES(arb, playershape, transitionershape);
+	Entity *player = (Entity *)playerbody->userData;
+	Entity *other = (Entity *)transitioner->userData;
+
+	if (!player)return;
+	if (!other)return;
+
+	cpSpaceAddPostStepCallback(space, (cpPostStepFunc)post_step_remove, transitionershape, NULL);
+	transition_window_to_black();
+		
+	
+	
 }
 
 void setup_boundaries(cpSpace *space) {
@@ -140,6 +164,27 @@ void setup_boundaries(cpSpace *space) {
 	groundshape->type = STATIC_TYPE;
 	groundshape->u = 1;
 	cpSpaceAddShape(space, groundshape);
+
+}
+
+void post_step_remove(cpSpace *space, cpShape *shape, void *data) {
+	TextLine targetLevel, targetEntity;
+	Uint32 targetId;
+	Entity *player = player_get();
+	Entity *other = (Entity *)shape->userData;
+	if (!other)return;
+	if (!player)return;
+
+	gf2d_line_cpy(targetLevel, other->targetLevel);
+	gf2d_line_cpy(targetEntity, other->targetEntity);
+	targetId = other->targetId;
+
+	entity_clear_all_but_player();
+	gf2d_entity_free_physics(player);
+	player->free(player);
+
+	level_transition(targetLevel, targetEntity, targetId);
+
 
 }
 

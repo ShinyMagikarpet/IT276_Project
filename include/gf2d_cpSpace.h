@@ -62,4 +62,11 @@ void player_touch_monster_separate(cpArbiter *arb, cpSpace *space, void *data);
 */
 cpBool monster_touch_monster_begin(cpArbiter *arb, cpSpace *space, void *data);
 
+/**
+* @brief Function to be called after player touches transition
+*/
+void player_touch_transition_begin(cpArbiter *arb, cpSpace *space, void *data);
+
+void post_step_remove(cpSpace *space, cpShape *shape, void *data);
+
 

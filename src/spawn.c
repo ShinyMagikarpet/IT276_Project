@@ -4,6 +4,7 @@
 #include "Bug.h"
 #include "bug_hive.h"
 #include "simple_logger.h"
+#include "house.h"
 
 static Spawn spawnlist[] =
 {
@@ -18,6 +19,10 @@ static Spawn spawnlist[] =
 	{
 		"bug_hive_start",
 		bug_hive_spawn
+	},
+	{
+		"house",
+		house_spawn
 	},
 	{0}
 };

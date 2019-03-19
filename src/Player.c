@@ -4,11 +4,13 @@
 #include "camera.h"
 #include "simple_json.h"
 #include "gf2d_entity_common.h"
+#include <SDL_mixer.h>
 
 
 static Entity *player = NULL;
 cpFloat moveX;
 cpFloat moveY;
+cpBool musicpause = cpFalse;
 
 void player_think(Entity *self);
 int player_touch(Entity *self);
@@ -16,6 +18,7 @@ void player_update(Entity *self);
 void player_update_velocity(cpBody *body, cpVect gravity, cpFloat damping, cpFloat dt);
 int cpTouch_player(cpBody *self, cpBody *other);
 int player_damage(Entity *attacker, int damage, Entity *inflicted);
+void player_free(Entity *self);
 
 Entity *player_new(cpVect position, cpSpace *space) {
 
@@ -25,17 +28,18 @@ Entity *player_new(cpVect position, cpSpace *space) {
 		slog("failed to allocate new player");
 		return NULL;
 	}
-
+	
 	//Chipmunk physics here
 	player->cpbody = cpSpaceAddBody(space, cpBodyNew(5, INFINITY));
 	player->cpbody->p = position;
 	player->cpbody->userData = player;
 	player->cpbody->velocity_func = player_update_velocity;
-	player->cpshape = cpSpaceAddShape(space, cpCircleShapeNew(player->cpbody, 16, cpv(32, 32)));
+	player->cpshape = cpSpaceAddShape(space, cpCircleShapeNew(player->cpbody, 15, cpv(32, 32)));
+	player->cpshape->userData = player;
 	cpShapeSetCollisionType(player->cpshape, PLAYER_TYPE);
 	
 	//Debug for shape. otherwise useless
-	player->shape = gf2d_shape_circle(32, 32, 16);
+	player->shape = gf2d_shape_circle(32, 32, 15);
 	//gf2d stuff
 	player->inuse = 1;
 	player->position = cpvector_to_gf2dvector(position);
@@ -63,12 +67,20 @@ Entity *player_new(cpVect position, cpSpace *space) {
 	player->touch = player_touch;
 	player->update = player_update;
 	player->damage = player_damage;
+	player->free = player_free;
 
 	return player;
 }
 
 Entity *player_get() {
 	return player;
+}
+
+void player_free(Entity *self) {
+	gf2d_entity_free(self);
+	//This variable still had memory address and was sending false positives throughout the code
+	//This makes sure that everything about player is nulled out!
+	player = NULL;
 }
 
 Entity *player_spawn(cpVect position, SJson *args, cpSpace *space)
@@ -149,7 +161,7 @@ void player_think(Entity *self) {
 	 moveY = 0;
 	 cpSegmentQueryInfo hit = { 0 };
 		 
-	
+	 if (!self)return;
 	////Need to fix walking animation to easily
 	////transition from idle to walking
 	 if (gf2d_input_command_held("walk_up")) {
@@ -303,6 +315,17 @@ void player_think(Entity *self) {
 		self->state = ES_Idle;
 	}
 
+	if (gf2d_input_command_pressed("mute")) {
+		if (musicpause == 0) {
+			Mix_PauseMusic();
+			musicpause = cpTrue;
+		}
+		else {
+			Mix_ResumeMusic();
+			musicpause = cpFalse;
+		}
+	}
+
 	if (self->actor.at == ART_END && self->state == ES_Attack) {
 		switch (self->dir) {
 		case ED_Down:
@@ -323,11 +346,25 @@ void player_think(Entity *self) {
 		self->state = ES_Idle;
 	}
 
+	if (gf2d_input_command_pressed("case")) {
+		//gf2d_entity_free_physics(self);
+		//self->inuse = 0;
+		
+
+		cpSpaceAddPostStepCallback(self->cpbody->space, (cpPostStepFunc)post_step_remove, self->cpshape, NULL);
+		//gf2d_entity_free(self);
+		//player = NULL;
+		//name_all_entity();
+		return;
+	}
+
 	//DEBUG
 	const Uint8 * keys;
 	keys = SDL_GetKeyboardState(NULL);
 	if (keys[SDL_SCANCODE_1]) {
-		slog("XP: %i", self->rpg.xp);
+		//slog("XP: %i", self->rpg.xp);
+		entity_clear_all_but_player();
+		
 	}
 	if (keys[SDL_SCANCODE_2]) {
 		slog("Level: %i", self->rpg.level);
@@ -343,6 +380,7 @@ void player_think(Entity *self) {
 
 void player_update(Entity *self) {
 
+	if (!self)return;
 	if (self->cooldown > 0) {
 		self->cooldown -= 0.015;
 	}
@@ -350,7 +388,6 @@ void player_update(Entity *self) {
 
 	if (self->iframes > 0.0) {
 		self->iframes -= 0.01;
-		slog("iframes: %f", self->iframes);
 		if (self->iframes == 0.0)
 			slog("CAN BE ATTACKED AGAIN");
 	}

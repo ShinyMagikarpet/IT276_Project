@@ -54,18 +54,20 @@ Entity *bug_spawn(cpVect position, SJson *args, cpSpace *space)
 
 
 void bug_think(Entity *self) {
-
+	float dirX, dirY;
 	Entity *player = player_get();
-
+	
+	
 	if (player) {
-		
-		//Get distance between player and bug
-		float dirX = player->cpbody->p.x - self->cpbody->p.x;
-		float dirY = player->cpbody->p.y - self->cpbody->p.y;
 
-		//Normalize
-		cpVect normal = cpvnormalize(cpv(dirX, dirY));
 		if (cpvnear(cpBodyGetPosition(self->cpbody), cpBodyGetPosition(player->cpbody), 200)) {
+
+			//Get distance between player and bug
+			dirX = player->cpbody->p.x - self->cpbody->p.x;
+			dirY = player->cpbody->p.y - self->cpbody->p.y;
+
+			//Normalize
+			cpVect normal = cpvnormalize(cpv(dirX, dirY));
 
 			self->state = ES_Walk;
 
@@ -74,10 +76,10 @@ void bug_think(Entity *self) {
 			else
 				self->flip.x = 0;
 			self->cpbody->v.x = normal.x * 50.0;
-			self->cpbody->v.y = normal.y * 50.0; 
+			self->cpbody->v.y = normal.y * 50.0;
 
 		}
-		else if(self->cpbody->p.x != self->spawnpos.x || self->cpbody->p.y != self->spawnpos.y){
+		else if (self->cpbody->p.x != self->spawnpos.x || self->cpbody->p.y != self->spawnpos.y) {
 
 			self->state = ES_Walk;
 
@@ -94,21 +96,25 @@ void bug_think(Entity *self) {
 				self->flip.x = 0;
 			self->cpbody->v.x = normal.x * 50.0;
 			self->cpbody->v.y = normal.y * 50.0;
-			
+
 			//Make sure the bug is close enough to spawn point 
 			if (cpvnear(self->cpbody->p, self->spawnpos, 1)) {
 				self->cpbody->p = self->spawnpos;
 				self->cpbody->v = cpvzero;
 			}
-				
+
 
 		}
 		else {
 			self->state = ES_Idle;
-			slog("Returned home");
 		}
-			
+
 	}
+		
+		
+		
+			
+	
 		
 
 	self->position = cpvector_to_gf2dvector(cpBodyGetPosition(self->cpbody));

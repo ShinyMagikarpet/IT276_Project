@@ -59,8 +59,10 @@ void bug_hive_spawn_bug(Entity *self) {
 }
 
 void bug_hive_update(Entity *self) {
+	Entity *player = player_get();
 
-	if (cpvnear(cpBodyGetPosition(self->cpbody), cpBodyGetPosition(player_get()->cpbody), 250) && self->cooldown == 0) {
+	if (player == NULL)return;
+	if (cpvnear(cpBodyGetPosition(self->cpbody), cpBodyGetPosition(player->cpbody), 250) && self->cooldown == 0) {
 
 		bug_hive_spawn_bug(self);
 		self->cooldown = 10000;

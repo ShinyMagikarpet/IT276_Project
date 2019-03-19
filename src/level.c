@@ -9,6 +9,7 @@
 #include "gf2d_config.h"
 #include <stdio.h>
 #include <SDL_mixer.h>
+#include "gf2d_windows.h"
 
 typedef struct
 {
@@ -31,10 +32,11 @@ void level_clear()
 
 	
 	//gf2d_space_free(gamelevel.space);
-	cpSpaceFree(gamelevel.space);
+	//cpSpaceFree(gamelevel.space);
 	gf2d_sprite_free(gamelevel.backgroundImage);
 	gf2d_sprite_free(gamelevel.tileSet);
 	gf2d_sprite_free(gamelevel.tileLayer);
+	
 	if (gamelevel.backgroundMusic)
 	{
 		Mix_FreeMusic(gamelevel.backgroundMusic);
@@ -164,6 +166,10 @@ LevelInfo *level_info_load(char *filename)
 
 	gf2d_line_cpy(linfo->backgroundImage, sj_get_string_value(sj_object_get_value(world, "backgroundImage")));
 
+	//Used to get size of background image for better camera management
+	sj_value_as_vector2d(sj_object_get_value(world, "backgroundSize"), &linfo->backgroundSize);
+	slog("background size: %f, %f", linfo->backgroundSize.x, linfo->backgroundSize.y);
+
 	gf2d_line_cpy(linfo->backgroundMusic, sj_get_string_value(sj_object_get_value(world, "backgroundMusic")));
 	gf2d_line_cpy(linfo->tileSet, sj_get_string_value(sj_object_get_value(world, "tileSet")));
 
@@ -279,13 +285,29 @@ void level_make_tile_layer(LevelInfo *linfo)
 
 void level_build_tile_space(LevelInfo *linfo)
 {
+
 	int i, j;
+	cpBody *map_body = cpBodyNewStatic();
+	cpBB bb1;// = cpBBNew(128, 32, 160, 0); // l is where left side located, bottom is where bottom is located, etc.
+	cpShape *shape;// = cpSpaceAddShape(gamelevel.space, cpBoxShapeNew2(map_body, bb1, 1));;
 	for (j = 0; j < linfo->tileMapSize.y; j++)
 	{
 		for (i = 0; i < linfo->tileMapSize.x; i++)
 		{
 			if (!linfo->tileMap[j * (Uint32)linfo->tileMapSize.x + i])continue;
-			gf2d_space_add_static_shape(gamelevel.space, gf2d_shape_rect(i * linfo->tileSize.x, j * linfo->tileSize.y, linfo->tileSize.x, linfo->tileSize.y));
+			//slog("Tile information: %f, %f, %f, %f", i * linfo->tileSize.x, j * linfo->tileSize.y, linfo->tileSize.x, linfo->tileSize.y);
+			bb1 = cpBBNew(i * linfo->tileSize.x, j * linfo->tileSize.y, (linfo->tileSize.x * i) + 32, (linfo->tileSize.y * j) + 32);
+			shape = cpBoxShapeNew2(map_body, bb1, 1);
+
+			//2 is the number for transition tiles where as 1 is plain static
+			if (linfo->tileMap[j * (Uint32)linfo->tileMapSize.x + i] == 2) {
+				shape->type = TRANSITION_TYPE;
+			}
+			cpSpaceAddShape(gamelevel.space, shape);
+			//gf2d_space_add_static_shape(gamelevel.space, gf2d_shape_rect(i * linfo->tileSize.x, j * linfo->tileSize.y, linfo->tileSize.x, linfo->tileSize.y));
+			//(gamelevel.space, gf2d_shape_rect(i * linfo->tileSize.x, j * linfo->tileSize.y, linfo->tileSize.x, linfo->tileSize.y));
+			//TODO: BUILD TILE COLLISION HERE
+			
 		}
 	}
 }
@@ -353,8 +375,6 @@ void level_init(LevelInfo *linfo, Uint8 space)
 	}
 
 
-	level_clear();
-
 	level_make_space();
 	gamelevel.backgroundImage = gf2d_sprite_load_image(linfo->backgroundImage);
 
@@ -370,16 +390,19 @@ void level_init(LevelInfo *linfo, Uint8 space)
 
 	level_make_tile_layer(linfo);
 
+	//slog("background image size X: %f", linfo->backgroundSize.x);
 	//Bounds of camera = background/tilemap size
-	camera_set_bounds(0, 0, 1600, 1600);
+	camera_set_bounds(0, 0, linfo->backgroundSize.x, linfo->backgroundSize.y);
 
 	if (space)
 	{
 		//level_make_space();
-		//level_build_tile_space(linfo);
+		level_build_tile_space(linfo);
 	}
 	level_spawn_entities(linfo->spawnList);
 
+	transition_window_to_normal();
+	
 
 	camera_set_dimensions(0, 0, SCREENWIDTH, SCREENHEIGHT);
 }
@@ -387,16 +410,14 @@ void level_init(LevelInfo *linfo, Uint8 space)
 void level_draw()
 {
 	Vector2D cam;
-	Entity *player = player_get();
+	Entity *player = player = player_get();
 	cam = camera_get_position();
 	gf2d_sprite_draw_image(gamelevel.backgroundImage, vector2d(-cam.x, -cam.y), vector2d(1,1));
 	//gf2d_sprite_draw_image(gamelevel.tileLayer, vector2d(-cam.x, -cam.y), vector2d(2, 2)); //Changed last one to be scale
 	gf2d_entity_draw_all();
 	gf2d_entity_draw_shape_all();
-	//gf2d_entity_draw(player_get());
+	if (!player)return;
 	camera_set_position(cpv(player->cpbody->p.x - (SCREENWIDTH / 2), player->cpbody->p.y - (SCREENHEIGHT / 2) ));
-
-
 
 	//if (gamelevel.space)gf2d_space_draw(gamelevel.space,vector2d(-cam.x,-cam.y));
 
@@ -405,11 +426,9 @@ void level_draw()
 void level_update()
 {
 
-	Entity *player = player_get();
+	//gf2d_entity_pre_sync_all();
 
-	gf2d_entity_pre_sync_all();
-
-	gf2d_entity_post_sync_all();
+	//gf2d_entity_post_sync_all();
 
 	gf2d_entity_think_all();
 
@@ -467,6 +486,32 @@ void level_add_entity(Entity *ent)
 	{
 		ent->body.touch = body_body_touch;
 	}
+}
+
+void level_transition(char *filename, const char *playerTarget, Uint32 targetId)
+{
+	Entity *target;
+	TextLine filepath;
+	TextLine targetname;
+	Uint32 id;
+	LevelInfo *linfo = NULL;
+	level_clear();
+	snprintf(filepath, GF2DLINELEN, "levels/%s", filename);
+	slog("%s", filepath);
+	gf2d_line_cpy(targetname, playerTarget);
+	id = targetId;
+
+	linfo = level_info_load(filepath);
+	if (!linfo)return;
+	level_init(linfo, 1);
+
+	target = gf2d_entity_get_by_name_id(targetname, id);
+	if (!target)
+	{
+		slog("expected target %s, %i not found", target, id);
+		return;
+	}
+	//player_set_position(cpv(target->position.x, target->position.y - 16));
 }
 
 /*eol@eof*/

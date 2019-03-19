@@ -1,8 +1,8 @@
-sprite: images/beehive.png
-frameWidth: 800
-frameHeight: 530
+sprite: images/generic-rpg-house-inn.png
+frameWidth: 70
+frameHeight: 88
 framesPerLine: 1
-scale: 0.2, 0.2
+scale: 2, 2
 
 action: idle
 startFrame: 0

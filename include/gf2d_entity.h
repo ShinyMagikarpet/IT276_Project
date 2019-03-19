@@ -157,5 +157,7 @@ Entity *gf2d_entity_get_by_name_id(const char *name, Uint32 id);
 
 Entity *gf2d_entity_iterate(Entity *start);
 
+void name_all_entity();
+
 #endif
 

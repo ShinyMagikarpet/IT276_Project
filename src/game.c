@@ -28,7 +28,6 @@ int main(int argc, char * argv[])
 
     const Uint8 * keys;
     Sprite *sprite;
-	Entity *player, *bug;
     int mx,my;
     float mf = 0;
     Sprite *mouse;
@@ -61,10 +60,9 @@ int main(int argc, char * argv[])
 	gf2d_input_init("config/input.cfg");
 
 	//Deprecated as it is now being done in level
-	//player = player_new(cpv(200, 200), space);
-	//bug = bug_new(cpv(550, 360), space);
 
 	linfo = level_info_load("levels/new_test..json");
+	//linfo = level_info_load("levels/home_level.json");
 	level_init(linfo, 1);
 
 	window = gf2d_window_load("config/testwindow.cfg");
@@ -73,6 +71,11 @@ int main(int argc, char * argv[])
     //sprite = gf2d_sprite_load_image("images/menu3.png");
     //mouse = gf2d_sprite_load_all("images/pointer.png",32,32,16,0);
 
+	cpSpace *space = cpSpaceNew();
+	cpBody *staticbody = cpBodyNewStatic();
+
+	cpBB bb1 = cpBBNew(32, 32, 32, 32);
+	cpShape *shape = cpSpaceAddShape(space, cpBoxShapeNew2(staticbody, bb1, 1));
     /*main game loop*/
     while(!done)
     {
@@ -93,8 +96,9 @@ int main(int argc, char * argv[])
          //gf2d_sprite_draw_image(sprite,vector2d(0,0));
 
 		//Update and draw level	
-		level_update();
+
 		level_draw();
+		level_update();
 		//Draw Entity
 		//gf2d_entity_draw_all();
 		gf2d_windows_update_all();
@@ -112,6 +116,7 @@ int main(int argc, char * argv[])
                 NULL,
                 &mouseColor,
                 (int)mf);*/
+		
         gf2d_grahics_next_frame();// render current draw frame and skip to the next frame
 
 		//PAUSE WHATEVER NEEDS TO BE STOPPED HERE
@@ -157,7 +162,6 @@ int main(int argc, char * argv[])
     }
     slog("---==== END ====---");
 	level_info_free(linfo);
-
 	level_clear();
 	gf2d_entity_free_all();
 	gf2d_window_free_all();

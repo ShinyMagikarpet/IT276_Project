@@ -230,6 +230,7 @@ void change_text_based_on_name(LabelElement *label) {
 	Entity *player = player_get();
 
 	if (!label)return;
+	if (!player)return;
 	if (strcmp(label->name, "HEALTH") == 0) {
 		playerStat = player->rpg.stats.hp_current;
 		snprintf(buffer, sizeof(buffer), "HP: %i/%i", playerStat, player->rpg.stats.hp_max);

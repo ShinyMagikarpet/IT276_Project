@@ -123,8 +123,12 @@ Element *gf2d_window_get_element_by_id(Window *win, int id);
 
 /**
  * @brief transition a black window
- * @param win the transition window
  */
 void transition_window_to_black();
+
+/**
+ * @brief transition a window to normal
+ */
+void transition_window_to_normal();
 
 #endif

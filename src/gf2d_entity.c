@@ -2,6 +2,7 @@
 #include "simple_logger.h"
 #include "gf2d_sprite.h"
 #include "gf2d_entity.h"
+#include "Player.h"
 
 typedef struct {
 
@@ -94,7 +95,20 @@ void gf2d_entity_free(Entity *self)
 	{
 		gf2d_sprite_free(self->sprite);
 	}
+
+	
+	//gf2d_actor_free(&self->actor);
+	
+	//Why does this have to be Entity *???
+	
+	/*memset(self, 0, sizeof(Entity));
+	if (self == player_get())
+		self = NULL;*/
 	memset(self, 0, sizeof(Entity));
+	
+	
+	
+	 
 }
 
 void gf2d_entity_free_physics(Entity *self) {

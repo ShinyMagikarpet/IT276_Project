@@ -5,28 +5,58 @@ Entity *house_new(Vector2D position,cpSpace *space, const char *nextLevel, const
 
 Entity *house_new(cpVect position, cpSpace *space, const char *nextLevel, const char *target, Uint32 id) {
 	Entity *house = gf2d_entity_new();
-
+	
 	//Chipmunk Physics
 	house->cpbody = cpBodyNewStatic();
-	cpBodySetPosition(house->cpbody, position);
 	house->cpbody->userData = house;
-	house->cpshape = cpCircleShapeNew(house->cpbody, 64, cpv(68, 64));
 	cpSpaceAddBody(space, house->cpbody);
-	cpSpaceAddShape(space, house->cpshape);
-	house->cpshape->type = MONSTER_TYPE;
 
+
+	//House borders
+
+	//Left side
+	house->cpshape = cpSegmentShapeNew(house->cpbody, cpv(position.x + 10, position.y + 50), cpv(position.x + 10, position.y + 176), 1);
+	cpSpaceAddShape(space, house->cpshape);
+	
+	//Bottom left
+	house->cpshape = cpSegmentShapeNew(house->cpbody, cpv(position.x + 10, position.y + 176), cpv(position.x + 50, position.y + 176), 1);
+	cpSpaceAddShape(space, house->cpshape);
+	
+	//Top
+	house->cpshape = cpSegmentShapeNew(house->cpbody, cpv(position.x + 10, position.y + 50), cpv(position.x + 130, position.y + 50), 1);
+	cpSpaceAddShape(space, house->cpshape);
+	
+	//Right side
+	house->cpshape = cpSegmentShapeNew(house->cpbody, cpv(position.x + 130, position.y + 50), cpv(position.x + 130, position.y + 176), 1);
+	cpSpaceAddShape(space, house->cpshape);
+
+	//Bottom Right
+	house->cpshape = cpSegmentShapeNew(house->cpbody, cpv(position.x + 130, position.y + 176), cpv(position.x + 90, position.y + 176), 1);
+	cpSpaceAddShape(space, house->cpshape);
+
+	//Door transition
+	house->cpshape = cpSegmentShapeNew(house->cpbody, cpv(position.x + 50, position.y + 150), cpv(position.x + 90, position.y + 150), 1);
+	house->cpshape->type = TRANSITION_TYPE;
+	house->cpshape->userData = house;
+	cpSpaceAddShape(space, house->cpshape);
+	
+
+
+	//house->cpshape->type = TRANSITION_TYPE;
 	//Render
 	vector2d_copy(house->position, position);
-	gf2d_actor_load(&house->actor, "actor/house.actor");
+	gf2d_actor_load(&house->actor, "actors/house.actor");
 	gf2d_actor_set_action(&house->actor, "idle");
 	vector2d_copy(house->scale, house->actor.al->scale);
-
+	
+	//house->shape = gf2d_shape_rect(0, 0, 140, 176);
 	//Info
-	gf2d_line_cpy(house->name, "Home");
+	gf2d_line_cpy(house->name, "house");
 	house->targetId = id;
+	gf2d_line_cpy(house->targetLevel, nextLevel);
+	gf2d_line_cpy(house->targetEntity, target);
 
 	//TODO: FINISH HOUSE ENTITY AND BE ABLE TO LEVEL TRANSITION
-
 	return house;
 }
 

@@ -490,11 +490,11 @@ Element *gf2d_window_get_element_by_id(Window *win, int id)
 void transition_window_to_black() {
 	int i;
 	Window *win = gf2d_window_load("config/transition_window.cfg");
-	int alpha = 0;
+	float alpha = 0;
 	for (i = 0; i < 80; i++) {
-		alpha += 255 / 80;
-		if (alpha > 255)
-			alpha = 255;
+		alpha += 255.0 / 80.0;
+		if (alpha > 255.0)
+			alpha = 255.0;
 		win->color = vector4d(0, 0, 0, alpha);
 		level_draw();
 		gf2d_windows_draw_all();
@@ -502,6 +502,25 @@ void transition_window_to_black() {
 
 	}
 
+	gf2d_window_free(win);
+
+}
+
+void transition_window_to_normal() {
+	int i;
+	Window *win = gf2d_window_load("config/transition_window.cfg");
+	int alpha = 255;
+	for (i = 0; i < 80; i++) {
+		alpha -= 255 / 80;
+		if (alpha < 0)
+			alpha = 0;
+		win->color = vector4d(0, 0, 0, alpha);
+		level_draw();
+		gf2d_windows_draw_all();
+		gf2d_grahics_next_frame();
+
+	}
+	gf2d_window_free(win);
 }
 
 /*eol@eof*/
