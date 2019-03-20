@@ -1,21 +1,15 @@
 #include <SDL.h>
-#include <chipmunk.h>
-#include <chipmunk_types.h>
 #include "gf2d_graphics.h"
 #include "gf2d_sprite.h"
 #include "simple_logger.h"
-#include "Player.h"
-#include "Bug.h"
 #include "gf2d_actor.h"
 #include "gf2d_input.h"
-#include <chipmunk_private.h>
 #include <SDL_ttf.h>
 #include "level.h"
-#include "gf2d_cpSpace.h"
 #include "gf2d_draw.h"
-#include "camera.h"
 #include "gf2d_windows.h"
 #include "gf2d_elements.h"
+#include "gf2d_transition.h"
 
 static int done = 0;
 static int pause = 0;
@@ -58,6 +52,8 @@ int main(int argc, char * argv[])
 	gf2d_action_list_init(128);
 	gf2d_entity_system_init(1024);
 	gf2d_input_init("config/input.cfg");
+	gf2d_transition_system_init(8);
+	
 
 	//Deprecated as it is now being done in level
 
@@ -163,7 +159,6 @@ int main(int argc, char * argv[])
     slog("---==== END ====---");
 	level_info_free(linfo);
 	level_clear();
-	gf2d_entity_free_all();
 	gf2d_window_free_all();
     return 0;
 }

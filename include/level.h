@@ -10,8 +10,10 @@
 
 /**
  * @Purpose game specific level code
- * This game is going to be a tile based side scrolling 2d platformer
+ * This game is going to be a 2d action RPG
  */
+
+
 
  /**
  * @brief The level structure holds data for a given game level.
@@ -27,6 +29,7 @@ typedef struct
 	SJson      *spawnList;
 	int			*framesperline;		/**<how many tiles per line in set*/
 	Vector2D	backgroundSize;		/**<size of background image*/
+	SJson		*transitionList;			/**<data for level transitions*/
 }LevelInfo;
 
 /**
@@ -107,10 +110,15 @@ void level_remove_entity(Entity *ent);
 void level_make_space();
 
 /**
+ * @brief free the collision space
+ */
+void free_space();
+
+/**
  * @brief load up a new game level and move the player into it
  * @param
  */
 void level_transition(char *filename, const char *playerTarget, Uint32 targetId);
 
-
+void level_transition_data(SJson *transitionList, int value, cpShape *shape);
 #endif

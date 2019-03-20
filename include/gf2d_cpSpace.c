@@ -5,10 +5,13 @@
 #include "gf2d_windows.h"
 #include "gf2d_entity_common.h"
 #include "Player.h"
+#include "gf2d_transition.h"
+
+cpSpace *newSpace = NULL;
 
 cpSpace* gf2d_cpSpace_init(void) {
 
-	cpSpace *newSpace = cpSpaceNew();
+	newSpace = cpSpaceNew();
 
 	setup_boundaries(newSpace);
 
@@ -32,6 +35,10 @@ cpSpace* gf2d_cpSpace_init(void) {
 	player_to_transition_handler->beginFunc = (cpCollisionBeginFunc)player_touch_transition_begin;
 	return newSpace;
 
+}
+
+cpSpace *get_space() {
+	return newSpace;
 }
 
 void *gf2d_cpSpace_update(cpSpace *space) {
@@ -101,7 +108,7 @@ void player_touch_monster_postsolve(cpArbiter *arb, cpSpace *space, void *data) 
 	
 	if (inflicted) {
 		//self->rpg.xp += inflicted->rpg.xp;
-		gf2d_entity_free_physics(inflicted);
+		//gf2d_entity_free_physics(inflicted);
 		gf2d_entity_free(inflicted);
 		//cpSpaceAddPostStepCallback(space, (cpPostStepFunc)post_step_remove, NULL, NULL);
 	}
@@ -129,13 +136,11 @@ void player_touch_transition_begin(cpArbiter *arb, cpSpace *space, void *data) {
 	slog("Transition Time!!!");
 	CP_ARBITER_GET_BODIES(arb, playerbody, transitioner);
 	CP_ARBITER_GET_SHAPES(arb, playershape, transitionershape);
-	Entity *player = (Entity *)playerbody->userData;
-	Entity *other = (Entity *)transitioner->userData;
-
-	if (!player)return;
-	if (!other)return;
+	
+	Transition *transitiondata = (Transition *)transitionershape->userData;
 
 	cpSpaceAddPostStepCallback(space, (cpPostStepFunc)post_step_remove, transitionershape, NULL);
+	
 	transition_window_to_black();
 		
 	
@@ -168,22 +173,21 @@ void setup_boundaries(cpSpace *space) {
 }
 
 void post_step_remove(cpSpace *space, cpShape *shape, void *data) {
-	TextLine targetLevel, targetEntity;
+	TextLine targetLevel;  //, targetEntity;
 	Uint32 targetId;
 	Entity *player = player_get();
-	Entity *other = (Entity *)shape->userData;
-	if (!other)return;
+	Transition *transitiondata = (Transition *)shape->userData;
+	if (!transitiondata)return;
 	if (!player)return;
-
-	gf2d_line_cpy(targetLevel, other->targetLevel);
-	gf2d_line_cpy(targetEntity, other->targetEntity);
-	targetId = other->targetId;
+	
+	gf2d_line_cpy(targetLevel, transitiondata->targetLevel);
+	//gf2d_line_cpy(targetEntity, "house");
+	targetId = 1;
 
 	entity_clear_all_but_player();
-	gf2d_entity_free_physics(player);
 	player->free(player);
-
-	level_transition(targetLevel, targetEntity, targetId);
+	//cpSpaceFree(space);
+	level_transition(targetLevel, NULL, targetId);
 
 
 }

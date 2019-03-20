@@ -5,12 +5,14 @@
 #include "simple_json.h"
 #include "gf2d_entity_common.h"
 #include <SDL_mixer.h>
+#include "gf2d_transition.h"
 
 
 static Entity *player = NULL;
-cpFloat moveX;
-cpFloat moveY;
-cpBool musicpause = cpFalse;
+static RpgElements rpg;
+static cpFloat moveX;
+static cpFloat moveY;
+static cpBool musicpause = cpFalse;
 
 void player_think(Entity *self);
 int player_touch(Entity *self);
@@ -28,7 +30,9 @@ Entity *player_new(cpVect position, cpSpace *space) {
 		slog("failed to allocate new player");
 		return NULL;
 	}
-	
+
+
+
 	//Chipmunk physics here
 	player->cpbody = cpSpaceAddBody(space, cpBodyNew(5, INFINITY));
 	player->cpbody->p = position;
@@ -54,9 +58,14 @@ Entity *player_new(cpVect position, cpSpace *space) {
 
 
 	//RPG stuff
-	player->rpg.level = 1;
-	player->rpg.xp = 0;
-	gf2d_rpg_set_stats(player, 10, 1, 1, 3);
+	if (rpg.level <= 0) {
+		player->rpg.level = 1;
+		player->rpg.xp = 0;
+		gf2d_rpg_set_stats(player, 10, 1, 1, 3);
+	}
+	else {
+		player->rpg = rpg;
+	}
 
 	player->iframes = 0;
 	player->attack_rate = 10.0f / player->rpg.stats.agil;
@@ -77,6 +86,8 @@ Entity *player_get() {
 }
 
 void player_free(Entity *self) {
+
+	rpg = player->rpg;
 	gf2d_entity_free(self);
 	//This variable still had memory address and was sending false positives throughout the code
 	//This makes sure that everything about player is nulled out!
@@ -349,9 +360,9 @@ void player_think(Entity *self) {
 	if (gf2d_input_command_pressed("case")) {
 		//gf2d_entity_free_physics(self);
 		//self->inuse = 0;
-		
-
-		cpSpaceAddPostStepCallback(self->cpbody->space, (cpPostStepFunc)post_step_remove, self->cpshape, NULL);
+		name_all_transitions();
+		//name_all_entity();
+		//cpSpaceAddPostStepCallback(self->cpbody->space, (cpPostStepFunc)post_step_remove, self->cpshape, NULL);
 		//gf2d_entity_free(self);
 		//player = NULL;
 		//name_all_entity();

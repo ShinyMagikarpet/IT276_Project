@@ -3,7 +3,7 @@
 #include "gf2d_graphics.h"
 #include <chipmunk_private.h>
 
-Entity *bug = NULL;
+
 
 void bug_think(Entity *self);
 void bug_update(Entity *self);
@@ -11,6 +11,7 @@ void bug_update(Entity *self);
 
 Entity *bug_new(cpVect position, cpSpace *space) {
 
+	Entity *bug = NULL;
 	
 	bug = gf2d_entity_new();
 

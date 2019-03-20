@@ -4,12 +4,14 @@
 #include "gf2d_graphics.h"
 #include <chipmunk_private.h>
 
-Entity *bug_hive = NULL;
+
 
 void bug_hive_update(Entity *self);
 void bug_hive_think(Entity *self);
 
 Entity *bug_hive_new(cpVect position, cpSpace *space) {
+
+	Entity *bug_hive = NULL;
 
 	bug_hive = gf2d_entity_new();
 

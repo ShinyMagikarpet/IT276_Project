@@ -43,17 +43,7 @@ typedef struct{
 
 }RpgElements;
 
-typedef struct
-{
-	RpgElements rpg;
-	//Placeholder: Inventory
-	//Placeholder: Currently Equipped
-
-} Player_Persistant; /**<Keep info for player between levels*/
-
 typedef struct Entity_S {
-
-	Player_Persistant pers;
 
 	Uint8 inuse;
 	Uint32 id;

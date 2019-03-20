@@ -20,6 +20,11 @@
 cpSpace *gf2d_cpSpace_init(void);
 
 /**
+* @brief Get the current space
+*/
+cpSpace *get_space();
+
+/**
 * @brief Updates space
 * @param Chipmunk space
 */

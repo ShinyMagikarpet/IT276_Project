@@ -10,18 +10,18 @@
 #include <stdio.h>
 #include <SDL_mixer.h>
 #include "gf2d_windows.h"
+#include "gf2d_transition.h"
 
 typedef struct
 {
-
-
-	cpSpace     *space;
-
+	cpSpace    *space;
 	Sprite     *backgroundImage;
 	Sprite     *tileLayer;
 	Sprite     *tileSet;
 	Mix_Music  *backgroundMusic;
 }Level;
+
+
 
 static Level gamelevel = { 0 };
 
@@ -29,8 +29,6 @@ int *level_alloc_tilemap(int w, int h);
 
 void level_clear()
 {
-
-	
 	//gf2d_space_free(gamelevel.space);
 	//cpSpaceFree(gamelevel.space);
 	gf2d_sprite_free(gamelevel.backgroundImage);
@@ -188,6 +186,12 @@ LevelInfo *level_info_load(char *filename)
 	linfo->spawnList = sj_copy(sj_object_get_value(world, "spawnList"));
 	int count = sj_array_get_count(linfo->spawnList);
 	slog("Spawn list count = %i", count);
+
+	//TODO stuff here
+	linfo->transitionList = sj_copy(sj_object_get_value(world, "transitionList"));
+	count = sj_array_get_count(linfo->transitionList);
+	slog("Transition list count = %i", count);
+
 	sj_free(json);
 	slog("loaded level info for %s", filename);
 	
@@ -199,6 +203,10 @@ LevelInfo *level_info_load(char *filename)
 void level_make_space()
 {
 	gamelevel.space = gf2d_cpSpace_init();
+}
+
+void free_space() {
+	cpSpaceFree(get_space());
 }
 
 
@@ -286,7 +294,7 @@ void level_make_tile_layer(LevelInfo *linfo)
 void level_build_tile_space(LevelInfo *linfo)
 {
 
-	int i, j;
+	int i, j, value;
 	cpBody *map_body = cpBodyNewStatic();
 	cpBB bb1;// = cpBBNew(128, 32, 160, 0); // l is where left side located, bottom is where bottom is located, etc.
 	cpShape *shape;// = cpSpaceAddShape(gamelevel.space, cpBoxShapeNew2(map_body, bb1, 1));;
@@ -298,10 +306,13 @@ void level_build_tile_space(LevelInfo *linfo)
 			//slog("Tile information: %f, %f, %f, %f", i * linfo->tileSize.x, j * linfo->tileSize.y, linfo->tileSize.x, linfo->tileSize.y);
 			bb1 = cpBBNew(i * linfo->tileSize.x, j * linfo->tileSize.y, (linfo->tileSize.x * i) + 32, (linfo->tileSize.y * j) + 32);
 			shape = cpBoxShapeNew2(map_body, bb1, 1);
-
+			value = linfo->tileMap[j * (Uint32)linfo->tileMapSize.x + i];
 			//2 is the number for transition tiles where as 1 is plain static
-			if (linfo->tileMap[j * (Uint32)linfo->tileMapSize.x + i] == 2) {
+			if (value >= 2) {
 				shape->type = TRANSITION_TYPE;
+				level_transition_data(linfo->transitionList, value, shape);
+				Transition *transitiondata = (Transition *)shape->userData;
+				slog("transition data: %s", transitiondata->targetLevel);
 			}
 			cpSpaceAddShape(gamelevel.space, shape);
 			//gf2d_space_add_static_shape(gamelevel.space, gf2d_shape_rect(i * linfo->tileSize.x, j * linfo->tileSize.y, linfo->tileSize.x, linfo->tileSize.y));
@@ -366,6 +377,22 @@ void level_spawn_entities(SJson *spawnList)
 	}
 }
 
+void level_transition_data(SJson *transitionList, int value, cpShape *shape) {
+	int i = 0, count = 0;
+	SJson *item;
+	Transition *data;
+	data = gf2d_transition_new();
+	count = sj_array_get_count(transitionList);
+	for (i = 0; i < count; i++) {
+		item = sj_array_get_nth(transitionList, i);
+		if (!item)continue;
+		sj_get_integer_value(sj_object_get_value(item, "value"), &data->value);
+		gf2d_line_cpy(data->targetLevel, sj_get_string_value(sj_object_get_value(item, "targetLevel")));
+	}
+
+	shape->userData = gf2d_transition_get_by_value(data->value);
+	
+}
 
 void level_init(LevelInfo *linfo, Uint8 space)
 {
@@ -490,26 +517,26 @@ void level_add_entity(Entity *ent)
 
 void level_transition(char *filename, const char *playerTarget, Uint32 targetId)
 {
-	Entity *target;
+	//Entity *target;
 	TextLine filepath;
-	TextLine targetname;
+	//TextLine targetname;
 	Uint32 id;
 	LevelInfo *linfo = NULL;
 	level_clear();
 	snprintf(filepath, GF2DLINELEN, "levels/%s", filename);
 	slog("%s", filepath);
-	gf2d_line_cpy(targetname, playerTarget);
+	//gf2d_line_cpy(targetname, playerTarget);
 	id = targetId;
 
 	linfo = level_info_load(filepath);
 	if (!linfo)return;
 	level_init(linfo, 1);
 
-	target = gf2d_entity_get_by_name_id(targetname, id);
-	if (!target)
+	//target = gf2d_entity_get_by_name_id(targetname, id);
+	//if (!target)
 	{
-		slog("expected target %s, %i not found", target, id);
-		return;
+	//		slog("expected target %s, %i not found", target, id);
+	//		return;
 	}
 	//player_set_position(cpv(target->position.x, target->position.y - 16));
 }

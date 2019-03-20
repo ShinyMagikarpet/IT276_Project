@@ -96,19 +96,17 @@ void gf2d_entity_free(Entity *self)
 		gf2d_sprite_free(self->sprite);
 	}
 
-	
-	//gf2d_actor_free(&self->actor);
-	
+	if(!&self->actor)
+		gf2d_actor_free(&self->actor);
+
+	if(self->cpbody != NULL)
+		gf2d_entity_free_physics(self);
 	//Why does this have to be Entity *???
 	
 	/*memset(self, 0, sizeof(Entity));
 	if (self == player_get())
 		self = NULL;*/
 	memset(self, 0, sizeof(Entity));
-	
-	
-	
-	 
 }
 
 void gf2d_entity_free_physics(Entity *self) {
@@ -284,4 +282,16 @@ Entity *gf2d_entity_get_by_name_id(const char *name, Uint32 id)
 		}
 	}
 	return NULL;
+}
+
+void name_all_entity() {
+
+	int i;
+	for (i = 0; i < entityManager.maxEntities; i++)
+	{
+		if (entityManager.entityList[i].name) {
+			slog("Name is: %s", entityManager.entityList[i].name);
+		}
+	}
+
 }
