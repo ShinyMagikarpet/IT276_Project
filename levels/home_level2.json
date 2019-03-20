@@ -1,7 +1,7 @@
 {
   "world": {
-    "backgroundImage": "images/backgrounds/home.png",
-    "backgroundSize":  [768, 768],
+    "backgroundImage": "images/backgrounds/home2.png",
+    "backgroundSize": [ 768, 768 ],
     "backgroundMusic": "images/rpg-pack/soundtrack/RedCarpetWoodenFloor.mp3",
     "tileSet": "images/ClassicRPGTileset/ClassicRPG_Tileset0000.png",
     "tileSize": [ 32, 32 ],

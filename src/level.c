@@ -387,7 +387,7 @@ void level_transition_data(SJson *transitionList, int value, cpShape *shape) {
 	if (!data)return;
 	count = sj_array_get_count(transitionList);
 	for (i = 0; i < count; i++) {
-		item = sj_array_get_nth(transitionList, i);
+		item = sj_array_get_nth(transitionList, value - 2);
 		if (!item)continue;
 		sj_get_integer_value(sj_object_get_value(item, "value"), &data->value);
 		gf2d_line_cpy(data->targetLevel, sj_get_string_value(sj_object_get_value(item, "targetLevel")));
@@ -432,7 +432,7 @@ void level_init(LevelInfo *linfo, Uint8 space)
 	}
 	level_spawn_entities(linfo->spawnList);
 
-	transition_window_to_normal();
+	//transition_window_to_normal();
 	
 
 	camera_set_dimensions(0, 0, SCREENWIDTH, SCREENHEIGHT);

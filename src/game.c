@@ -10,6 +10,7 @@
 #include "gf2d_windows.h"
 #include "gf2d_elements.h"
 #include "gf2d_transition.h"
+#include "Player.h"
 
 static int done = 0;
 static int pause = 0;
@@ -53,11 +54,10 @@ int main(int argc, char * argv[])
 	gf2d_entity_system_init(1024);
 	gf2d_input_init("config/input.cfg");
 	gf2d_transition_system_init(8);
-	
 
-	//Deprecated as it is now being done in level
-
-	linfo = level_info_load("levels/new_test..json");
+	//linfo = level_info_load("levels/overworld_2.json");
+	//linfo = level_info_load("levels/overworld_1.json");
+	linfo = level_info_load("levels/home_level.json");
 	//linfo = level_info_load("levels/home_level.json");
 	level_init(linfo, 1);
 
@@ -120,9 +120,10 @@ int main(int argc, char * argv[])
 			
 			slog("paused");
 			pause = 1;
-			
+			//Entity *player = player_get();
+			//player->state = ES_Idle;
 			transition_window_to_black();
-			gf2d_window_free_all(); //may need to use free all in the future
+			gf2d_window_free_all();
 			window = gf2d_window_load("config/pause_window.cfg");
 			window = gf2d_window_load("config/pause_stats.cfg");
 			

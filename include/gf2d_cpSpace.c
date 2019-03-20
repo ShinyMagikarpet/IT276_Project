@@ -141,7 +141,7 @@ void player_touch_transition_begin(cpArbiter *arb, cpSpace *space, void *data) {
 
 	cpSpaceAddPostStepCallback(space, (cpPostStepFunc)post_step_remove, transitionershape, NULL);
 	
-	transition_window_to_black();
+	//transition_window_to_black();
 		
 	
 	

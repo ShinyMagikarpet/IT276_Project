@@ -255,6 +255,10 @@ void change_text_based_on_name(LabelElement *label) {
 		playerStat = player->rpg.stats.agil;
 		snprintf(buffer, sizeof(buffer), "%s: %i", label->name, playerStat);
 	}
+	else if (strcmp(label->name, "Next") == 0) {
+		playerStat = xp_remaining(player->rpg.level, player->rpg.xp);
+		snprintf(buffer, sizeof(buffer), "%s: %i", label->name, playerStat);
+	}
 	else {
 		//This is a message
 		return;
