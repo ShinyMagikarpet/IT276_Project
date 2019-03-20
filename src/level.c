@@ -382,6 +382,7 @@ void level_transition_data(SJson *transitionList, int value, cpShape *shape) {
 	SJson *item;
 	Transition *data;
 	data = gf2d_transition_new();
+	if (!data)return;
 	count = sj_array_get_count(transitionList);
 	for (i = 0; i < count; i++) {
 		item = sj_array_get_nth(transitionList, i);
@@ -389,7 +390,8 @@ void level_transition_data(SJson *transitionList, int value, cpShape *shape) {
 		sj_get_integer_value(sj_object_get_value(item, "value"), &data->value);
 		gf2d_line_cpy(data->targetLevel, sj_get_string_value(sj_object_get_value(item, "targetLevel")));
 	}
-
+	data = gf2d_check_if_duplicate(data);
+	slog("data: %s", data->targetLevel);
 	shape->userData = gf2d_transition_get_by_value(data->value);
 	
 }

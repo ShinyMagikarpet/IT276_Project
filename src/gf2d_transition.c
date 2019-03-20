@@ -57,7 +57,7 @@ Transition *gf2d_transition_new() {
 	{
 		if (transitionManager.levelList[i].inuse)continue;
 		transitionManager.levelList[i].inuse = 1;
-		slog("added new transition");
+		//slog("added new transition");
 		return &transitionManager.levelList[i];
 	}
 	slog("all levels in use, cannot provide a new level");
@@ -70,9 +70,30 @@ Transition *gf2d_transition_get_by_value(int value) {
 	for (i = 0; i < transitionManager.maxLevels; i++) {
 		if (transitionManager.levelList[i].value != value)continue;
 		return &transitionManager.levelList[i];
-
 	}
 	return NULL;
+}
+
+Transition *gf2d_check_if_duplicate(Transition *self) {
+	int i, count, original;
+
+	original = -1;
+	count = 0;
+	for (i = 0; i < transitionManager.maxLevels; i++) {
+		if (strcmp(transitionManager.levelList[i].targetLevel, self->targetLevel) == 0 && 
+			transitionManager.levelList[i].value == self->value) {
+			if (original == -1)original = i;
+			count++;
+			if (count >= 2) {
+				gf2d_transition_free(&transitionManager.levelList[i]);
+				//slog("transition manage: %s, %i", transitionManager.levelList[original].targetLevel, transitionManager.levelList[original].value);
+				return &transitionManager.levelList[original];
+			}
+			//slog("count: %i", count);
+		}
+			
+	}
+	return self;
 }
 
 void name_all_transitions() {

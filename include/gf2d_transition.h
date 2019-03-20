@@ -36,6 +36,13 @@ void gf2d_transition_free(Transition *self);
 */
 Transition *gf2d_transition_get_by_value(int value);
 
+/**
+  * @brief Check if level data exists in manager
+  * @param data to lookout for and free
+  * @return the original
+*/
+Transition *gf2d_check_if_duplicate(Transition *self);
+
 void name_all_transitions();
 
 
