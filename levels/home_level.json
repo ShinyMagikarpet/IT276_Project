@@ -40,6 +40,12 @@
         "name": "player_start",
         "position": [ 354, 680 ]
       }
+    ],
+    "transitionList": [
+      {
+        "value": 2,
+        "targetLevel": "new_test..json"
+      }
     ]
   }
 }

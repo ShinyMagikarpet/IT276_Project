@@ -31,6 +31,11 @@ Transition *gf2d_transition_new();
 void gf2d_transition_free(Transition *self);
 
 /**
+  * @brief free all levels
+*/
+void gf2d_transition_free_all();
+
+/**
   * @brief Get the address of transition by value
   * @param maximum levels needed
 */

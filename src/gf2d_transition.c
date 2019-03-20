@@ -50,6 +50,13 @@ void gf2d_transition_free(Transition *self)
 	memset(self, 0, sizeof(Transition));
 }
 
+void gf2d_transition_free_all() {
+	int i;
+	for (i = 0; i < transitionManager.maxLevels; i++) {
+		gf2d_transition_free(&transitionManager.levelList[i]);
+	}
+}
+
 Transition *gf2d_transition_new() {
 
 	int i;
@@ -76,7 +83,7 @@ Transition *gf2d_transition_get_by_value(int value) {
 
 Transition *gf2d_check_if_duplicate(Transition *self) {
 	int i, count, original;
-
+	slog("data: %s, %i", self->targetLevel, self->value);
 	original = -1;
 	count = 0;
 	for (i = 0; i < transitionManager.maxLevels; i++) {

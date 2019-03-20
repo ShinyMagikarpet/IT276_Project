@@ -31,6 +31,7 @@ void level_clear()
 {
 	//gf2d_space_free(gamelevel.space);
 	//cpSpaceFree(gamelevel.space);
+	gf2d_transition_free_all();
 	gf2d_sprite_free(gamelevel.backgroundImage);
 	gf2d_sprite_free(gamelevel.tileSet);
 	gf2d_sprite_free(gamelevel.tileLayer);
@@ -307,12 +308,13 @@ void level_build_tile_space(LevelInfo *linfo)
 			bb1 = cpBBNew(i * linfo->tileSize.x, j * linfo->tileSize.y, (linfo->tileSize.x * i) + 32, (linfo->tileSize.y * j) + 32);
 			shape = cpBoxShapeNew2(map_body, bb1, 1);
 			value = linfo->tileMap[j * (Uint32)linfo->tileMapSize.x + i];
+			//slog("value: %i", value);
 			//2 is the number for transition tiles where as 1 is plain static
 			if (value >= 2) {
 				shape->type = TRANSITION_TYPE;
 				level_transition_data(linfo->transitionList, value, shape);
 				Transition *transitiondata = (Transition *)shape->userData;
-				slog("transition data: %s", transitiondata->targetLevel);
+				slog("transition data: %s, %i", transitiondata->targetLevel, transitiondata->value);
 			}
 			cpSpaceAddShape(gamelevel.space, shape);
 			//gf2d_space_add_static_shape(gamelevel.space, gf2d_shape_rect(i * linfo->tileSize.x, j * linfo->tileSize.y, linfo->tileSize.x, linfo->tileSize.y));
@@ -391,7 +393,7 @@ void level_transition_data(SJson *transitionList, int value, cpShape *shape) {
 		gf2d_line_cpy(data->targetLevel, sj_get_string_value(sj_object_get_value(item, "targetLevel")));
 	}
 	data = gf2d_check_if_duplicate(data);
-	slog("data: %s", data->targetLevel);
+	//slog("data: %s, %i", data->targetLevel, data->value);
 	shape->userData = gf2d_transition_get_by_value(data->value);
 	
 }
