@@ -14,6 +14,7 @@ void check_if_level_up(Entity *self) {
 
 	while (playerXP >= xp_to_next_level(playerLevel)) {
 		playerLevel++;
+		on_level_up(self);
 	}
 
 	self->rpg.level = playerLevel;
@@ -54,20 +55,30 @@ void gf2d_rpg_set_stats(Entity *self, int max_hp, int strength, int defence, int
 
 void on_level_up(Entity *self) {
 	int hpgrowth, strgrowth, defgrowth, agilgrowth;
+	srand(time(0));
 	hpgrowth	= roll_die(6, 4);
+	//slog("HP Total: %i");
 	strgrowth	= roll_die(4, 1);
+	//slog("Str Total: %i");
 	defgrowth	= roll_die(3, 4);
+	//slog("Def Total: %i");
 	agilgrowth	= roll_die(3, 1);
+	//slog("Agi Total: %i");
+
+	self->rpg.stats.hp_max += hpgrowth;
+	self->rpg.stats.str += strgrowth;
+	self->rpg.stats.def += defgrowth;
+	self->rpg.stats.agil += agilgrowth;
 
 }
 
 int roll_die(int numsides, int numrolls) {
-	int i,total;
-
+	int i, total;
+	total = 0;
 	for (i = 0; i < numrolls; i++) {
-		total = total + rand(1, numsides);
+		total = (total + rand() %
+			(numsides - 1 + 1)) + 1;
 	}
-	
 	return total;
 
 }

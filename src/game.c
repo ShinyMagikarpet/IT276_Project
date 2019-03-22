@@ -10,6 +10,7 @@
 #include "gf2d_windows.h"
 #include "gf2d_elements.h"
 #include "gf2d_transition.h"
+#include "save.h"
 #include "Player.h"
 
 static int done = 0;
@@ -45,13 +46,13 @@ int main(int argc, char * argv[])
         vector4d(0,0,0,255),
         0);
     gf2d_graphics_set_frame_delay(16);
-    gf2d_sprite_init(1024);
+    gf2d_sprite_init(512);
     SDL_ShowCursor(SDL_DISABLE);
 	gf2d_audio_init(256, 16, 4, 1, 1, 1);
 	gf2d_windows_init(128);
 	gf2d_text_init("config/font.cfg");
 	gf2d_action_list_init(128);
-	gf2d_entity_system_init(1024);
+	gf2d_entity_system_init(128);
 	gf2d_input_init("config/input.cfg");
 	gf2d_transition_system_init(8);
 
@@ -120,13 +121,22 @@ int main(int argc, char * argv[])
 			
 			slog("paused");
 			pause = 1;
-			//Entity *player = player_get();
-			//player->state = ES_Idle;
 			transition_window_to_black();
 			gf2d_window_free_all();
 			window = gf2d_window_load("config/pause_window.cfg");
 			window = gf2d_window_load("config/pause_stats.cfg");
 			
+		}
+
+		if (gf2d_input_command_pressed("save")) {
+			SaveInfo save;
+			Entity *player = player_get();
+			save.player.rpg = player->rpg;
+			save_write_out(save, "save/save.bin");
+		}
+
+		if (gf2d_input_command_pressed("load")) {
+			save_load_in("save/save.bin");
 		}
 			
 		while (pause) {
@@ -158,9 +168,13 @@ int main(int argc, char * argv[])
         //slog("Rendering at %f FPS",gf2d_graphics_get_frames_per_second());
     }
     slog("---==== END ====---");
+	gf2d_input_commands_purge();
 	level_info_free(linfo);
+	cpSpaceEachShape(space, (cpSpaceShapeIteratorFunc)free_all_shapes, NULL);
+	cpSpaceEachBody(space, (cpSpaceBodyIteratorFunc)free_all_bodies, NULL);
 	level_clear();
 	gf2d_window_free_all();
+	//save_write_out("config/save.cfg");
     return 0;
 }
 /*eol@eof*/

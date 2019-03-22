@@ -38,6 +38,10 @@
         "position": [ 500, 500 ]
       },
       {
+        "name": "bug_start",
+        "position": [ 800, 600 ]
+      },
+      {
         "name": "house",
         "position": [ 500, 100 ],
         "id": 1,

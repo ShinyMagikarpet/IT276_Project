@@ -1,5 +1,6 @@
 #include <chipmunk.h>
 #include <chipmunk_types.h>
+#include "gf2d_entity.h"
 
 
 //Types of collisions throughout the game 
@@ -70,8 +71,30 @@ cpBool monster_touch_monster_begin(cpArbiter *arb, cpSpace *space, void *data);
 /**
 * @brief Function to be called after player touches transition
 */
-void player_touch_transition_begin(cpArbiter *arb, cpSpace *space, void *data);
+cpBool player_touch_transition_begin(cpArbiter *arb, cpSpace *space, void *data);
 
+/**
+* @brief safely removes shapes and bodies after space step
+* @param space the space where collision is happening
+* @param shape to pull transition data
+* @param void pointer for extra info if needed
+*/
 void post_step_remove(cpSpace *space, cpShape *shape, void *data);
+
+/**
+* @brief safely removes frees all shapes using cpSpaceEachShapefunc
+* @param shape to be destroyed and freed
+* @param void pointer for extra info if needed
+*/
+void free_all_shapes(cpShape *shape, void *data);
+
+/**
+* @brief safely removes frees all bodies (EXCEPT STATIC ONES) using cpSpaceEachShapefunc
+* @param body to be destroyed and freed
+* @param void pointer for extra info if needed
+*/
+void free_all_bodies(cpBody *body, void *data);
+
+void free_physics(cpSpace *space, Entity *self, void *data);
 
 

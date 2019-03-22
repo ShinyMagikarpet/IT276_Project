@@ -6,6 +6,7 @@
 #include "gf2d_entity_common.h"
 #include <SDL_mixer.h>
 #include "gf2d_transition.h"
+#include "gf2d_cpSpace.h"
 
 
 static Entity *player = NULL;
@@ -58,6 +59,7 @@ Entity *player_new(cpVect position, cpSpace *space) {
 
 
 	//RPG stuff
+	//Check if this is first time being initialized
 	if (rpg.level <= 0) {
 		player->rpg.level = 1;
 		player->rpg.xp = 0;
@@ -68,7 +70,7 @@ Entity *player_new(cpVect position, cpSpace *space) {
 	}
 
 	player->iframes = 0;
-	player->attack_rate = 10.0f / player->rpg.stats.agil;
+	player->attack_rate = 1.0f;
 	
 
 	//player functions
@@ -326,6 +328,7 @@ void player_think(Entity *self) {
 		self->state = ES_Idle;
 	}
 
+	//Mute music
 	if (gf2d_input_command_pressed("mute")) {
 		if (musicpause == 0) {
 			Mix_PauseMusic();
@@ -358,33 +361,25 @@ void player_think(Entity *self) {
 	}
 
 	if (gf2d_input_command_pressed("case")) {
-		//gf2d_entity_free_physics(self);
-		//self->inuse = 0;
-		name_all_transitions();
-		//name_all_entity();
-		//cpSpaceAddPostStepCallback(self->cpbody->space, (cpPostStepFunc)post_step_remove, self->cpshape, NULL);
-		//gf2d_entity_free(self);
-		//player = NULL;
-		//name_all_entity();
-		return;
+		
+
+
+		
 	}
 
 	//DEBUG
 	const Uint8 * keys;
 	keys = SDL_GetKeyboardState(NULL);
 	if (keys[SDL_SCANCODE_1]) {
-		//slog("XP: %i", self->rpg.xp);
-		entity_clear_all_but_player();
+		
+		slog("Item name: %s", item_list[1].name);
 		
 	}
 	if (keys[SDL_SCANCODE_2]) {
-		slog("Level: %i", self->rpg.level);
-		slog("XP to next: %i", xp_to_next_level(self->rpg.level));
-		slog("XP Remaing: %i", xp_remaining(self->rpg.level, self->rpg.xp));
-		entity_clear_all_but_player();
+		
 
 	}
-	//Change velocity of player and copy it to position to update sprite???
+
 	self->position = cpvector_to_gf2dvector(cpBodyGetPosition(self->cpbody));
 	gf2d_actor_next_frame(&self->actor);
 }

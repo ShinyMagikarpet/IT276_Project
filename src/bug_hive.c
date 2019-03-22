@@ -3,6 +3,7 @@
 #include "Bug.h"
 #include "gf2d_graphics.h"
 #include <chipmunk_private.h>
+#include "gf2d_cpSpace.h"
 
 
 

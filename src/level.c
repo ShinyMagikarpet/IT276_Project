@@ -25,6 +25,8 @@ typedef struct
 
 static Level gamelevel = { 0 };
 
+static cpBody *map_body = NULL;
+
 int *level_alloc_tilemap(int w, int h);
 
 void level_clear()
@@ -35,6 +37,9 @@ void level_clear()
 	gf2d_sprite_free(gamelevel.backgroundImage);
 	gf2d_sprite_free(gamelevel.tileSet);
 	gf2d_sprite_free(gamelevel.tileLayer);
+	//gf2d_sprite_clear_all();
+	gf2d_sound_clear_all();
+	
 	
 	if (gamelevel.backgroundMusic)
 	{
@@ -52,7 +57,7 @@ void level_info_free(LevelInfo *linfo)
 		free(linfo->tileMap);
 	}
 	sj_free(linfo->spawnList);
-	//TODO:free spawn list
+	sj_free(linfo->transitionList);
 	free(linfo);
 }
 
@@ -206,8 +211,9 @@ void level_make_space()
 	gamelevel.space = gf2d_cpSpace_init();
 }
 
-void free_space() {
-	cpSpaceFree(get_space());
+void free_space(cpSpace *space, void *data){
+	if (!space)return;
+	cpSpaceFree(space);
 }
 
 
@@ -296,7 +302,7 @@ void level_build_tile_space(LevelInfo *linfo)
 {
 
 	int i, j, value;
-	cpBody *map_body = cpBodyNewStatic();
+	map_body = cpBodyNewStatic();
 	cpBB bb1;// = cpBBNew(128, 32, 160, 0); // l is where left side located, bottom is where bottom is located, etc.
 	cpShape *shape;// = cpSpaceAddShape(gamelevel.space, cpBoxShapeNew2(map_body, bb1, 1));;
 	for (j = 0; j < linfo->tileMapSize.y; j++)
@@ -324,6 +330,8 @@ void level_build_tile_space(LevelInfo *linfo)
 		}
 	}
 }
+
+
 
 
 void level_update_tile(LevelInfo *linfo, Vector2D position, Uint32 tile)
@@ -531,7 +539,9 @@ void level_transition(char *filename, const char *playerTarget, Uint32 targetId)
 	slog("%s", filepath);
 	//gf2d_line_cpy(targetname, playerTarget);
 	id = targetId;
-
+	cpBodyDestroy(map_body);
+	cpBodyFree(map_body);
+	free_space(gamelevel.space, NULL);
 	linfo = level_info_load(filepath);
 	if (!linfo)return;
 	level_init(linfo, 1);

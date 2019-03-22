@@ -44,7 +44,6 @@ void gf2d_entity_system_init(Uint32 maxEntities) {
 	entityManager.maxEntities = maxEntities;
 	atexit(gf2d_entity_system_close);
 	slog("entity system initialized");
-
 }
 
 int gf2d_entity_validate_entity_pointer(void *p)
@@ -99,13 +98,6 @@ void gf2d_entity_free(Entity *self)
 	if(!&self->actor)
 		gf2d_actor_free(&self->actor);
 
-	if(self->cpbody != NULL)
-		gf2d_entity_free_physics(self);
-	//Why does this have to be Entity *???
-	
-	/*memset(self, 0, sizeof(Entity));
-	if (self == player_get())
-		self = NULL;*/
 	memset(self, 0, sizeof(Entity));
 }
 

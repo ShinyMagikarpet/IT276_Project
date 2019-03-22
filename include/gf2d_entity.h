@@ -9,7 +9,7 @@
 #include "gf2d_collision.h"
 #include "simple_json.h"
 #include "camera.h"
-#include "gf2d_cpSpace.h"
+#include "items.h"
 
 
 typedef enum {
@@ -40,6 +40,7 @@ typedef struct{
 	int xp; /**<xp of entity*/
 	int level; /**<level of entity*/
 	Stats stats; /**<stat struct for entity*/
+	Item items; /**<Equipment*/
 
 }RpgElements;
 

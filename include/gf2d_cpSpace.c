@@ -7,7 +7,7 @@
 #include "Player.h"
 #include "gf2d_transition.h"
 
-cpSpace *newSpace = NULL;
+static cpSpace *newSpace = NULL;
 
 cpSpace* gf2d_cpSpace_init(void) {
 
@@ -34,7 +34,6 @@ cpSpace* gf2d_cpSpace_init(void) {
 	cpCollisionHandler *player_to_transition_handler = cpSpaceAddCollisionHandler(newSpace, PLAYER_TYPE, TRANSITION_TYPE);
 	player_to_transition_handler->beginFunc = (cpCollisionBeginFunc)player_touch_transition_begin;
 	return newSpace;
-
 }
 
 cpSpace *get_space() {
@@ -107,10 +106,9 @@ void player_touch_monster_postsolve(cpArbiter *arb, cpSpace *space, void *data) 
 	Entity *inflicted = (Entity *)data;
 	
 	if (inflicted) {
-		//self->rpg.xp += inflicted->rpg.xp;
-		//gf2d_entity_free_physics(inflicted);
-		gf2d_entity_free(inflicted);
-		//cpSpaceAddPostStepCallback(space, (cpPostStepFunc)post_step_remove, NULL, NULL);
+
+		cpSpaceAddPostStepCallback(space, (cpPostStepFunc)free_physics, inflicted, NULL);
+
 	}
 }
 
@@ -131,7 +129,8 @@ cpBool monster_touch_monster_begin(cpArbiter *arb, cpSpace *space, void *data) {
 }
 
 
-void player_touch_transition_begin(cpArbiter *arb, cpSpace *space, void *data) {
+cpBool player_touch_transition_begin(cpArbiter *arb, cpSpace *space, void *data) {
+	
 	
 	slog("Transition Time!!!");
 	CP_ARBITER_GET_BODIES(arb, playerbody, transitioner);
@@ -139,7 +138,9 @@ void player_touch_transition_begin(cpArbiter *arb, cpSpace *space, void *data) {
 	
 	Transition *transitiondata = (Transition *)transitionershape->userData;
 
+
 	cpSpaceAddPostStepCallback(space, (cpPostStepFunc)post_step_remove, transitionershape, NULL);
+
 	
 	//transition_window_to_black();
 		
@@ -172,6 +173,31 @@ void setup_boundaries(cpSpace *space) {
 
 }
 
+
+void free_physics(cpSpace *space, Entity *self, void *data) {
+
+	slog("This function got called");
+	if (self) {
+		slog("Fuck you that's why");
+	}
+	cpSpaceRemoveShape(space, self->cpshape);
+	cpSpaceRemoveBody(space, self->cpbody);
+	cpShapeFree(self->cpshape);
+	cpBodyFree(self->cpbody);
+	gf2d_entity_free(self);
+	
+}
+
+void free_all_shapes(cpShape *shape, void *data) {
+	cpShapeDestroy(shape);
+	cpShapeFree(shape);
+}
+
+void free_all_bodies(cpBody *body, void *data) {
+	cpBodyDestroy(body);
+	cpBodyFree(body);
+}
+
 void post_step_remove(cpSpace *space, cpShape *shape, void *data) {
 	TextLine targetLevel;  //, targetEntity;
 	Uint32 targetId;
@@ -179,16 +205,16 @@ void post_step_remove(cpSpace *space, cpShape *shape, void *data) {
 	Transition *transitiondata = (Transition *)shape->userData;
 	if (!transitiondata)return;
 	if (!player)return;
-	
+	if (space->curr_dt == 0.0f)return;
 	gf2d_line_cpy(targetLevel, transitiondata->targetLevel);
 	//gf2d_line_cpy(targetEntity, "house");
 	targetId = 1;
-
+	cpSpaceEachShape(space, (cpSpaceShapeIteratorFunc)free_all_shapes, NULL);
+	cpSpaceEachBody(space, (cpSpaceBodyIteratorFunc)free_all_bodies, NULL);
 	entity_clear_all_but_player();
 	player->free(player);
-	//cpSpaceFree(space);
 	level_transition(targetLevel, NULL, targetId);
-
+	
 
 }
 
