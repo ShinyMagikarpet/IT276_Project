@@ -8,6 +8,7 @@
 
 void bug_think(Entity *self);
 void bug_update(Entity *self);
+int bug_damage(Entity *attacker, Entity *inflicted);
 
 
 Entity *bug_new(cpVect position, cpSpace *space) {
@@ -36,8 +37,9 @@ Entity *bug_new(cpVect position, cpSpace *space) {
 	vector2d_copy(bug->scale, bug->actor.al->scale);
 	bug->think = bug_think;
 	bug->update = bug_update;
+	bug->damage = bug_damage;
 	bug->shape = gf2d_shape_circle(64, 64, 50);
-
+	gf2d_line_cpy(bug->name, "Bug");
 	gf2d_rpg_set_stats(bug, 3, 1, 1, 1);
 	bug->rpg.xp = 100;
 	return bug;
@@ -54,6 +56,16 @@ Entity *bug_spawn(cpVect position, SJson *args, cpSpace *space)
 	return bug_new(position, space);
 }
 
+int bug_damage(Entity *attacker, Entity *inflicted) {
+	int damage;
+	if (!attacker)return 0;
+	if (!inflicted)return 0;
+
+	srand(time(0));
+
+	damage = (attacker->rpg.stats.str + rand() % (10 - 3 + 1) + 3);
+	return damage;
+}
 
 void bug_think(Entity *self) {
 	float dirX, dirY;

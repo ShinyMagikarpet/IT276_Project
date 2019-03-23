@@ -69,7 +69,7 @@ cpBool player_touch_monster_begin(cpArbiter *arb, cpSpace *space, void *data) {
 
 	//Handles damage and invincibility frames here
 	if (player->iframes <= 0) {
-		player->rpg.stats.hp_current -= 1;
+		player->rpg.stats.hp_current -= other->damage(other, player);
 		player->iframes = 2.0;
 	}
 
@@ -205,7 +205,7 @@ void post_step_remove(cpSpace *space, cpShape *shape, void *data) {
 	Transition *transitiondata = (Transition *)shape->userData;
 	if (!transitiondata)return;
 	if (!player)return;
-	if (space->curr_dt == 0.0f)return;
+	if (!space)return;
 	gf2d_line_cpy(targetLevel, transitiondata->targetLevel);
 	//gf2d_line_cpy(targetEntity, "house");
 	targetId = 1;

@@ -214,6 +214,7 @@ void level_make_space()
 void free_space(cpSpace *space, void *data){
 	if (!space)return;
 	cpSpaceFree(space);
+	space == NULL;
 }
 
 

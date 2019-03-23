@@ -15,6 +15,8 @@ void player_set_position(cpVect position);
 
 Entity *player_spawn(cpVect position, SJson *args, cpSpace *space);
 
+int get_inventory_count();
+
 
 #endif
 

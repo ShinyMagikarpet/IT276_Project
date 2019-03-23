@@ -13,17 +13,17 @@
 
 
 typedef enum {
-	ED_Up,		/**<entity is facing up*/
-	ED_Down,	/**<entity is facing down*/
-	ED_Right,	/**<entity is facing right*/
-	ED_Left		/**<entity is facing left*/
+	ED_Up,			/**<entity is facing up*/
+	ED_Down,		/**<entity is facing down*/
+	ED_Right,		/**<entity is facing right*/
+	ED_Left			/**<entity is facing left*/
 }EntityDir;
 
 typedef enum {
 
-	ES_Idle,	/**<entity is currently idle*/
-	ES_Walk,	/**<entity is currently walking*/
-	ES_Attack	/**<entity is currently attacking*/
+	ES_Idle,		/**<entity is currently idle*/
+	ES_Walk,		/**<entity is currently walking*/
+	ES_Attack		/**<entity is currently attacking*/
 
 }EntityState;
 
@@ -37,10 +37,14 @@ typedef struct {
 
 typedef struct{
 
-	int xp; /**<xp of entity*/
-	int level; /**<level of entity*/
-	Stats stats; /**<stat struct for entity*/
-	Item items; /**<Equipment*/
+	int xp;			/**<xp of entity*/
+	int level;		/**<level of entity*/
+	Stats stats;	/**<stat struct for entity*/
+	Item *equipped_weapon;
+	Item *equipped_armor;
+	Item *equipped_accessory;
+	int selected_item;
+	int inventory[MAX_ITEMS];
 
 }RpgElements;
 
@@ -72,28 +76,28 @@ typedef struct Entity_S {
 	Vector2D flip;
 	Sprite *sprite;
 
-	void(*update)(struct Entity_S *self); /**<update entity per frame*/
-	void(*think)(struct Entity_S *self); /**<think before update*/
-	void(*draw)(struct Entity_S *self); /**<render entity*/
-	int(*touch)(struct Entity_S *self); /**<currently not using*/
+	void(*update)(struct Entity_S *self);	/**<update entity per frame*/
+	void(*think)(struct Entity_S *self);	/**<think before update*/
+	void(*draw)(struct Entity_S *self);		/**<render entity*/
+	int(*touch)(struct Entity_S *self);		/**<currently not using*/
 	int(*cpTouch)(cpBody *self, cpBody *other); /**<called when player collides something*/
-	int(*damage)(struct Entity_S *attacker, int amount, struct Entity_S *inflicted);/**<when this entity takes damage*/
-	void(*free)(struct Entity_S *self); /**<free entity from game*/
+	int(*damage)(struct Entity_S *attacker, struct Entity_S *inflicted);	/**<when this entity takes damage*/
+	void(*free)(struct Entity_S *self);		/**<free entity from game*/
 
 	/*game specific data*/
 	TextLine    targetLevel;
 	TextLine    targetEntity;
 	Uint32      targetId;
 
-	//RPG stuff and stat stuff
+	//RPG elements that will tranfer from level to level
 	RpgElements rpg;
 
-	float attack_rate; /**<rate of which an entity can attack*/
-	float cooldown; /**<cooldown for attacks*/
-	float iframes; /**<time of invicibility frames*/
+	float attack_rate;	/**<rate of which an entity can attack*/
+	float cooldown;		/**<cooldown for attacks*/
+	float iframes;		/**<time of invicibility frames*/
 
 	//Game data
-	void *data; /**<data pointer*/
+	void *data;			/**<data pointer*/
 
 } Entity;
 

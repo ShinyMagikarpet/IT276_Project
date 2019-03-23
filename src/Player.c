@@ -20,10 +20,12 @@ int player_touch(Entity *self);
 void player_update(Entity *self);
 void player_update_velocity(cpBody *body, cpVect gravity, cpFloat damping, cpFloat dt);
 int cpTouch_player(cpBody *self, cpBody *other);
-int player_damage(Entity *attacker, int damage, Entity *inflicted);
+int player_damage(Entity *attacker, Entity *inflicted);
 void player_free(Entity *self);
 
 Entity *player_new(cpVect position, cpSpace *space) {
+
+	Item *item;
 
 	player = gf2d_entity_new();
 
@@ -64,10 +66,18 @@ Entity *player_new(cpVect position, cpSpace *space) {
 		player->rpg.level = 1;
 		player->rpg.xp = 0;
 		gf2d_rpg_set_stats(player, 10, 1, 1, 3);
+		item = get_item_by_name("Wood Sword");
+		player->rpg.equipped_weapon = item;
+		put_item_in_inventory(item);
+		item = get_item_by_name("Leather Armor");
+		player->rpg.equipped_armor = item;
+		put_item_in_inventory(item);
 	}
 	else {
 		player->rpg = rpg;
 	}
+
+	
 
 	player->iframes = 0;
 	player->attack_rate = 1.0f;
@@ -137,8 +147,14 @@ int cpTouch_player(cpBody *self, cpBody *other) {
 
 }
 
-int player_damage(Entity *attacker, int damage, Entity *inflicted) {
+int player_damage(Entity *attacker, Entity *inflicted) {
+	int damage;
+	if (!attacker)return 0;
+	if (!inflicted)return 0;
 
+	
+	damage = (attacker->rpg.stats.str + attacker->rpg.equipped_weapon->statvalue);
+	return damage;
 }
 
 
@@ -294,8 +310,8 @@ void player_think(Entity *self) {
 					if (inflicted) {
 						slog("Hit the monster!");
 						inflicted->cpbody->p = cpvadd(inflicted->cpbody->p, cpv(50 * -hit.normal.x, 50 * -hit.normal.y));
-						inflicted->rpg.stats.hp_current -= 1;
-						if (inflicted->rpg.stats.hp_current == 0) {
+						inflicted->rpg.stats.hp_current -= self->damage(self, inflicted);
+						if (inflicted->rpg.stats.hp_current <= 0) {
 
 							give_player_xp(self, inflicted);
 							
@@ -362,21 +378,44 @@ void player_think(Entity *self) {
 
 	if (gf2d_input_command_pressed("case")) {
 		
-
-
-		
+		Item *item = get_item_by_index(player->rpg.inventory[2]);
+		item->use(self, item);
 	}
 
 	//DEBUG
 	const Uint8 * keys;
 	keys = SDL_GetKeyboardState(NULL);
 	if (keys[SDL_SCANCODE_1]) {
-		
-		slog("Item name: %s", item_list[1].name);
+
+		int i;
+		for (i = 0; i < MAX_ITEMS; i++) {
+			if(player->rpg.inventory[i] != 0)
+				slog("inventory slot %i = %i", i, player->rpg.inventory[i]);
+			else {
+				break;
+			}
+			
+		}
+		slog("inventory count: %i", get_inventory_count());
 		
 	}
 	if (keys[SDL_SCANCODE_2]) {
-		
+		Item *item;
+
+		item = get_item_by_index(11);
+		put_item_in_inventory(item);
+
+		item = get_item_by_index(7);
+		put_item_in_inventory(item);
+
+
+
+	}
+	if (keys[SDL_SCANCODE_3]) {
+
+		//slog("Item retrieved: %s", item->name);
+		Item *item = get_item_by_index(player->rpg.inventory[2]);
+		item->use(self, item);
 
 	}
 
@@ -396,6 +435,18 @@ void player_update(Entity *self) {
 		self->iframes -= 0.01;
 		if (self->iframes == 0.0)
 			slog("CAN BE ATTACKED AGAIN");
+	}
+}
+
+int get_inventory_count() {
+	int i, count;
+	count = 0;
+	for (i = 0; i < MAX_ITEMS; i++) {
+		if (player->rpg.inventory[i] != 0) {
+			count++;
+			continue;
+		}
+		return count;
 	}
 }
 
