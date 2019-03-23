@@ -141,6 +141,11 @@ cpBool player_touch_transition_begin(cpArbiter *arb, cpSpace *space, void *data)
 
 	cpSpaceAddPostStepCallback(space, (cpPostStepFunc)post_step_remove, transitionershape, NULL);
 
+	//This is the biggest hack I've done so far in my opnion.
+	//Doing this prevents the callback being called twice and giving
+	//the function unusable garbage, which was causing crashes
+	if (space->postStepCallbacks->num > 1)
+		space->postStepCallbacks->num = 1;
 	
 	//transition_window_to_black();
 		
@@ -183,7 +188,9 @@ void free_physics(cpSpace *space, Entity *self, void *data) {
 	cpSpaceRemoveShape(space, self->cpshape);
 	cpSpaceRemoveBody(space, self->cpbody);
 	cpShapeFree(self->cpshape);
+	//self->cpshape = NULL;
 	cpBodyFree(self->cpbody);
+	//self->cpbody = NULL;
 	gf2d_entity_free(self);
 	
 }
@@ -191,17 +198,20 @@ void free_physics(cpSpace *space, Entity *self, void *data) {
 void free_all_shapes(cpShape *shape, void *data) {
 	cpShapeDestroy(shape);
 	cpShapeFree(shape);
+	shape = NULL;
 }
 
 void free_all_bodies(cpBody *body, void *data) {
 	cpBodyDestroy(body);
 	cpBodyFree(body);
+	body = NULL;
 }
 
 void post_step_remove(cpSpace *space, cpShape *shape, void *data) {
 	TextLine targetLevel;  //, targetEntity;
 	Uint32 targetId;
 	Entity *player = player_get();
+
 	Transition *transitiondata = (Transition *)shape->userData;
 	if (!transitiondata)return;
 	if (!player)return;
