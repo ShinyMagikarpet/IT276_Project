@@ -9,6 +9,8 @@
 
 static cpSpace *newSpace = NULL;
 
+
+
 cpSpace* gf2d_cpSpace_init(void) {
 
 	newSpace = cpSpaceNew();
@@ -131,16 +133,16 @@ cpBool monster_touch_monster_begin(cpArbiter *arb, cpSpace *space, void *data) {
 
 cpBool player_touch_transition_begin(cpArbiter *arb, cpSpace *space, void *data) {
 	
-	
-	slog("Transition Time!!!");
-	CP_ARBITER_GET_BODIES(arb, playerbody, transitioner);
 	CP_ARBITER_GET_SHAPES(arb, playershape, transitionershape);
 	
 	Transition *transitiondata = (Transition *)transitionershape->userData;
-
+	if (strcmp(transitiondata->targetLevel, "") == 0) {
+		slog("Level wasn't setup properly.Name wasn't found");
+		return;
+	}
 
 	cpSpaceAddPostStepCallback(space, (cpPostStepFunc)post_step_remove, transitionershape, NULL);
-
+	
 	//This is the biggest hack I've done so far in my opnion.
 	//Doing this prevents the callback being called twice and giving
 	//the function unusable garbage, which was causing crashes

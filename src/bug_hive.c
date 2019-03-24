@@ -6,8 +6,6 @@
 #include "gf2d_cpSpace.h"
 
 
-
-void bug_hive_update(Entity *self);
 void bug_hive_think(Entity *self);
 
 Entity *bug_hive_new(cpVect position, cpSpace *space) {
@@ -33,12 +31,11 @@ Entity *bug_hive_new(cpVect position, cpSpace *space) {
 
 	//Info
 	gf2d_line_cpy(bug_hive->name, "bug_hive");
-	gf2d_rpg_set_stats(bug_hive, 10, 0, 1, 0);
+	gf2d_rpg_set_stats(bug_hive, 15, 0, 1, 0);
 	bug_hive->cooldown = 0;
 	bug_hive->rpg.xp = 1000;
 
 	//Functions
-	bug_hive->update = bug_hive_update;
 	bug_hive->think = bug_hive_think;
 
 	return bug_hive;
@@ -61,7 +58,13 @@ void bug_hive_spawn_bug(Entity *self) {
 	Entity *bug = bug_spawn(cpv(position.x + 30, position.y + 55), NULL, self->cpbody->space);
 }
 
-void bug_hive_update(Entity *self) {
+void bug_hive_think(Entity *self) {
+	if (self->cooldown > 0)
+		self->cooldown -= 0.1;
+	else
+		self->cooldown = 0;
+
+
 	Entity *player = player_get();
 
 	if (player == NULL)return;
@@ -71,12 +74,4 @@ void bug_hive_update(Entity *self) {
 		self->cooldown = 10000;
 
 	}
-
-}
-
-void bug_hive_think(Entity *self) {
-	if (self->cooldown > 0)
-		self->cooldown -= 0.1;
-	else
-		self->cooldown = 0;
 }

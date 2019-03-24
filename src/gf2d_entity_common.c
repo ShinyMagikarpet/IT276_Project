@@ -3,19 +3,6 @@
 #include "gf2d_entity_common.h"
 #include "camera.h"
 
-Collision entity_scan_hit(Entity *self,Vector2D start,Vector2D end)
-{
-    Shape s = {0};
-    Collision c;
-    ClipFilter f = {
-        PLAYER_LAYER|MONSTER_LAYER,          /**<layer mask to clip against*/
-        self->body.team,           /**<ignore any team ==*/
-        &self->body
-    };
-    s = gf2d_shape_edge(start.x,start.y,end.x,end.y);
-    gf2d_shape_draw(s,gf2d_color(255,255,0,255),vector2d(0,0));
-    return c;
-}
 
 
 void entity_push(Entity *self,Entity *other,float amount)

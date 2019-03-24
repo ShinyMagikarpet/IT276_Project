@@ -53,7 +53,7 @@ struct Element_S
 	void(*draw)        (struct Element_S *element, Vector2D offset); /**<draw function, offset comes from draw position of window*/
 	List *(*update)     (struct Element_S *element, Vector2D offset); /**<function called for updates  returns alist of all elements updated with input*/
 	void(*free_data)   (struct Element_S *element);    /**<free function for the element to clean up any loaded custom data*/
-	struct Element_S *(*get_by_name)(struct Element_S *element, char *name);/**<get element by name, searches sub elements as well*/
+	struct Element_S *(*get_by_name)(struct Element_S *element, char *name);/**<get element by name, searches sub elements as well*/	
 	void *data;                 /**<custom element data*/
 };
 

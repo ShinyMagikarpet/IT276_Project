@@ -58,6 +58,9 @@ void gf2d_element_draw(Element *e, Vector2D offset)
 	{
 		return;
 	}
+	//TODO: code here to prevent an element from drawing
+	if (e->state == 0)
+		return;
 	if (e->draw)e->draw(e, offset);
 	//    gf2d_rect_set(rect,offset.x + e->bounds.x,offset.y + e->bounds.y,e->bounds.w,e->bounds.h);
 	 //   gf2d_rect_draw(rect,gf2d_color8(100,255,100,255));
@@ -144,7 +147,7 @@ Element *gf2d_element_load_from_config(SJson *json, Element *parent, Window *win
 	sj_get_integer_value(value, &e->index);
 
 	value = sj_object_get_value(json, "state");
-	sj_get_integer_value(value, &e->index);
+	sj_get_integer_value(value, &e->state);
 
 	value = sj_object_get_value(json, "color");
 	vector4d_set(vector, 255, 255, 255, 255);

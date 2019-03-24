@@ -7,6 +7,9 @@
 
 #define PLAYER_VELOCITY 100
 
+//Mask to prevent from player type shapes from hitting self
+#define PLAYER_MASK_BIT (1<<31)
+
 Entity *player_new(cpVect position, cpSpace *space);
 
 Entity *player_get();

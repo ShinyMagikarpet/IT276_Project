@@ -14,6 +14,7 @@
 
 #define SPACE_STEP 1.0 / 60.0 /**Steps for space*/
 
+
 /**
 * @brief Initializes chipmunk space
 * @param Chipmunk space

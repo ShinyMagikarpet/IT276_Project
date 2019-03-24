@@ -24,7 +24,7 @@ Entity *bug_new(cpVect position, cpSpace *space) {
 	bug->cpbody =  cpBodyNew(100, INFINITY);
 	cpBodySetPosition(bug->cpbody, position);
 	bug->cpbody->userData = bug;
-	bug->cpshape = cpCircleShapeNew(bug->cpbody, 64, cpv(64, 64));
+	bug->cpshape = cpCircleShapeNew(bug->cpbody, 32, cpv(64, 64));
 	cpSpaceAddBody(space, bug->cpbody);
 	cpSpaceAddShape(space, bug->cpshape);
 	bug->cpshape->type = MONSTER_TYPE;
@@ -38,7 +38,7 @@ Entity *bug_new(cpVect position, cpSpace *space) {
 	bug->think = bug_think;
 	bug->update = bug_update;
 	bug->damage = bug_damage;
-	bug->shape = gf2d_shape_circle(64, 64, 50);
+	bug->shape = gf2d_shape_circle(64, 64, 32);
 	gf2d_line_cpy(bug->name, "Bug");
 	gf2d_rpg_set_stats(bug, 3, 1, 1, 1);
 	bug->rpg.xp = 100;

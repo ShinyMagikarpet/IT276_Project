@@ -29,25 +29,25 @@ endFrame: 12
 frameRate: 0.05
 type: loop
 
-action: walk_up
+action: move_up
 startFrame: 8
 endFrame: 12
 frameRate: 0.05
 type: loop
 
-action: walk_right
+action: move_right
 startFrame: 4
 endFrame: 8
 frameRate: 0.05
 type: loop
 
-action: walk_down
+action: move_down
 startFrame: 0
 endFrame: 4
 frameRate: 0.05
 type: loop
 
-action: walk_left
+action: move_left
 startFrame: 12
 endFrame: 16
 frameRate: 0.05
@@ -55,24 +55,24 @@ type: loop
 
 action: attack_down
 startFrame: 44
-endFrame: 48
+endFrame: 47
 frameRate: 0.1
 type: pass
 
 action: attack_right
 startFrame: 48
-endFrame: 52
+endFrame: 51
 frameRate: 0.1
 type: pass
 
 action: attack_up
 startFrame: 52
-endFrame: 56
+endFrame: 55
 frameRate: 0.1
 type: pass
 
 action: attack_left
 startFrame: 56
-endFrame: 60
+endFrame: 59
 frameRate: 0.1
 type: pass

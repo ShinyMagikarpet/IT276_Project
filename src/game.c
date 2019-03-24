@@ -12,6 +12,7 @@
 #include "gf2d_transition.h"
 #include "save.h"
 #include "Player.h"
+#include "pause.h"
 
 static int done = 0;
 static int pause = 0;
@@ -28,6 +29,7 @@ int main(int argc, char * argv[])
     float mf = 0;
     Sprite *mouse;
     Vector4D mouseColor = {255,100,255,200};
+	Element *element = NULL, *cursor = NULL;
 
 	LevelInfo *linfo = NULL;
 
@@ -68,11 +70,6 @@ int main(int argc, char * argv[])
     //sprite = gf2d_sprite_load_image("images/menu3.png");
     //mouse = gf2d_sprite_load_all("images/pointer.png",32,32,16,0);
 
-	cpSpace *space = cpSpaceNew();
-	cpBody *staticbody = cpBodyNewStatic();
-
-	cpBB bb1 = cpBBNew(32, 32, 32, 32);
-	cpShape *shape = cpSpaceAddShape(space, cpBoxShapeNew2(staticbody, bb1, 1));
     /*main game loop*/
     while(!done)
     {
@@ -124,9 +121,11 @@ int main(int argc, char * argv[])
 			transition_window_to_black();
 			gf2d_window_free_all();
 			window = gf2d_window_load("config/pause_window.cfg");
-			window = gf2d_window_load("config/pause_stats.cfg");
+			element = gf2d_list_get_nth(window->elements, 0);
+			cursor = element->get_by_name(element, "cursor");
 			
 		}
+		
 
 		if (gf2d_input_command_pressed("save")) {
 			SaveInfo save;
@@ -139,11 +138,13 @@ int main(int argc, char * argv[])
 			save_load_in("save/save.bin");
 		}
 			
+
 		while (pause) {
 			gf2d_input_update();
 			gf2d_windows_update_all();
 			gf2d_windows_draw_all();
 			gf2d_grahics_next_frame();
+			
 			
 			if (gf2d_input_command_pressed("pause")) {
 				pause = 0;
@@ -158,6 +159,76 @@ int main(int argc, char * argv[])
 				done = 1;
 			}
 
+			if (gf2d_input_command_pressed("ok")) {
+				if (element) {
+					slog("Element name: %s", element->name);
+				}
+			}
+
+			if (gf2d_input_command_pressed("move_down")) {
+				int i, j, count = gf2d_list_get_count(window->elements);
+				Element *new_element, *new_cursor;
+
+				if (!element) {
+					new_element = gf2d_list_get_nth(window->elements, 0);
+					element = new_element;
+					cursor = new_element->get_by_name(new_element, "cursor");
+					new_element = gf2d_list_get_nth(window->elements, element->index + 1);
+				}
+					
+				else {
+					new_element = gf2d_list_get_nth(window->elements, element->index + 1);
+				}
+					
+
+				new_cursor = new_element->get_by_name(new_element, "cursor");
+				//if (!cursor) old_element->get_by_name(old_element, "cursor");
+				if (!new_cursor)break;
+				for (i = new_element->index; i < count; i++) {
+					if (element->index < new_element->index) {
+						cursor->state = 0;
+						new_cursor->state = 1;
+						element = new_element;
+						cursor = new_cursor;
+						break;
+					}
+				}
+					
+				
+			}
+
+			if (gf2d_input_command_pressed("move_up")) {
+				int i, j, count = gf2d_list_get_count(window->elements);
+				Element *new_element, *new_cursor;
+
+				if (!element) {
+					new_element = gf2d_list_get_nth(window->elements, 0);
+					element = new_element;
+					cursor = new_element->get_by_name(new_element, "cursor");
+				}
+
+				else {
+					new_element = gf2d_list_get_nth(window->elements, element->index - 1);
+					if (!new_element)break;
+				}
+
+
+				new_cursor = new_element->get_by_name(new_element, "cursor");
+				//if (!cursor) old_element->get_by_name(old_element, "cursor");
+				if (!new_cursor)break;
+				for (i = new_element->index; i < count; i--) {
+					if (element->index > new_element->index) {
+						cursor->state = 0;
+						new_cursor->state = 1;
+						element = new_element;
+						cursor = new_cursor;
+						break;
+					}
+				}
+
+
+			}
+
 		}
 
 		if (gf2d_input_command_pressed("exit")) {
@@ -170,8 +241,9 @@ int main(int argc, char * argv[])
     slog("---==== END ====---");
 	gf2d_input_commands_purge();
 	level_info_free(linfo);
-	cpSpaceEachShape(space, (cpSpaceShapeIteratorFunc)free_all_shapes, NULL);
-	cpSpaceEachBody(space, (cpSpaceBodyIteratorFunc)free_all_bodies, NULL);
+	
+	cpSpaceEachShape(get_space(), (cpSpaceShapeIteratorFunc)free_all_shapes, NULL);
+	cpSpaceEachBody(get_space(), (cpSpaceBodyIteratorFunc)free_all_bodies, NULL);
 	level_clear();
 	gf2d_window_free_all();
 	//save_write_out("config/save.cfg");

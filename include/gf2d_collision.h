@@ -7,12 +7,6 @@
 #include "gf2d_text.h"
 #include "gf2d_body.h"
 
-#define ALL_LAYERS 0xffffffff
-#define WORLD_LAYER 1
-#define PICKUP_LAYER 2
-#define PLAYER_LAYER 4
-#define MONSTER_LAYER 8
-
 typedef struct Collision_S Collision;
 
 

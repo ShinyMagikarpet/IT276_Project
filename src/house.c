@@ -50,7 +50,7 @@ Entity *house_new(cpVect position, cpSpace *space, const char *nextLevel, const 
 
 	//Render
 	vector2d_copy(house->position, position);
-	gf2d_actor_load(&house->actor, "actors/house.actor");
+	gf2d_actor_load(&house->actor, "actor/house.actor");
 	gf2d_actor_set_action(&house->actor, "idle");
 	vector2d_copy(house->scale, house->actor.al->scale);
 	

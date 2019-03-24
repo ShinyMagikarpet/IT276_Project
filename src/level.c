@@ -497,19 +497,6 @@ int body_body_touch(Body *self, Body *other, Collision *collision)
 }
 
 
-
-
-void level_remove_entity(Entity *ent)
-{
-	if (!ent)return;
-	if (!gamelevel.space)
-	{//nothing to do
-		return;
-	}
-	gf2d_space_remove_body(gamelevel.space, &ent->body);
-}
-
-
 void level_add_entity(Entity *ent)
 {
 	if (!ent)return;
