@@ -394,7 +394,7 @@ void player_think(Entity *self) {
 		
 		Item *item = get_item_by_index(player->rpg.inventory[3]);
 		if(item)
-			item->use(self, item);
+			item->use(self, item, 3);
 	}
 
 	//DEBUG

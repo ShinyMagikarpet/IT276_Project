@@ -23,7 +23,7 @@ Item *get_item_by_name(char *name) {
 	return NULL;
 }
 
-void *use_consumable(Entity *self, Item *item) {
+void *use_consumable(Entity *self, Item *item, int index) {
 
 	//Never done bitwise stuff before, just want to know how it works
 	if (item->flag &~ IT_COMSUMEABLES) {
@@ -35,6 +35,8 @@ void *use_consumable(Entity *self, Item *item) {
 	self->rpg.stats.hp_current += self->rpg.stats.hp_max * (float)(item->statvalue / 100.0);
 	if (self->rpg.stats.hp_current > self->rpg.stats.hp_max)
 		self->rpg.stats.hp_current = self->rpg.stats.hp_max;
+	self->rpg.inventory[index] = 0;
+	
 }
 
 void *equip_weapon(Entity *self, Item *item) {
@@ -56,7 +58,7 @@ void put_item_in_inventory(Item *item) {
 	for (i = 0; i < MAX_ITEMS; i++) {
 		if (player->rpg.inventory[i] > 0)continue;
 		player->rpg.inventory[i] = ITEM_INDEX(item);
-		item->index = i;
+		item->index = ITEM_INDEX(item);
 		return;
 	}
 

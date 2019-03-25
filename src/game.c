@@ -156,6 +156,13 @@ int main(int argc, char * argv[])
 				done = 1;
 			}
 
+			if (gf2d_input_command_pressed("case")) {
+				Entity *player = player_get();
+				Item *item = get_item_by_index(player->rpg.inventory[3]);
+				if (item)
+					item->use(player, item, 3);
+			}
+
 			if (gf2d_input_command_pressed("ok")) {
 				if (element) {
 					switch (element->index)
