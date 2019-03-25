@@ -46,4 +46,6 @@ void gf2d_element_load_list_from_config(Element *e, SJson *json, Window *win);
  */
 Element *gf2d_element_list_get_item_by_id(Element *e, int id);
 
+void gf2d_element_list_setup_inventory(Element *e);
+
 #endif

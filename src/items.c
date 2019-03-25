@@ -140,6 +140,17 @@ Item item_list[] = {
 	},
 	//Accessory
 	{
+		"Gold Pendant",
+		0,
+		IT_ACCESSORY,
+		0,
+		0,
+		NULL,
+		equip_accessory,
+		NULL,
+		NULL
+	},
+	{
 		"Sapphire Pendant",
 		0,
 		IT_ACCESSORY,

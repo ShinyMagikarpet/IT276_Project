@@ -225,7 +225,7 @@ void gf2d_element_load_label_from_config(Element *e, SJson *json)
 }
 
 void change_text_based_on_name(LabelElement *label) {
-	int playerStat;
+	int playerStat, player_equipment;
 	char buffer[0x200];
 	Entity *player = player_get();
 
@@ -245,15 +245,18 @@ void change_text_based_on_name(LabelElement *label) {
 	}
 	else if (strcmp(label->name, "STR") == 0) {
 		playerStat = player->rpg.stats.str;
-		snprintf(buffer, sizeof(buffer), "%s: %i", label->name, playerStat);
+		player_equipment = player->rpg.equipped_weapon->statvalue;
+		snprintf(buffer, sizeof(buffer), "%s: %i + %i", label->name, playerStat, player_equipment);
 	}
 	else if (strcmp(label->name, "DEF") == 0) {
 		playerStat = player->rpg.stats.def;
-		snprintf(buffer, sizeof(buffer), "%s: %i", label->name, playerStat);
+		player_equipment = player->rpg.equipped_armor->statvalue;
+		snprintf(buffer, sizeof(buffer), "%s: %i + %i", label->name, playerStat, player_equipment);
 	}
 	else if (strcmp(label->name, "AGI") == 0) {
 		playerStat = player->rpg.stats.agil;
-		snprintf(buffer, sizeof(buffer), "%s: %i", label->name, playerStat);
+		player_equipment = player->rpg.equipped_accessory->statvalue;
+		snprintf(buffer, sizeof(buffer), "%s: %i + %i", label->name, playerStat, player_equipment);
 	}
 	else if (strcmp(label->name, "Next") == 0) {
 		playerStat = xp_remaining(player->rpg.level, player->rpg.xp);

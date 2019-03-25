@@ -77,6 +77,11 @@ Entity *player_new(cpVect position, cpSpace *space) {
 		item = get_item_by_name("Leather Armor");
 		player->rpg.equipped_armor = item;
 		put_item_in_inventory(item);
+		item = get_item_by_name("Gold Pendant");
+		player->rpg.equipped_accessory = item;
+		put_item_in_inventory(item);
+		item = get_item_by_name("Potion");
+		put_item_in_inventory(item);
 	}
 	else {
 		player->rpg = rpg;
@@ -387,7 +392,7 @@ void player_think(Entity *self) {
 
 	if (gf2d_input_command_pressed("case")) {
 		
-		Item *item = get_item_by_index(player->rpg.inventory[2]);
+		Item *item = get_item_by_index(player->rpg.inventory[3]);
 		if(item)
 			item->use(self, item);
 	}
@@ -412,7 +417,7 @@ void player_think(Entity *self) {
 	if (keys[SDL_SCANCODE_2]) {
 		Item *item;
 
-		item = get_item_by_index(11);
+		item = get_item_by_index(12);
 		put_item_in_inventory(item);
 
 		item = get_item_by_index(7);
@@ -424,8 +429,8 @@ void player_think(Entity *self) {
 	if (keys[SDL_SCANCODE_3]) {
 
 		//slog("Item retrieved: %s", item->name);
-		Item *item = get_item_by_index(player->rpg.inventory[2]);
-		item->use(self, item);
+		//Item *item = get_item_by_index(player->rpg.inventory[3]);
+		//item->use(self, item);
 
 	}
 

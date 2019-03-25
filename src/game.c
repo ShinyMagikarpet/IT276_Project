@@ -12,7 +12,6 @@
 #include "gf2d_transition.h"
 #include "save.h"
 #include "Player.h"
-#include "pause.h"
 
 static int done = 0;
 static int pause = 0;
@@ -125,7 +124,6 @@ int main(int argc, char * argv[])
 			cursor = element->get_by_name(element, "cursor");
 			
 		}
-		
 
 		if (gf2d_input_command_pressed("save")) {
 			SaveInfo save;
@@ -138,7 +136,6 @@ int main(int argc, char * argv[])
 			save_load_in("save/save.bin");
 		}
 			
-
 		while (pause) {
 			gf2d_input_update();
 			gf2d_windows_update_all();
@@ -161,7 +158,34 @@ int main(int argc, char * argv[])
 
 			if (gf2d_input_command_pressed("ok")) {
 				if (element) {
-					slog("Element name: %s", element->name);
+					switch (element->index)
+					{
+					case 0: {
+						pause = 0;
+						slog("unpaused");
+						transition_window_to_black();
+						gf2d_window_free_all();
+						window = gf2d_window_load("config/testwindow.cfg");
+						break;
+					}
+					case 4: {
+						pause = 0;
+						done = 1;
+						break;
+					}
+					case 2: {
+						SaveInfo save;
+						Entity *player = player_get();
+						save.player.rpg = player->rpg;
+						save_write_out(save, "save/save.bin");
+						break;
+					}
+					case 3: {
+						save_load_in("save/save.bin");
+					}
+					default:
+						break;
+					}
 				}
 			}
 

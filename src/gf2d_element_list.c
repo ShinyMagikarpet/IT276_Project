@@ -2,6 +2,8 @@
 #include <stdio.h>
 #include "gf2d_element_list.h"
 #include "simple_logger.h"
+#include "Player.h"
+#include "gf2d_element_label.h"
 
 Vector2D gf2d_element_get_item_position(Element *element, int i)
 {
@@ -256,11 +258,51 @@ void gf2d_element_load_list_from_config(Element *e, SJson *json, Window *win)
 	value = sj_object_get_value(json, "elements");
 	count = sj_array_get_count(value);
 
+	
+	
 	for (i = 0; i < count; i++)
 	{
 		item = sj_array_get_nth(value, i);
 		if (!item)continue;
 		gf2d_element_list_add_item(e, gf2d_element_load_from_config(item, e, win));
 	}
+
+	//This is called after to get necessary elements from json
+	if (strcmp(e->name, "inv_list") == 0) {
+		gf2d_element_list_setup_inventory(e);
+	}
+	
+	
+}
+
+void gf2d_element_list_setup_inventory(Element *e) {
+	//How to get list info 
+	int i, style = FT_Normal;
+	Element *item;
+	char *text;
+	Color color = { 210, 210, 210, 255, 1 };
+	Rect bound = { 10, 0, 100, 32 };
+	Entity *player = player_get();
+	Item *equipment;
+	
+	for (i = 0; i < MAX_ITEMS; i++) {
+		
+		equipment = get_item_by_index(player->rpg.inventory[i]);
+		if (!equipment)break;
+		item = gf2d_element_new_full(e, i, "item", bound, color, 1);
+		text = equipment->name;
+		gf2d_element_make_label(item, gf2d_element_label_new_full("item", text, color, style, LJ_Left, 0));
+		gf2d_element_list_add_item(e, item);
+
+	}
+	//TODO: set bounds and other needed information for label element
+
+	ListElement *list = (ListElement *)e->data;
+	if (!list)slog("no list found???");
+	Element *test = gf2d_list_get_nth(list->list, 1);
+	slog("type 1 = %i", test->type);
+	//test->color.r = 255;
+	//element = new_element;
+	//new_cursor = new_element->get_by_name(new_element, "cursor");
 }
 /*eol@eof*/
