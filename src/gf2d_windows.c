@@ -510,8 +510,8 @@ void transition_window_to_normal() {
 	int i;
 	Window *win = gf2d_window_load("config/transition_window.cfg");
 	int alpha = 255;
-	for (i = 0; i < 80; i++) {
-		alpha -= 255 / 80;
+	for (i = 0; i < 60; i++) {
+		alpha -= 255 / 60;
 		if (alpha < 0)
 			alpha = 0;
 		win->color = vector4d(0, 0, 0, alpha);

@@ -1,0 +1,11 @@
+sprite: images/generic-rpg-treasure-closed.png
+frameWidth: 25
+frameHeight: 21
+framesPerLine: 1
+scale: 1, 1
+
+action: idle
+startFrame: 0
+endFrame: 1
+frameRate: 0.1
+type: loop

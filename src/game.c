@@ -157,10 +157,13 @@ int main(int argc, char * argv[])
 			}
 
 			if (gf2d_input_command_pressed("case")) {
-				Entity *player = player_get();
+				/*Entity *player = player_get();
 				Item *item = get_item_by_index(player->rpg.inventory[3]);
 				if (item)
-					item->use(player, item, 3);
+					item->use(player, item, 3);*/
+
+				slog("window count: %i", window->elements->count);
+				slog("window size: %i", window->elements->size);
 			}
 
 			if (gf2d_input_command_pressed("ok")) {
