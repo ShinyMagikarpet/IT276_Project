@@ -2,7 +2,7 @@ sprite: images/generic-rpg-treasure-closed.png
 frameWidth: 25
 frameHeight: 21
 framesPerLine: 1
-scale: 1, 1
+scale: 1.2, 1.2
 
 action: idle
 startFrame: 0

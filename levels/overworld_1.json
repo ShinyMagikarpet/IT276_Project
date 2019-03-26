@@ -67,8 +67,8 @@
         "position": [ 128, 128 ]
       },
       {
-        "name": "player_start",
-        "position": [ 128, 128 ]
+        "name": "chest",
+        "position": [ 10, 10 ]
       },
       {
         "name": "bug_hive_start",

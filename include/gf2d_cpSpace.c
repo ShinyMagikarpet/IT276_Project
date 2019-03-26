@@ -36,6 +36,11 @@ cpSpace* gf2d_cpSpace_init(void) {
 	cpCollisionHandler *player_to_transition_handler = cpSpaceAddCollisionHandler(newSpace, PLAYER_TYPE, TRANSITION_TYPE);
 	player_to_transition_handler->beginFunc = (cpCollisionBeginFunc)player_touch_transition_begin;
 	return newSpace;
+
+	//Handles Collision between player and interactibles
+	//cpCollisionHandler *player_to_transition_handler = cpSpaceAddCollisionHandler(newSpace, PLAYER_TYPE, INTERACTABLE_TYPE);
+	//player_to_transition_handler->beginFunc = (cpCollisionBeginFunc)player_touch_interactiable_begin;
+	//return newSpace;
 }
 
 cpSpace *get_space() {

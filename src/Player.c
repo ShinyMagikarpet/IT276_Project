@@ -335,8 +335,15 @@ void player_think(Entity *self) {
 					}
 					
 				}
-				else if (hit.shape->type == PLAYER_TYPE) {
-					slog("stop hitting yourself");
+				else if (hit.shape->type == INTERACTABLE_TYPE) {
+					Entity *chest = hit.shape->body->userData;
+					if (chest) {
+						if (chest->rpg.selected_item != 0) {
+							put_item_in_inventory(get_item_by_index(chest->rpg.selected_item));
+							chest->rpg.selected_item = 0;
+						}
+						
+					}
 					
 				}
 					
