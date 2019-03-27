@@ -6,6 +6,9 @@
 #include "simple_logger.h"
 #include "house.h"
 #include "chest.h"
+#include "blue_slime.h"
+#include "fox.h"
+#include "red_slime.h"
 
 static Spawn spawnlist[] =
 {
@@ -28,6 +31,18 @@ static Spawn spawnlist[] =
 	{
 		"chest",
 		chest_spawn
+	},
+	{
+		"blue_slime",
+		blue_slime_spawn
+	},
+	{
+		"fox",
+		fox_spawn
+	},
+	{
+		"red_slime",
+		red_slime_spawn
 	},
 	{0}
 };

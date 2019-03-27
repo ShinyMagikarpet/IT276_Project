@@ -33,7 +33,7 @@ Entity *bug_hive_new(cpVect position, cpSpace *space) {
 	gf2d_line_cpy(bug_hive->name, "bug_hive");
 	gf2d_rpg_set_stats(bug_hive, 15, 0, 1, 0);
 	bug_hive->cooldown = 0;
-	bug_hive->rpg.xp = 1000;
+	bug_hive->rpg.xp = 50;
 
 	//Functions
 	bug_hive->think = bug_hive_think;
@@ -71,7 +71,7 @@ void bug_hive_think(Entity *self) {
 	if (cpvnear(cpBodyGetPosition(self->cpbody), cpBodyGetPosition(player->cpbody), 250) && self->cooldown == 0) {
 
 		bug_hive_spawn_bug(self);
-		self->cooldown = 10000;
+		self->cooldown = 1000;
 
 	}
 }

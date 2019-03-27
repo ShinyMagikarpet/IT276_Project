@@ -79,6 +79,10 @@
         "position": [ 800, 600 ]
       },
       {
+        "name": "red_slime",
+        "position":  [200, 1200]
+      },
+      {
         "name": "house",
         "position": [ 500, 100 ],
         "id": 1,

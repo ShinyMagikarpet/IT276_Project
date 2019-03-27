@@ -59,18 +59,17 @@
     "spawnList": [
       {
         "name": "player_start",
-        "position": [ 720, 1300 ]
+        "position": [ 650, 1350 ]
       },
       {
-        "name": "house",
-        "position": [ 500, 200 ],
-        "id": 1,
-        "args": {
-          "level": "home_level.json",
-          "target": "house",
-          "targetId": 1
-        }
+        "name": "blue_slime",
+        "position": [ 400, 700 ]
+      },
+      {
+        "name": "fox",
+        "position":  [1100, 400]
       }
+      
     ],
     "transitionList": [
       {

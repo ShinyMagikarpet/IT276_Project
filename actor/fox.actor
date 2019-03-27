@@ -1,0 +1,11 @@
+sprite: images/fox-run.png
+frameWidth: 24
+frameHeight: 15
+framesPerLine: 6
+scale: 2, 2
+
+action: idle
+startFrame: 0
+endFrame: 5
+frameRate: 0.08
+type: loop

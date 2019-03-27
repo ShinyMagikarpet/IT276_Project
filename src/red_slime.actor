@@ -1,0 +1,11 @@
+sprite: images/orange-blue.png
+frameWidth: 16
+frameHeight: 24
+framesPerLine: 4
+scale: 1.8, 1.8
+
+action: idle
+startFrame: 0
+endFrame: 3
+frameRate: 0.08
+type: loop

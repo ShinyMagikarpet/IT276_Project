@@ -313,7 +313,7 @@ void player_think(Entity *self) {
 			}
 
 			//Cast out a ray to check if we hit a monster
-			if (cpSpaceSegmentQueryFirst(self->cpbody->space, cpv(self->cpbody->p.x + 32, self->cpbody->p.y + 32), cpv(self->cpbody->p.x + 32 + offsetRayX, self->cpbody->p.y + 32 + offsetRayY), 2, PLAYER_FILTER, &hit)) {
+			if (cpSpaceSegmentQueryFirst(self->cpbody->space, cpv(self->cpbody->p.x + 32, self->cpbody->p.y + 32), cpv(self->cpbody->p.x + 32 + offsetRayX, self->cpbody->p.y + 32 + offsetRayY), 10, PLAYER_FILTER, &hit)) {
 
 				if (hit.shape->type == MONSTER_TYPE) {
 					Entity *inflicted = hit.shape->body->userData;
@@ -321,12 +321,12 @@ void player_think(Entity *self) {
 						slog("Hit the monster!");
 						inflicted->cpbody->p = cpvadd(inflicted->cpbody->p, cpv(50 * -hit.normal.x, 50 * -hit.normal.y));
 						inflicted->rpg.stats.hp_current -= self->damage(self, inflicted);
+						//if inclicted dies, reward player
 						if (inflicted->rpg.stats.hp_current <= 0) {
 
 							give_player_xp(self, inflicted);
 							
-							//Makes sure that the process is handled after space step to avoid
-							//body/shape removal errors
+							//Makes sure that the process is handled after space step to avoid body/shape removal errors
 							player_touch_monster_postsolve(NULL, self->cpbody->space, inflicted);
 						}
 						
@@ -335,11 +335,14 @@ void player_think(Entity *self) {
 					}
 					
 				}
+				//if chest
 				else if (hit.shape->type == INTERACTABLE_TYPE) {
 					Entity *chest = hit.shape->body->userData;
 					if (chest) {
+						//check if the chest has a legal item as 0 is null
 						if (chest->rpg.selected_item != 0) {
 							put_item_in_inventory(get_item_by_index(chest->rpg.selected_item));
+							//take away chest contents
 							chest->rpg.selected_item = 0;
 						}
 						
