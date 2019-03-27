@@ -314,7 +314,6 @@ void player_think(Entity *self) {
 							player_touch_monster_postsolve(NULL, self->cpbody->space, inflicted);
 						}
 						
-
 							
 					}
 					

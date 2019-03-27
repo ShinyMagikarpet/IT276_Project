@@ -7,6 +7,9 @@
 
 #include <SDL.h>
 
+/**
+ * @brief this structure describes the action type
+ */
 typedef enum
 {
 	AT_NONE,
@@ -14,6 +17,9 @@ typedef enum
 	AT_PASS
 }ActionType;
 
+/**
+ * @brief this structure returns the type of action performed
+ */
 typedef enum
 {
 	ART_ERROR,

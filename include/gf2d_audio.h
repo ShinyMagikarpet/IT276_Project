@@ -9,11 +9,11 @@
 
 typedef struct
 {
-	Uint32 ref_count;
+	Uint32 ref_count;	/**<the reference count*/
 	TextLine filepath;  /**<the sound file that was loaded*/
-	Mix_Chunk *sound;
-	float volume;
-	int defaultChannel;
+	Mix_Chunk *sound;   /**<the pointer to the sound*/
+	float volume;		/**<the volume to be used for sound*/
+	int defaultChannel; /**<the channel the sound will be player on*/
 }Sound;
 
 /**defaultChannel

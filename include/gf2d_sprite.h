@@ -6,15 +6,18 @@
 #include "gf2d_vector.h"
 #include "gf2d_text.h"
 
+/**
+* @brief this structure will hold sprite information
+*/
 typedef struct Sprite_S
 {
-	int ref_count;
-	TextLine filepath;
-	SDL_Texture *texture;
-	SDL_Surface *surface;
-	Uint32 frames_per_line;
-	Uint32 frame_w, frame_h;
-	Vector2D image_size;
+	int ref_count;				/**<the count of references*/
+	TextLine filepath;			/**<the filename*/
+	SDL_Texture *texture;		/**<the pointer to the texture*/
+	SDL_Surface *surface;		/**<the pointer to the surface textures*/
+	Uint32 frames_per_line;		/**<number of frames per line*/
+	Uint32 frame_w, frame_h;	/**<frame width, frame height*/
+	Vector2D image_size;		/**<size of the image*/
 }Sprite;
 
 /**

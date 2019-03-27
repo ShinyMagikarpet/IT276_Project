@@ -48,6 +48,9 @@ Transition *gf2d_transition_get_by_value(int value);
 */
 Transition *gf2d_check_if_duplicate(Transition *self);
 
+/**
+* @brief names all transitions in transition manager
+*/
 void name_all_transitions();
 
 

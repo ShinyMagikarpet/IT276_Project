@@ -31,7 +31,6 @@ int main(int argc, char * argv[])
 	Element *element = NULL, *cursor = NULL;
 
 	LevelInfo *linfo = NULL;
-
 	//Chipmunk Physics
 	//cpSpace *space = gf2d_cpSpace_init();
 
@@ -80,25 +79,15 @@ int main(int argc, char * argv[])
         mf+=0.1;
         if (mf >= 16.0)mf = 0;
 		gf2d_input_update();
-		//gf2d_entity_think_all();
-		//gf2d_entity_update_all();
         
         gf2d_graphics_clear_screen();// clears drawing buffers
-		// all drawing should happen betweem clear_screen and next_frame
-        //backgrounds drawn first
-         //gf2d_sprite_draw_image(sprite,vector2d(0,0));
 
 		//Update and draw level	
 
 		level_draw();
 		level_update();
-		//Draw Entity
-		//gf2d_entity_draw_all();
 		gf2d_windows_update_all();
 		gf2d_windows_draw_all();
-		//Deprecated as it is now updated in level
-		//gf2d_cpSpace_update(space);
-		//gf2d_sprite_draw_image(sprite, vector2d(0, SCREENHEIGHT - 160), vector2d(1, 1));
             //UI elements last
            /* gf2d_sprite_draw(
                 mouse,
@@ -265,7 +254,7 @@ int main(int argc, char * argv[])
 			}
 
 		}
-
+		
 		if (gf2d_input_command_pressed("exit")) {
 			pause = 0;
 			done = 1;

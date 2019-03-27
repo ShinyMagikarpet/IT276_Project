@@ -5,6 +5,9 @@
 #include "gf2d_text.h"
 #include "gf2d_list.h"
 
+/**
+* @brief this structure tells us the state of the input keys
+*/
 typedef enum {
 
 		IE_Idle = 0,
@@ -14,6 +17,9 @@ typedef enum {
 
 }InputEvent;
 
+/**
+* @brief this holds all the information for the input
+*/
 typedef struct {
 
 	TextLine command;

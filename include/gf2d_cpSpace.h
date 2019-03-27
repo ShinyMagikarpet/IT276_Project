@@ -75,11 +75,6 @@ cpBool monster_touch_monster_begin(cpArbiter *arb, cpSpace *space, void *data);
 cpBool player_touch_transition_begin(cpArbiter *arb, cpSpace *space, void *data);
 
 /**
-* @brief Function to be called after player touches interactable
-*/
-cpBool player_touch_interactiable_begin(cpArbiter *arb, cpSpace *space, void *data);
-
-/**
 * @brief safely removes shapes and bodies after space step
 * @param space the space where collision is happening
 * @param shape to pull transition data
