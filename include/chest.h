@@ -5,14 +5,14 @@
 #include "simple_logger.h"
 
 /**
-* @brief create new bug hive entity
+* @brief create new chest entity
 * @param position on where to create
 * @param space to place it in
 */
 Entity *chest_new(cpVect position, cpSpace *space);
 
 /**
-* @brief spawn new bug hive
+* @brief spawn new chest
 * @param position on where to create
 * @param json arguments
 * @param space to place it in

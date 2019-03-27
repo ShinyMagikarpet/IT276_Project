@@ -135,7 +135,8 @@ int main(int argc, char * argv[])
 		if (gf2d_input_command_pressed("load")) {
 			save_load_in("save/save.bin");
 		}
-			
+		
+		//Pause loop
 		while (pause) {
 			gf2d_input_update();
 			gf2d_windows_update_all();
@@ -161,11 +162,9 @@ int main(int argc, char * argv[])
 				Item *item = get_item_by_index(player->rpg.inventory[3]);
 				if (item)
 					item->use(player, item, 3);*/
-
-				slog("window count: %i", window->elements->count);
-				slog("window size: %i", window->elements->size);
 			}
 
+			//Only way I could think of to check what the player is selecting in menu
 			if (gf2d_input_command_pressed("ok")) {
 				if (element) {
 					switch (element->index)
@@ -199,6 +198,7 @@ int main(int argc, char * argv[])
 				}
 			}
 
+			//move the cursor position down
 			if (gf2d_input_command_pressed("move_down")) {
 				int i, j, count = gf2d_list_get_count(window->elements);
 				Element *new_element, *new_cursor;
@@ -231,6 +231,7 @@ int main(int argc, char * argv[])
 				
 			}
 
+			//move the cursor up
 			if (gf2d_input_command_pressed("move_up")) {
 				int i, j, count = gf2d_list_get_count(window->elements);
 				Element *new_element, *new_cursor;

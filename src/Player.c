@@ -10,7 +10,7 @@
 
 
 static Entity *player = NULL;
-static RpgElements rpg;
+static RpgElements rpg; /**< used to transfer player data when loaded */
 static cpFloat moveX;
 static cpFloat moveY;
 static cpBool musicpause = cpFalse;
@@ -20,7 +20,6 @@ cpShapeFilter PLAYER_FILTER = { CP_NO_GROUP, PLAYER_MASK_BIT, PLAYER_MASK_BIT };
 cpShapeFilter NOT_PLAYER_FILTER = { CP_NO_GROUP, ~PLAYER_MASK_BIT, ~PLAYER_MASK_BIT };
 
 void player_think(Entity *self);
-int player_touch(Entity *self);
 void player_update(Entity *self);
 void player_update_velocity(cpBody *body, cpVect gravity, cpFloat damping, cpFloat dt);
 int cpTouch_player(cpBody *self, cpBody *other);
@@ -95,7 +94,6 @@ Entity *player_new(cpVect position, cpSpace *space) {
 
 	//player functions
 	player->think = player_think;
-	player->touch = player_touch;
 	player->update = player_update;
 	player->damage = player_damage;
 	player->free = player_free;
@@ -165,20 +163,6 @@ int player_damage(Entity *attacker, Entity *inflicted) {
 	
 	damage = (attacker->rpg.stats.str + attacker->rpg.equipped_weapon->statvalue);
 	return damage;
-}
-
-
-int player_touch(Entity *self){
-
-	//When player touches something
-	//self->cpbody->v = cpvzero;
-	if(player->cpbody->userData == NULL)
-		slog("TOUCHING GROUND");
-	else {
-		slog("TOUCHING MONSTER");
-	}
-	return 0;
-
 }
 
 void player_update_velocity(cpBody *body, cpVect gravity, cpFloat damping, cpFloat dt) {

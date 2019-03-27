@@ -40,11 +40,11 @@ typedef struct{
 	int xp;			/**<xp of entity*/
 	int level;		/**<level of entity*/
 	Stats stats;	/**<stat struct for entity*/
-	Item *equipped_weapon;
-	Item *equipped_armor;
-	Item *equipped_accessory;
-	int selected_item;
-	int inventory[MAX_ITEMS];
+	Item *equipped_weapon; /**<weapon currently equipped*/
+	Item *equipped_armor; /**<armor currently equipped*/
+	Item *equipped_accessory; /**<accessory currently equipped*/
+	int selected_item; /**<item the entity is holding/selecting*/
+	int inventory[MAX_ITEMS]; /**<inventory for the player but could also be used as enemy drop table*/
 
 }RpgElements;
 
@@ -89,8 +89,8 @@ typedef struct Entity_S {
 	TextLine    targetEntity;
 	Uint32      targetId;
 
-	//RPG elements that will tranfer from level to level
-	RpgElements rpg;
+	
+	RpgElements rpg;	/**<all the rpg elements that an entity will need*/
 
 	float attack_rate;	/**<rate of which an entity can attack*/
 	float cooldown;		/**<cooldown for attacks*/
@@ -101,10 +101,21 @@ typedef struct Entity_S {
 
 } Entity;
 
+/**
+* @brief intitalizes entity system
+* @param maxEntites Number of entities that can be in the system
+*/
 void gf2d_entity_system_init(Uint32 maxEntities);
 
+/**
+* @brief creates new entity
+*/
 Entity *gf2d_entity_new();
 
+/**
+* @brief frees entity
+* @param self Entity to be freed
+*/
 void gf2d_entity_free(Entity *self);
 
 /**
@@ -118,19 +129,24 @@ void gf2d_entity_free_physics(Entity *self);
 */
 void gf2d_entity_free_all();
 
+/**
+* @brief draw entity
+*/
 void gf2d_entity_draw(Entity *self);
 
+/**
+* @brief draw all entities
+*/
 void gf2d_entity_draw_all();
 
 /**
 * @brief Draws the shape of an entity
-* @param The entity to be drawn
+* @param The entity shape to be drawn
 */
 void gf2d_entity_draw_shape(Entity *self);
 
 /**
 * @brief Draws the shape of all entities
-* @param The entity to be drawn
 */
 void gf2d_entity_draw_shape_all();
 

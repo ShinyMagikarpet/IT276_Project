@@ -456,7 +456,7 @@ void level_draw()
 	gf2d_sprite_draw_image(gamelevel.backgroundImage, vector2d(-cam.x, -cam.y), vector2d(1,1));
 	//gf2d_sprite_draw_image(gamelevel.tileLayer, vector2d(-cam.x, -cam.y), vector2d(2, 2)); //Changed last one to be scale
 	gf2d_entity_draw_all();
-	gf2d_entity_draw_shape_all();
+	//gf2d_entity_draw_shape_all();
 	if (!player)return;
 
 	//if (gamelevel.space)gf2d_space_draw(gamelevel.space,vector2d(-cam.x,-cam.y));
@@ -465,10 +465,6 @@ void level_draw()
 
 void level_update()
 {
-
-	//gf2d_entity_pre_sync_all();
-
-	//gf2d_entity_post_sync_all();
 
 	gf2d_entity_think_all();
 

@@ -188,10 +188,7 @@ void setup_boundaries(cpSpace *space) {
 
 void free_physics(cpSpace *space, Entity *self, void *data) {
 
-	slog("This function got called");
-	if (self) {
-		slog("Fuck you that's why");
-	}
+
 	cpSpaceRemoveShape(space, self->cpshape);
 	cpSpaceRemoveBody(space, self->cpbody);
 	cpShapeFree(self->cpshape);

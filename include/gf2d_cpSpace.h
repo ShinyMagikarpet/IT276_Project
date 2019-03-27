@@ -101,6 +101,12 @@ void free_all_shapes(cpShape *shape, void *data);
 */
 void free_all_bodies(cpBody *body, void *data);
 
+/**
+* @brief frees the physics of an entity
+* @param space Space in which the entity is from
+* @param self The entity to be freed
+* @param void pointer for extra info if needed
+*/
 void free_physics(cpSpace *space, Entity *self, void *data);
 
 
