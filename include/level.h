@@ -120,5 +120,11 @@ void free_space();
  */
 void level_transition(char *filename, const char *playerTarget, Uint32 targetId);
 
+/**
+* @brief gets information from jason file to make transition tiles
+* @param transitionList The list of transitions that can occur in a level from a json file
+* @param value The value that is used to identify which level to id with
+* @param shape The shape to store the data in
+*/
 void level_transition_data(SJson *transitionList, int value, cpShape *shape);
 #endif
