@@ -529,14 +529,10 @@ void level_transition(char *filename, const char *playerTarget, Uint32 targetId)
 	linfo = level_info_load(filepath);
 	if (!linfo)return;
 	level_init(linfo, 1);
+	//ID 9 is the black window, always call when transition_to_black() is called
+	//In this case, the function is called in cpSpace file and we clean up here
+	gf2d_window_free(get_window_get_by_id(9));
 
-	//target = gf2d_entity_get_by_name_id(targetname, id);
-	//if (!target)
-	{
-	//		slog("expected target %s, %i not found", target, id);
-	//		return;
-	}
-	//player_set_position(cpv(target->position.x, target->position.y - 16));
 }
 
 /*eol@eof*/

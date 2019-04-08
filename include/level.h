@@ -29,7 +29,7 @@ typedef struct
 	SJson      *spawnList;
 	int			*framesperline;		/**<how many tiles per line in set*/
 	Vector2D	backgroundSize;		/**<size of background image*/
-	SJson		*transitionList;			/**<data for level transitions*/
+	SJson		*transitionList;	/**<data for level transitions*/
 }LevelInfo;
 
 /**

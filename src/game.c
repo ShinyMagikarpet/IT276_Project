@@ -9,6 +9,7 @@
 #include "gf2d_draw.h"
 #include "gf2d_windows.h"
 #include "gf2d_elements.h"
+#include "gf2d_element_label.h"
 #include "gf2d_transition.h"
 #include "save.h"
 #include "Player.h"
@@ -29,6 +30,7 @@ int main(int argc, char * argv[])
     Sprite *mouse;
     Vector4D mouseColor = {255,100,255,200};
 	Element *element = NULL, *cursor = NULL;
+	Sound *menu_sound = NULL;
 
 	LevelInfo *linfo = NULL;
 	//Chipmunk Physics
@@ -49,7 +51,7 @@ int main(int argc, char * argv[])
     gf2d_sprite_init(512);
     SDL_ShowCursor(SDL_DISABLE);
 	gf2d_audio_init(256, 16, 4, 1, 1, 1);
-	gf2d_windows_init(128);
+	gf2d_windows_init(8);
 	gf2d_text_init("config/font.cfg");
 	gf2d_action_list_init(128);
 	gf2d_entity_system_init(128);
@@ -63,7 +65,6 @@ int main(int argc, char * argv[])
 	level_init(linfo, 1);
 
 	window = gf2d_window_load("config/testwindow.cfg");
-
     /*demo setup*/
     //sprite = gf2d_sprite_load_image("images/menu3.png");
     //mouse = gf2d_sprite_load_all("images/pointer.png",32,32,16,0);
@@ -83,7 +84,6 @@ int main(int argc, char * argv[])
         gf2d_graphics_clear_screen();// clears drawing buffers
 
 		//Update and draw level	
-
 		level_draw();
 		level_update();
 		gf2d_windows_update_all();
@@ -109,8 +109,10 @@ int main(int argc, char * argv[])
 			transition_window_to_black();
 			gf2d_window_free_all();
 			window = gf2d_window_load("config/pause_window.cfg");
+			gf2d_window_load("config/inventory_window.cfg");
 			element = gf2d_list_get_nth(window->elements, 0);
 			cursor = element->get_by_name(element, "cursor");
+			menu_sound = gf2d_sound_load("sounds/pop.ogg", 1.0, 0);
 			
 		}
 
@@ -132,13 +134,13 @@ int main(int argc, char * argv[])
 			gf2d_windows_draw_all();
 			gf2d_grahics_next_frame();
 			
-			
 			if (gf2d_input_command_pressed("pause")) {
 				pause = 0;
 				slog("unpaused");
 				transition_window_to_black();
 				gf2d_window_free_all();
 				window = gf2d_window_load("config/testwindow.cfg");
+				gf2d_sound_free(menu_sound);
 			}
 			//Quit game from pause
 			if (gf2d_input_command_pressed("exit")) {
@@ -147,10 +149,16 @@ int main(int argc, char * argv[])
 			}
 
 			if (gf2d_input_command_pressed("case")) {
-				/*Entity *player = player_get();
+				Entity *player = player_get();
+				Element *tempElement = element;
+				element = gf2d_element_get_by_id(element, 100 + 3);
+				gf2d_element_label_set_text(element, " ");
 				Item *item = get_item_by_index(player->rpg.inventory[3]);
 				if (item)
-					item->use(player, item, 3);*/
+					item->use(player, item, 3);
+				element = tempElement;
+				
+				
 			}
 
 			//Only way I could think of to check what the player is selecting in menu
@@ -166,10 +174,13 @@ int main(int argc, char * argv[])
 						window = gf2d_window_load("config/testwindow.cfg");
 						break;
 					}
-					case 4: {
-						pause = 0;
-						done = 1;
-						break;
+					case 1: {
+						window = get_window_get_by_id(2);
+						element = gf2d_list_get_nth(window->elements, 0);
+						if (window) {
+							window->state = 1;
+						}
+						slog("window element id: %i", element->index);
 					}
 					case 2: {
 						SaveInfo save;
@@ -180,6 +191,11 @@ int main(int argc, char * argv[])
 					}
 					case 3: {
 						save_load_in("save/save.bin");
+					}
+					case 4: {
+						pause = 0;
+						done = 1;
+						break;
 					}
 					default:
 						break;
@@ -217,6 +233,7 @@ int main(int argc, char * argv[])
 					}
 				}
 					
+				gf2d_sound_play(menu_sound, 0, 1.0, -1, -1);
 				
 			}
 
@@ -250,6 +267,7 @@ int main(int argc, char * argv[])
 					}
 				}
 
+				gf2d_sound_play(menu_sound, 0, 1.0, -1, -1);
 
 			}
 
@@ -265,7 +283,7 @@ int main(int argc, char * argv[])
     slog("---==== END ====---");
 	gf2d_input_commands_purge();
 	level_info_free(linfo);
-	
+	gf2d_sound_free(menu_sound);
 	cpSpaceEachShape(get_space(), (cpSpaceShapeIteratorFunc)free_all_shapes, NULL);
 	cpSpaceEachBody(get_space(), (cpSpaceBodyIteratorFunc)free_all_bodies, NULL);
 	level_clear();
@@ -273,4 +291,5 @@ int main(int argc, char * argv[])
 	//save_write_out("config/save.cfg");
     return 0;
 }
+
 /*eol@eof*/

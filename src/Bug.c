@@ -122,12 +122,6 @@ void bug_think(Entity *self) {
 		}
 
 	}
-		
-		
-		
-			
-	
-		
 
 	self->position = cpvector_to_gf2dvector(cpBodyGetPosition(self->cpbody));
 	gf2d_actor_next_frame(&self->actor);

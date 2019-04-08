@@ -34,6 +34,8 @@ typedef struct Window_S
 	int(*update)(struct Window_S *win, List *updateList);
 	int(*draw)(struct Window_S *win);
 	int(*free_data)(struct Window_S *win);
+	int index;				/**<gives window an id for reference*/
+	int state;				/**<gives window state to decide if to be drawn or not*/
 	void *data;             /**<custom data*/
 }Window;
 
@@ -120,6 +122,13 @@ void gf2d_draw_window_border_generic(Rect rect, Vector4D color);
  * @returns NULL on error or not found, a pointo to the element otherwise
  */
 Element *gf2d_window_get_element_by_id(Window *win, int id);
+
+/**
+ * @brief get the window from the window manager with the matching id
+ * @param id the index to search for
+ * @returns NULL on error or not found, a pointer to the window otherwise
+ */
+Window *get_window_get_by_id(Uint32 id);
 
 /**
  * @brief transition a black window

@@ -262,6 +262,9 @@ void change_text_based_on_name(LabelElement *label) {
 		playerStat = xp_remaining(player->rpg.level, player->rpg.xp);
 		snprintf(buffer, sizeof(buffer), "%s: %i", label->name, playerStat);
 	}
+	else if (strcmp(label->name, "item") == 0) {
+		snprintf(buffer, sizeof(buffer), "%s", label->text);
+	}
 	else {
 		//This is a message
 		return;

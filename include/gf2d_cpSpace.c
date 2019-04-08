@@ -223,6 +223,7 @@ void post_step_remove(cpSpace *space, cpShape *shape, void *data) {
 	gf2d_line_cpy(targetLevel, transitiondata->targetLevel);
 	//gf2d_line_cpy(targetEntity, "house");
 	targetId = 1;
+	transition_window_to_black();
 	cpSpaceEachShape(space, (cpSpaceShapeIteratorFunc)free_all_shapes, NULL);
 	cpSpaceEachBody(space, (cpSpaceBodyIteratorFunc)free_all_bodies, NULL);
 	entity_clear_all_but_player();

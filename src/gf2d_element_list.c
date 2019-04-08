@@ -286,16 +286,16 @@ void gf2d_element_list_setup_inventory(Element *e) {
 	Item *equipment;
 	
 	for (i = 0; i < MAX_ITEMS; i++) {
-		
 		equipment = get_item_by_index(player->rpg.inventory[i]);
 		if (!equipment)break;
 		item = gf2d_element_new_full(e, i, "item", bound, color, 1);
 		text = equipment->name;
 		gf2d_element_make_label(item, gf2d_element_label_new_full("item", text, color, style, LJ_Left, 0));
+		item->index = 100 + i;
+		slog("item index: %i", item->index);
 		gf2d_element_list_add_item(e, item);
 
 	}
-	//TODO: set bounds and other needed information for label element
 
 	ListElement *list = (ListElement *)e->data;
 	if (!list)slog("no list found???");

@@ -175,10 +175,10 @@ void gf2d_window_free(Window *win)
 {
 	int i, count;
 	if (!win)return;
-	if (win->free_data != NULL)
+	/*if (win->free_data != NULL)
 	{
 		win->free_data(win);
-	}
+	}*/
 	gf2d_list_delete_data(window_manager.window_deque, win);
 	count = gf2d_list_get_count(win->elements);
 	for (i = 0; i < count; i++)
@@ -196,10 +196,8 @@ void gf2d_window_free_all() {
 
 	for (i = 0; i < window_manager.window_max; i++) {
 
-		if (window_manager.window_list[i].free_data != NULL)
-		{
-			gf2d_window_free(&window_manager.window_list[i]);
-		}
+		gf2d_window_free(&window_manager.window_list[i]);
+		
 		memset(&window_manager.window_list[i], 0, sizeof(Window));
 	}
 }
@@ -288,6 +286,7 @@ void gf2d_windows_draw_all()
 	{
 		win = (Window*)gf2d_list_get_nth(window_manager.window_deque, i);
 		if (!win)continue;
+		if (win->state == 0)continue;
 		if (win->draw)
 		{
 			if (!win->draw(win))
@@ -395,7 +394,7 @@ Window *gf2d_window_load(char *filename)
 Window *gf2d_window_load_from_json(SJson *json)
 {
 	Window *win = NULL;
-	int i, count;
+	int i, count, index;
 	Vector4D vector = { 255,255,255,255 };
 	SJson *elements, *value;
 	const char *buffer;
@@ -418,6 +417,14 @@ Window *gf2d_window_load_from_json(SJson *json)
 	}
 	sj_value_as_vector4d(sj_object_get_value(json, "color"), &vector);
 	win->color = vector;
+
+	//Gives windows an id so that I can call a specific window
+	sj_get_integer_value(sj_object_get_value(json, "id"), &win->index);
+	
+	//Gives windows a state so that I can say what window will be drawn and what not to draw
+	sj_get_integer_value(sj_object_get_value(json, "state"), &win->state);
+
+
 
 	vector4d_clear(vector);
 	sj_value_as_vector4d(sj_object_get_value(json, "dimensions"), &vector);
@@ -487,6 +494,16 @@ Element *gf2d_window_get_element_by_id(Window *win, int id)
 	return NULL;
 }
 
+Window *get_window_get_by_id(Uint32 id) {
+	int i, count;
+	count = gf2d_list_get_count(window_manager.window_deque);
+	for (i = 0; i < count; i++) {
+		if (window_manager.window_list[i].index == id)
+			return &window_manager.window_list[i];
+	}
+	return NULL;
+}
+
 void transition_window_to_black() {
 	int i;
 	Window *win = gf2d_window_load("config/transition_window.cfg");
@@ -497,12 +514,13 @@ void transition_window_to_black() {
 			alpha = 255.0;
 		win->color = vector4d(0, 0, 0, alpha);
 		level_draw();
+		gf2d_windows_update_all();
 		gf2d_windows_draw_all();
 		gf2d_grahics_next_frame();
 
 	}
 
-	gf2d_window_free(win);
+	//gf2d_window_free_all();
 
 }
 
@@ -520,7 +538,7 @@ void transition_window_to_normal() {
 		gf2d_grahics_next_frame();
 
 	}
-	gf2d_window_free(win);
+	gf2d_window_free_all();
 }
 
 /*eol@eof*/
