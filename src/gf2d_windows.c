@@ -520,7 +520,7 @@ void transition_window_to_black() {
 
 	}
 
-	//gf2d_window_free_all();
+	gf2d_window_free(win);
 
 }
 

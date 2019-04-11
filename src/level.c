@@ -531,6 +531,7 @@ void level_transition(char *filename, const char *playerTarget, Uint32 targetId)
 	level_init(linfo, 1);
 	//ID 9 is the black window, always call when transition_to_black() is called
 	//In this case, the function is called in cpSpace file and we clean up here
+	SDL_Delay(250);
 	gf2d_window_free(get_window_get_by_id(9));
 
 }

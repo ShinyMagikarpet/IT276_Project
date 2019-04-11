@@ -12,7 +12,7 @@ void gf2d_element_label_draw(Element *element, Vector2D offset)
 	if (!element)return;
 	label = (LabelElement*)element->data;
 	if (!label)return;
-	change_text_based_on_name(label); //Write text here if stat
+	change_text_based_on_name(label, element->index); //Write text here if stat
 	if (strlen(label->text) <= 0)return;
 	size = gf2d_text_get_bounds(label->text, label->style);
 	if (size.x < 0)
@@ -224,7 +224,7 @@ void gf2d_element_load_label_from_config(Element *e, SJson *json)
 	
 }
 
-void change_text_based_on_name(LabelElement *label) {
+void change_text_based_on_name(LabelElement *label, int index) {
 	int playerStat, player_equipment;
 	char buffer[0x200];
 	Entity *player = player_get();
@@ -263,6 +263,7 @@ void change_text_based_on_name(LabelElement *label) {
 		snprintf(buffer, sizeof(buffer), "%s: %i", label->name, playerStat);
 	}
 	else if (strcmp(label->name, "item") == 0) {
+		slog("item index: %i", index - 100);
 		snprintf(buffer, sizeof(buffer), "%s", label->text);
 	}
 	else {

@@ -13,6 +13,7 @@
 #include "gf2d_transition.h"
 #include "save.h"
 #include "Player.h"
+#include "menu.h"
 
 static int done = 0;
 static int pause = 0;
@@ -29,7 +30,6 @@ int main(int argc, char * argv[])
     float mf = 0;
     Sprite *mouse;
     Vector4D mouseColor = {255,100,255,200};
-	Element *element = NULL, *cursor = NULL;
 	Sound *menu_sound = NULL;
 
 	LevelInfo *linfo = NULL;
@@ -85,7 +85,10 @@ int main(int argc, char * argv[])
 
 		//Update and draw level	
 		level_draw();
-		level_update();
+		if (!pause) {
+			level_update();
+		}
+			
 		gf2d_windows_update_all();
 		gf2d_windows_draw_all();
             //UI elements last
@@ -103,16 +106,8 @@ int main(int argc, char * argv[])
 
 		//PAUSE WHATEVER NEEDS TO BE STOPPED HERE
 		if (gf2d_input_command_pressed("pause")) {
-			
 			slog("paused");
 			pause = 1;
-			transition_window_to_black();
-			gf2d_window_free_all();
-			window = gf2d_window_load("config/pause_window.cfg");
-			gf2d_window_load("config/inventory_window.cfg");
-			element = gf2d_list_get_nth(window->elements, 0);
-			cursor = element->get_by_name(element, "cursor");
-			menu_sound = gf2d_sound_load("sounds/pop.ogg", 1.0, 0);
 			
 		}
 
@@ -126,151 +121,13 @@ int main(int argc, char * argv[])
 		if (gf2d_input_command_pressed("load")) {
 			save_load_in("save/save.bin");
 		}
-		
 		//Pause loop
-		while (pause) {
-			gf2d_input_update();
-			gf2d_windows_update_all();
-			gf2d_windows_draw_all();
-			gf2d_grahics_next_frame();
-			
-			if (gf2d_input_command_pressed("pause")) {
-				pause = 0;
-				slog("unpaused");
-				transition_window_to_black();
-				gf2d_window_free_all();
-				window = gf2d_window_load("config/testwindow.cfg");
-				gf2d_sound_free(menu_sound);
-			}
-			//Quit game from pause
-			if (gf2d_input_command_pressed("exit")) {
+		if (pause) {
+			pause = Pause_Menu();
+			if (pause == 2) {
 				pause = 0;
 				done = 1;
 			}
-
-			if (gf2d_input_command_pressed("case")) {
-				Entity *player = player_get();
-				Element *tempElement = element;
-				element = gf2d_element_get_by_id(element, 100 + 3);
-				gf2d_element_label_set_text(element, " ");
-				Item *item = get_item_by_index(player->rpg.inventory[3]);
-				if (item)
-					item->use(player, item, 3);
-				element = tempElement;
-				
-				
-			}
-
-			//Only way I could think of to check what the player is selecting in menu
-			if (gf2d_input_command_pressed("ok")) {
-				if (element) {
-					switch (element->index)
-					{
-					case 0: {
-						pause = 0;
-						slog("unpaused");
-						transition_window_to_black();
-						gf2d_window_free_all();
-						window = gf2d_window_load("config/testwindow.cfg");
-						break;
-					}
-					case 1: {
-						window = get_window_get_by_id(2);
-						element = gf2d_list_get_nth(window->elements, 0);
-						if (window) {
-							window->state = 1;
-						}
-						slog("window element id: %i", element->index);
-					}
-					case 2: {
-						SaveInfo save;
-						Entity *player = player_get();
-						save.player.rpg = player->rpg;
-						save_write_out(save, "save/save.bin");
-						break;
-					}
-					case 3: {
-						save_load_in("save/save.bin");
-					}
-					case 4: {
-						pause = 0;
-						done = 1;
-						break;
-					}
-					default:
-						break;
-					}
-				}
-			}
-
-			//move the cursor position down
-			if (gf2d_input_command_pressed("move_down")) {
-				int i, j, count = gf2d_list_get_count(window->elements);
-				Element *new_element, *new_cursor;
-
-				if (!element) {
-					new_element = gf2d_list_get_nth(window->elements, 0);
-					element = new_element;
-					cursor = new_element->get_by_name(new_element, "cursor");
-					new_element = gf2d_list_get_nth(window->elements, element->index + 1);
-				}
-					
-				else {
-					new_element = gf2d_list_get_nth(window->elements, element->index + 1);
-				}
-					
-
-				new_cursor = new_element->get_by_name(new_element, "cursor");
-				//if (!cursor) old_element->get_by_name(old_element, "cursor");
-				if (!new_cursor)break;
-				for (i = new_element->index; i < count; i++) {
-					if (element->index < new_element->index) {
-						cursor->state = 0;
-						new_cursor->state = 1;
-						element = new_element;
-						cursor = new_cursor;
-						break;
-					}
-				}
-					
-				gf2d_sound_play(menu_sound, 0, 1.0, -1, -1);
-				
-			}
-
-			//move the cursor up
-			if (gf2d_input_command_pressed("move_up")) {
-				int i, j, count = gf2d_list_get_count(window->elements);
-				Element *new_element, *new_cursor;
-
-				if (!element) {
-					new_element = gf2d_list_get_nth(window->elements, 0);
-					element = new_element;
-					cursor = new_element->get_by_name(new_element, "cursor");
-				}
-
-				else {
-					new_element = gf2d_list_get_nth(window->elements, element->index - 1);
-					if (!new_element)break;
-				}
-
-
-				new_cursor = new_element->get_by_name(new_element, "cursor");
-				//if (!cursor) old_element->get_by_name(old_element, "cursor");
-				if (!new_cursor)break;
-				for (i = new_element->index; i < count; i--) {
-					if (element->index > new_element->index) {
-						cursor->state = 0;
-						new_cursor->state = 1;
-						element = new_element;
-						cursor = new_cursor;
-						break;
-					}
-				}
-
-				gf2d_sound_play(menu_sound, 0, 1.0, -1, -1);
-
-			}
-
 		}
 		
 		if (gf2d_input_command_pressed("exit")) {

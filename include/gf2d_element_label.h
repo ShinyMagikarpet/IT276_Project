@@ -63,7 +63,7 @@ void gf2d_element_label_set_text(Element *e, char *text);
  * @brief changes text based on label name
  * @param label the label to be changed
  */
-void change_text_based_on_name(LabelElement *label);
+void change_text_based_on_name(LabelElement *label, int index);
 
 
 #endif

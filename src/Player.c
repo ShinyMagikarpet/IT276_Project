@@ -166,9 +166,8 @@ int player_damage(Entity *attacker, Entity *inflicted) {
 }
 
 void player_update_velocity(cpBody *body, cpVect gravity, cpFloat damping, cpFloat dt) {
-
-	body->v = cpv(moveX, moveY);
-
+	cpVect normal = cpvnormalize(cpv(moveX, moveY));
+	body->v = cpvmult(normal, PLAYER_VELOCITY);
 }
 
 /**
