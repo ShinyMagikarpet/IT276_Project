@@ -44,7 +44,7 @@ typedef struct{
 	Item *equipped_armor; /**<armor currently equipped*/
 	Item *equipped_accessory; /**<accessory currently equipped*/
 	int selected_item; /**<item the entity is holding/selecting*/
-	int inventory[MAX_ITEMS]; /**<inventory for the player but could also be used as enemy drop table*/
+	Item *inventory[MAX_ITEMS]; /**<inventory for the player but could also be used as enemy drop table*/
 
 }RpgElements;
 

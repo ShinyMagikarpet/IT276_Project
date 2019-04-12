@@ -71,15 +71,19 @@ Entity *player_new(cpVect position, cpSpace *space) {
 		player->rpg.xp = 0;
 		gf2d_rpg_set_stats(player, 10, 1, 1, 3);
 		item = get_item_by_name("Wood Sword");
+		item->inuse = 1;
 		player->rpg.equipped_weapon = item;
 		put_item_in_inventory(item);
 		item = get_item_by_name("Leather Armor");
+		item->inuse = 1;
 		player->rpg.equipped_armor = item;
 		put_item_in_inventory(item);
 		item = get_item_by_name("Gold Pendant");
 		player->rpg.equipped_accessory = item;
 		put_item_in_inventory(item);
+		item->inuse = 0;
 		item = get_item_by_name("Potion");
+		item->inuse = 0;
 		put_item_in_inventory(item);
 	}
 	else {
@@ -384,7 +388,7 @@ void player_think(Entity *self) {
 
 	if (gf2d_input_command_pressed("case")) {
 		
-		Item *item = get_item_by_index(player->rpg.inventory[3]);
+		Item *item = player->rpg.inventory[3];
 		if(item)
 			item->use(self, item, 3);
 	}
@@ -421,8 +425,15 @@ void player_think(Entity *self) {
 	if (keys[SDL_SCANCODE_3]) {
 
 		//slog("Item retrieved: %s", item->name);
-		//Item *item = get_item_by_index(player->rpg.inventory[3]);
-		//item->use(self, item);
+		Item *item;
+		//slog("Item is currently in use: %i", player->rpg.inventory[0]->inuse);
+		//item = player->rpg.inventory[3];
+		//slog("Item is currently in use: %i", player->rpg.inventory[3]->inuse);
+		for (int i = 0; i < MAX_ITEMS; i++) {
+			item = player->rpg.inventory[i];
+			if (!item)break;
+			slog("%s usage is: %i", player->rpg.inventory[i]->name, player->rpg.inventory[i]->inuse);
+		}
 
 	}
 
