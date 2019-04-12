@@ -36,6 +36,7 @@ typedef struct Window_S
 	int(*free_data)(struct Window_S *win);
 	int index;				/**<gives window an id for reference*/
 	int state;				/**<gives window state to decide if to be drawn or not*/
+	int selection_count;
 	void *data;             /**<custom data*/
 }Window;
 

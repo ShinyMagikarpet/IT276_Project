@@ -281,7 +281,7 @@ void gf2d_element_list_setup_inventory(Element *e) {
 	Element *item;
 	char *text;
 	Color color = { 210, 210, 210, 255, 1 };
-	Rect bound = { 10, 0, 100, 32 };
+	Rect bound = { 0, 0, 0, 0 };
 	Entity *player = player_get();
 	Item *equipment;
 	
@@ -294,7 +294,6 @@ void gf2d_element_list_setup_inventory(Element *e) {
 		item->index = 100 + i;
 		slog("item index: %i", item->index);
 		gf2d_element_list_add_item(e, item);
-
 	}
 
 	ListElement *list = (ListElement *)e->data;

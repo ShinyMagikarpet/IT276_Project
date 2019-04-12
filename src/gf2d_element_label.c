@@ -263,7 +263,6 @@ void change_text_based_on_name(LabelElement *label, int index) {
 		snprintf(buffer, sizeof(buffer), "%s: %i", label->name, playerStat);
 	}
 	else if (strcmp(label->name, "item") == 0) {
-		slog("item index: %i", index);
 		snprintf(buffer, sizeof(buffer), "%s", label->text);
 	}
 	else {

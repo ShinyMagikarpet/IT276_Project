@@ -423,6 +423,9 @@ Window *gf2d_window_load_from_json(SJson *json)
 	
 	//Gives windows a state so that I can say what window will be drawn and what not to draw
 	sj_get_integer_value(sj_object_get_value(json, "state"), &win->state);
+	
+	//How many selection choices do we have on our menu?
+	sj_get_integer_value(sj_object_get_value(json, "select_count"), &win->selection_count);
 
 
 

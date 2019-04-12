@@ -99,7 +99,6 @@ void Inventory() {
 		window = get_window_get_by_id(1);
 		element = gf2d_list_get_nth(window->elements, 1); //spot for inventory on main menu
 		_inventory = 0;
-
 	}
 }
 
@@ -112,29 +111,32 @@ void move_cursor_down() {
 		new_element = gf2d_list_get_nth(window->elements, 0);
 		if (!new_element)return; //check if element exists
 		element = new_element;
-		cursor = new_element->get_by_name(new_element, "cursor"); //get cursor from current element
+		//cursor = new_element->get_by_name(new_element, "cursor"); //get cursor from current element
 		new_element = gf2d_list_get_nth(window->elements, element->index + 1); //get next element in list
 	}
-
 	else {
 		//If we're not starting new, then the new_element can index to the next in list
 		new_element = gf2d_list_get_nth(window->elements, element->index + 1);
+		if (!new_element) return;
 	}
 
+	if (new_element->index >= window->selection_count)return;
+	
 
-	new_cursor = new_element->get_by_name(new_element, "cursor"); //Get cursor from the new element
+	//new_cursor = new_element->get_by_name(new_element, "cursor"); //Get cursor from the new element
 	//if (!cursor) old_element->get_by_name(old_element, "cursor");
-	if (!new_cursor)return; //If we don't have a cursor, then we reached end of list and therefore null
+	//if (!new_cursor)return; //If we don't have a cursor, then we reached end of list and therefore null
 	for (i = new_element->index; i < count; i++) {
 		if (element->index < new_element->index) {
-			cursor->state = 0; //set current cursor state to 0 to prevent draw
-			new_cursor->state = 1; //new cursor state will be set to 1 so that it can now draw
+			//cursor->state = 0; //set current cursor state to 0 to prevent draw
+			//new_cursor->state = 1; //new cursor state will be set to 1 so that it can now draw
 			element = new_element; // set old element to equal new element
-			cursor = new_cursor; //set old cursor information to new cursor
+			//cursor = new_cursor; //set old cursor information to new cursor
 			break;
 		}
 	}
-
+	cursor->bounds.y += 30;
+	slog("Element name: %s", element->name);
 	gf2d_sound_play(menu_sound, 0, 1.0, -1, -1); //Player menu sound
 
 	/*
@@ -152,27 +154,28 @@ void move_cursor_up() {
 	if (!element) {
 		new_element = gf2d_list_get_nth(window->elements, 0);
 		element = new_element;
-		cursor = new_element->get_by_name(new_element, "cursor");
+		//cursor = new_element->get_by_name(new_element, "cursor");
 	}
 	else {
 		new_element = gf2d_list_get_nth(window->elements, element->index - 1);
 		if (!new_element)return;
 	}
 
-	new_cursor = new_element->get_by_name(new_element, "cursor");
+	//new_cursor = new_element->get_by_name(new_element, "cursor");
 	//if (!cursor) old_element->get_by_name(old_element, "cursor");
-	if (!new_cursor)return;
+	//if (!new_cursor)return;
 	for (i = new_element->index; i < count; i--) {
 		if (element->index > new_element->index) {
-			cursor->state = 0;
-			new_cursor->state = 1;
+			//cursor->state = 0;
+			//new_cursor->state = 1;
 			element = new_element;
-			cursor = new_cursor;
+			//cursor = new_cursor;
 			break;
 		}
 	}
 	//TOFIX: the channel was causing some glitch when moving cursor in both directions.
 	//Moving cursor down then up would cause unexpected behavior and thus would freeze the game
+	cursor->bounds.y -= 30;
 	gf2d_sound_play(menu_sound, 0, 1.0, 1, -1);
 
 }
