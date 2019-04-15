@@ -281,7 +281,7 @@ void gf2d_element_list_setup_inventory(Element *e) {
 	Element *item;
 	char *text;
 	Color color = { 210, 210, 210, 255, 1 };
-	Rect bound = { 0, 0, 0, 0 };
+	Rect bound = { 48, -48, 0, 0 };
 	Entity *player = player_get();
 	Item *equipment;
 	
@@ -292,14 +292,16 @@ void gf2d_element_list_setup_inventory(Element *e) {
 		text = equipment->name;
 		gf2d_element_make_label(item, gf2d_element_label_new_full("item", text, color, style, LJ_Left, 0));
 		item->index = 100 + i;
-		slog("item index: %i", item->index);
+		//slog("item index: %i", item->index);
 		gf2d_element_list_add_item(e, item);
 	}
 
-	ListElement *list = (ListElement *)e->data;
-	if (!list)slog("no list found???");
-	Element *test = gf2d_list_get_nth(list->list, 1);
-	slog("type 1 = %i", test->type);
+	//ListElement *list = (ListElement *)e->data;
+	//if (!list)slog("no list found???");
+	//slog("list size: %i", gf2d_list_get_count(list->list));
+	//Element *test = gf2d_list_get_nth(list->list, 4);
+	//slog("type 1 = %i", test->type);
+	//slog("element text = %s, element id = %i", test->name, test->index);
 	//test->color.r = 255;
 	//element = new_element;
 	//new_cursor = new_element->get_by_name(new_element, "cursor");

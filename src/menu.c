@@ -2,12 +2,16 @@
 #include "Player.h"
 #include "save.h"
 #include "gf2d_graphics.h"
+#include "gf2d_element_list.h"
+#include "gf2d_element_label.h"
+#include "gf2d_input.h"
 
 
 static Sound *menu_sound = NULL;
 static Window *window = NULL;
 static Element *element = NULL, *cursor = NULL;
-static int _inventory = 0;
+static int _inventory = 0, _inventory_current_index = 0;
+static ListElement *list = NULL;
 
 int Pause_Menu() {
 
@@ -19,6 +23,8 @@ int Pause_Menu() {
 
 		element = gf2d_list_get_nth(window->elements, 0);
 		cursor = element->get_by_name(element, "cursor");
+		ListElement *list = (ListElement *)element->data;
+		slog("Element list count: %i", gf2d_list_get_count(list->list));
 	}
 
 	if (gf2d_input_command_pressed("case")) {
@@ -54,11 +60,15 @@ int Pause_Menu() {
 			case 1: {
 				window = get_window_get_by_id(2);
 				element = gf2d_list_get_nth(window->elements, 0);
+				cursor = element->get_by_name(element, "cursor");
+				list = (ListElement *)element->data;
+				if (!list)return;
 				if (window) {
 					window->state = 1;
 				}
 				_inventory = 1;
-				slog("window element id: %i", element->index);
+				_inventory_current_index = 2; //0 and 1 are reserved in the list
+				
 			}
 			case 2: {
 				SaveInfo save;
@@ -91,22 +101,38 @@ int Pause_Menu() {
 	if (gf2d_input_command_pressed("move_up")) {
 		move_cursor_up();
 	}
+
+	return pause;
 }
 
 void Inventory() {
+	gf2d_input_update(); //Guess I need to update here or else code thinks the control calls are true
 	if (gf2d_input_command_pressed("ok")) {
 		window->state = 0;
+		slog("why is code breaking here?");
+		cursor->bounds.y -= (_inventory_current_index - 2) * 36; //current index starts at 2
 		window = get_window_get_by_id(1);
+		element = gf2d_list_get_nth(window->elements, 0); //Get the cursor
+		cursor = element->get_by_name(element, "cursor");
 		element = gf2d_list_get_nth(window->elements, 1); //spot for inventory on main menu
+		
 		_inventory = 0;
+	}
+
+	//move the cursor position down
+	if (gf2d_input_command_pressed("move_down")) {
+		move_cursor_down();
+	}
+
+	if (gf2d_input_command_pressed("move_up")) {
+		move_cursor_up();
 	}
 }
 
 //So this is probably the most hackey way to move my cursor. I hate this and it should burn
 void move_cursor_down() { 
-	int i, j, count = gf2d_list_get_count(window->elements);
+	int i, j, count = window->selection_count;
 	Element *new_element, *new_cursor; /**< temp variable to hold info*/
-
 	if (!element) { //If this is first time, then we know to start at 0
 		new_element = gf2d_list_get_nth(window->elements, 0);
 		if (!new_element)return; //check if element exists
@@ -115,9 +141,35 @@ void move_cursor_down() {
 		new_element = gf2d_list_get_nth(window->elements, element->index + 1); //get next element in list
 	}
 	else {
-		//If we're not starting new, then the new_element can index to the next in list
-		new_element = gf2d_list_get_nth(window->elements, element->index + 1);
-		if (!new_element) return;
+		/*
+		Might have to treat inventory differently because How I handled the setting up of the inventory
+		in gf2d_element_list.c. The inventory list exists inside the element of inv_list and therefore would
+		be best to go through that list than rewrite the entire inv_list system.
+		I might just keep reference of count of where I am in the inventory list rather than point to the element itself.
+		With that I can temporarily call the exact element in the list and get the info from there to know what item
+		it is.
+		*/
+		if (_inventory) {
+			if (!list)return;
+			count = gf2d_list_get_count(list->list);
+			if (_inventory_current_index + 1 >= count)return;
+			_inventory_current_index++;
+			cursor->bounds.y += 36;
+			slog("Element index: %i", element->index);
+			//How to get text from label
+			/*
+			new_element = gf2d_list_get_nth(list->list, _inventory_current_index);
+			LabelElement *label = (LabelElement *)new_element->data;
+			slog("label text: %s", label->text);
+			*/
+			gf2d_sound_play(menu_sound, 0, 1.0, -1, -1);
+			return;
+		}
+		else {
+			//If we're not starting new, then the new_element can index to the next in list
+			new_element = gf2d_list_get_nth(window->elements, element->index + 1);
+			if (!new_element) return;
+		}
 	}
 
 	if (new_element->index >= window->selection_count)return;
@@ -157,8 +209,26 @@ void move_cursor_up() {
 		//cursor = new_element->get_by_name(new_element, "cursor");
 	}
 	else {
-		new_element = gf2d_list_get_nth(window->elements, element->index - 1);
-		if (!new_element)return;
+		if (_inventory) {
+			if (!list)return;
+			count = gf2d_list_get_count(list->list);
+			if (_inventory_current_index <= 2)return;
+			_inventory_current_index--;
+			cursor->bounds.y -= 36;
+			//How to get text from label
+			/*
+			new_element = gf2d_list_get_nth(list->list, _inventory_current_index);
+			LabelElement *label = (LabelElement *)new_element->data;
+			slog("label text: %s", label->text);
+			*/
+			gf2d_sound_play(menu_sound, 0, 1.0, -1, -1);
+			return;
+		}
+		else {
+			new_element = gf2d_list_get_nth(window->elements, element->index - 1);
+			if (!new_element)return;
+		}
+		
 	}
 
 	//new_cursor = new_element->get_by_name(new_element, "cursor");

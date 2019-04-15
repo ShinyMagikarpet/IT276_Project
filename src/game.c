@@ -104,11 +104,8 @@ int main(int argc, char * argv[])
 		
         gf2d_grahics_next_frame();// render current draw frame and skip to the next frame
 
-		//PAUSE WHATEVER NEEDS TO BE STOPPED HERE
 		if (gf2d_input_command_pressed("pause")) {
-			slog("paused");
-			pause = 1;
-			
+			pause = 1;			
 		}
 
 		if (gf2d_input_command_pressed("save")) {
