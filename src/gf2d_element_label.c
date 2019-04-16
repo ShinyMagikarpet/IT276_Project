@@ -245,17 +245,17 @@ void change_text_based_on_name(LabelElement *label, int index) {
 	}
 	else if (strcmp(label->name, "STR") == 0) {
 		playerStat = player->rpg.stats.str;
-		player_equipment = player->rpg.equipped_weapon->statvalue;
+		player_equipment = player->rpg.equipped_weapon.statvalue;
 		snprintf(buffer, sizeof(buffer), "%s: %i + %i", label->name, playerStat, player_equipment);
 	}
 	else if (strcmp(label->name, "DEF") == 0) {
 		playerStat = player->rpg.stats.def;
-		player_equipment = player->rpg.equipped_armor->statvalue;
+		player_equipment = player->rpg.equipped_armor.statvalue;
 		snprintf(buffer, sizeof(buffer), "%s: %i + %i", label->name, playerStat, player_equipment);
 	}
 	else if (strcmp(label->name, "AGI") == 0) {
 		playerStat = player->rpg.stats.agil;
-		player_equipment = player->rpg.equipped_accessory->statvalue;
+		player_equipment = player->rpg.equipped_accessory.statvalue;
 		snprintf(buffer, sizeof(buffer), "%s: %i + %i", label->name, playerStat, player_equipment);
 	}
 	else if (strcmp(label->name, "Next") == 0) {

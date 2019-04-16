@@ -40,9 +40,9 @@ typedef struct{
 	int xp;			/**<xp of entity*/
 	int level;		/**<level of entity*/
 	Stats stats;	/**<stat struct for entity*/
-	Item *equipped_weapon; /**<weapon currently equipped*/
-	Item *equipped_armor; /**<armor currently equipped*/
-	Item *equipped_accessory; /**<accessory currently equipped*/
+	Item equipped_weapon; /**<weapon currently equipped*/
+	Item equipped_armor; /**<armor currently equipped*/
+	Item equipped_accessory; /**<accessory currently equipped*/
 	int selected_item; /**<item the entity is holding/selecting*/
 	Item *inventory[MAX_ITEMS]; /**<inventory for the player but could also be used as enemy drop table*/
 

@@ -71,15 +71,18 @@ Entity *player_new(cpVect position, cpSpace *space) {
 		player->rpg.xp = 0;
 		gf2d_rpg_set_stats(player, 10, 1, 1, 3);
 		item = get_item_by_name("Wood Sword");
-		item->inuse = 1;
-		player->rpg.equipped_weapon = item;
+		item->inuse = 0;
+		player->rpg.equipped_weapon = *item;
+		player->rpg.equipped_weapon.inuse = 0;
+		slog("Weapon equipped: %s", player->rpg.equipped_weapon.name);
+		item = &player->rpg.equipped_weapon;
 		put_item_in_inventory(item);
 		item = get_item_by_name("Leather Armor");
 		item->inuse = 1;
-		player->rpg.equipped_armor = item;
+		player->rpg.equipped_armor = *item;
 		put_item_in_inventory(item);
 		item = get_item_by_name("Gold Pendant");
-		player->rpg.equipped_accessory = item;
+		player->rpg.equipped_accessory = *item;
 		put_item_in_inventory(item);
 		item->inuse = 1;
 		item = get_item_by_name("Potion");
@@ -165,7 +168,7 @@ int player_damage(Entity *attacker, Entity *inflicted) {
 	if (!inflicted)return 0;
 
 	
-	damage = (attacker->rpg.stats.str + attacker->rpg.equipped_weapon->statvalue);
+	damage = (attacker->rpg.stats.str + attacker->rpg.equipped_weapon.statvalue);
 	return damage;
 }
 

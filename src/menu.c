@@ -106,6 +106,8 @@ int Pause_Menu() {
 }
 
 void Inventory() {
+	Entity *player = player_get();
+
 	gf2d_input_update(); //Guess I need to update here or else code thinks the control calls are true
 	if (gf2d_input_command_pressed("cancel")) {
 		window->state = 0;
@@ -124,7 +126,7 @@ void Inventory() {
 		Item *item;
 		item = select_item(_inventory_current_index, list->list);
 		if (!item)return;
-		slog("item's name: %s", item->name);
+		item->use(player, item);
 	}
 
 	//move the cursor position down

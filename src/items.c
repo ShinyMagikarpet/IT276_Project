@@ -57,7 +57,7 @@ void put_item_in_inventory(Item *item) {
 
 	for (i = 0; i < MAX_ITEMS; i++) {
 		if (player->rpg.inventory[i] > 0)continue;
-		player->rpg.inventory[i] = ITEM_INDEX(item);
+		player->rpg.inventory[i] = item;
 		item->index = ITEM_INDEX(item);
 		return;
 	}
