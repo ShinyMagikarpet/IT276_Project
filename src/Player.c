@@ -81,7 +81,7 @@ Entity *player_new(cpVect position, cpSpace *space) {
 		item = get_item_by_name("Gold Pendant");
 		player->rpg.equipped_accessory = item;
 		put_item_in_inventory(item);
-		item->inuse = 0;
+		item->inuse = 1;
 		item = get_item_by_name("Potion");
 		item->inuse = 0;
 		put_item_in_inventory(item);

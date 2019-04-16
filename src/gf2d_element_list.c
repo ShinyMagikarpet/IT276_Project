@@ -284,12 +284,18 @@ void gf2d_element_list_setup_inventory(Element *e) {
 	Rect bound = { 48, -48, 0, 0 };
 	Entity *player = player_get();
 	Item *equipment;
+	TextLine buffer;
 	
 	for (i = 0; i < MAX_ITEMS; i++) {
 		equipment = get_item_by_index(player->rpg.inventory[i]);
 		if (!equipment)break;
 		item = gf2d_element_new_full(e, i, "item", bound, color, 1);
 		text = equipment->name;
+		slog("%s usage is %i", equipment->name, equipment->inuse);
+		if (equipment->inuse == 1) {
+			snprintf(buffer, sizeof buffer, "%s E", text);
+			text = buffer;
+		}
 		gf2d_element_make_label(item, gf2d_element_label_new_full("item", text, color, style, LJ_Left, 0));
 		item->index = 100 + i;
 		//slog("item index: %i", item->index);
