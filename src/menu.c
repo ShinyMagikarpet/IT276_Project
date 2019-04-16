@@ -107,7 +107,7 @@ int Pause_Menu() {
 
 void Inventory() {
 	gf2d_input_update(); //Guess I need to update here or else code thinks the control calls are true
-	if (gf2d_input_command_pressed("ok")) {
+	if (gf2d_input_command_pressed("cancel")) {
 		window->state = 0;
 		slog("why is code breaking here?");
 		cursor->bounds.y -= (_inventory_current_index - 2) * 36; //current index starts at 2
@@ -117,6 +117,14 @@ void Inventory() {
 		element = gf2d_list_get_nth(window->elements, 1); //spot for inventory on main menu
 		
 		_inventory = 0;
+	}
+
+	//When player hits ok, we get cursor position relative to the list in inventory and return the item
+	if (gf2d_input_command_pressed("ok")) {
+		Item *item;
+		item = select_item(_inventory_current_index, list->list);
+		if (!item)return;
+		slog("item's name: %s", item->name);
 	}
 
 	//move the cursor position down
@@ -156,12 +164,6 @@ void move_cursor_down() {
 			_inventory_current_index++;
 			cursor->bounds.y += 36;
 			slog("Element index: %i", element->index);
-			//How to get text from label
-			/*
-			new_element = gf2d_list_get_nth(list->list, _inventory_current_index);
-			LabelElement *label = (LabelElement *)new_element->data;
-			slog("label text: %s", label->text);
-			*/
 			gf2d_sound_play(menu_sound, 0, 1.0, -1, -1);
 			return;
 		}
@@ -173,11 +175,7 @@ void move_cursor_down() {
 	}
 
 	if (new_element->index >= window->selection_count)return;
-	
 
-	//new_cursor = new_element->get_by_name(new_element, "cursor"); //Get cursor from the new element
-	//if (!cursor) old_element->get_by_name(old_element, "cursor");
-	//if (!new_cursor)return; //If we don't have a cursor, then we reached end of list and therefore null
 	for (i = new_element->index; i < count; i++) {
 		if (element->index < new_element->index) {
 			//cursor->state = 0; //set current cursor state to 0 to prevent draw
@@ -188,7 +186,6 @@ void move_cursor_down() {
 		}
 	}
 	cursor->bounds.y += 30;
-	slog("Element name: %s", element->name);
 	gf2d_sound_play(menu_sound, 0, 1.0, -1, -1); //Player menu sound
 
 	/*
@@ -215,12 +212,6 @@ void move_cursor_up() {
 			if (_inventory_current_index <= 2)return;
 			_inventory_current_index--;
 			cursor->bounds.y -= 36;
-			//How to get text from label
-			/*
-			new_element = gf2d_list_get_nth(list->list, _inventory_current_index);
-			LabelElement *label = (LabelElement *)new_element->data;
-			slog("label text: %s", label->text);
-			*/
 			gf2d_sound_play(menu_sound, 0, 1.0, -1, -1);
 			return;
 		}
@@ -230,21 +221,12 @@ void move_cursor_up() {
 		}
 		
 	}
-
-	//new_cursor = new_element->get_by_name(new_element, "cursor");
-	//if (!cursor) old_element->get_by_name(old_element, "cursor");
-	//if (!new_cursor)return;
 	for (i = new_element->index; i < count; i--) {
 		if (element->index > new_element->index) {
-			//cursor->state = 0;
-			//new_cursor->state = 1;
 			element = new_element;
-			//cursor = new_cursor;
 			break;
 		}
 	}
-	//TOFIX: the channel was causing some glitch when moving cursor in both directions.
-	//Moving cursor down then up would cause unexpected behavior and thus would freeze the game
 	cursor->bounds.y -= 30;
 	gf2d_sound_play(menu_sound, 0, 1.0, 1, -1);
 
@@ -259,5 +241,17 @@ void pause_menu_free() {
 	window = NULL;
 	element = NULL;
 	cursor = NULL;
+
+}
+
+Item *select_item(int cursorPos, List *inventory_list) {
+	Element *item_element;
+	Item *item;
+	item_element = gf2d_list_get_nth(inventory_list, cursorPos);
+	LabelElement *label = (LabelElement *)item_element->data;
+	slog("label text: %s", label->text);
+	item = get_item_by_name(label->text);
+	if (item)
+		return item;
 
 }
