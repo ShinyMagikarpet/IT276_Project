@@ -35,20 +35,20 @@ void *use_consumable(Entity *self, Item *item, int index) {
 	self->rpg.stats.hp_current += self->rpg.stats.hp_max * (float)(item->statvalue / 100.0);
 	if (self->rpg.stats.hp_current > self->rpg.stats.hp_max)
 		self->rpg.stats.hp_current = self->rpg.stats.hp_max;
-	self->rpg.inventory[index] = 0;
+	self->rpg.inventory[index] = NULL;
 	
 }
 
-void *equip_weapon(Entity *self, Item *item) {
-
+void *equip_weapon(Entity *self, Item *item, int index) {
+	slog("This is a weapon");
 }
 
-void *equip_armor(Entity *self, Item *item) {
-
+void *equip_armor(Entity *self, Item *item, int index) {
+	slog("This is armor");
 }
 
-void *equip_accessory(Entity *self, Item *item) {
-
+void *equip_accessory(Entity *self, Item *item, int index) {
+	slog("This is an accessory");
 }
 
 void put_item_in_inventory(Item *item) {

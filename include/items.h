@@ -21,9 +21,9 @@ typedef struct Item_s
 	int		index; /**<index for item in itemlist*/
 	void	*data; /**<data pointer*/
 
-	void(*equip)(struct Entity_S *ent, struct Item_s *item); /**<calls equip function*/
-	void(*use)(struct Entity_S *ent, struct Item_s *item); /**<calls use function*/
-	void(*drop)(struct Entity_S *ent, struct Item_s *item); /**<calls drop function*/
+	void(*equip)(struct Entity_S *ent, struct Item_s *item, int index); /**<calls equip function*/
+	void(*use)(struct Entity_S *ent, struct Item_s *item, int index); /**<calls use function*/
+	void(*drop)(struct Entity_S *ent, struct Item_s *item, int index); /**<calls drop function*/
 
 } Item;
 

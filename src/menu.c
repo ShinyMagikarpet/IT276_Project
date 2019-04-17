@@ -126,7 +126,24 @@ void Inventory() {
 		Item *item;
 		item = select_item(_inventory_current_index, list->list);
 		if (!item)return;
-		item->use(player, item);
+		switch (item->flag) {
+
+		case IT_WEAPON:
+			item->equip(player, item, _inventory_current_index - 2);
+			break;
+		case IT_ACCESSORY:
+			item->equip(player, item, _inventory_current_index - 2);
+			break;
+		case IT_ARMOR:
+			item->equip(player, item, _inventory_current_index - 2);
+			break;
+		case IT_COMSUMEABLES:
+			item->use(player, item, _inventory_current_index - 2);
+			break;
+		default:
+			return;
+		}
+		
 	}
 
 	//move the cursor position down
@@ -165,7 +182,6 @@ void move_cursor_down() {
 			if (_inventory_current_index + 1 >= count)return;
 			_inventory_current_index++;
 			cursor->bounds.y += 36;
-			slog("Element index: %i", element->index);
 			gf2d_sound_play(menu_sound, 0, 1.0, -1, -1);
 			return;
 		}
@@ -251,7 +267,6 @@ Item *select_item(int cursorPos, List *inventory_list) {
 	Item *item;
 	item_element = gf2d_list_get_nth(inventory_list, cursorPos);
 	LabelElement *label = (LabelElement *)item_element->data;
-	slog("label text: %s", label->text);
 	item = get_item_by_name(label->text);
 	if (item)
 		return item;
