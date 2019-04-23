@@ -274,7 +274,6 @@ void change_text_based_on_name(LabelElement *label, int index) {
 	
 	gf2d_block_cpy(label->text, buffer);
 
-	//free(buffer);
 
 }
 

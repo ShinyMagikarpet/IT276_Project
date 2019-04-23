@@ -1,7 +1,6 @@
 #include "items.h"
 #include "gf2d_entity.h"
 #include "Player.h"
-#include <string.h>
 
 Item *get_item_by_index(int index) {
 	if (index == 0 || index >= num_items())
@@ -40,7 +39,18 @@ void *use_consumable(Entity *self, Item *item, int index) {
 }
 
 void *equip_weapon(Entity *self, Item *item, int index) {
+	Item *replace_item;
 	slog("This is a weapon");
+	if (!item)return;
+	replace_item = get_item_by_name(item->name);
+	if (item->inuse == 1) {
+		item->inuse = 0;
+		memset(&self->rpg.equipped_weapon, 0, sizeof(Item));
+		self->rpg.inventory[index] = replace_item;
+		slog("unequipped item");
+		return;
+	}
+	//Else we unequip the current item and change it to the new requested item
 }
 
 void *equip_armor(Entity *self, Item *item, int index) {

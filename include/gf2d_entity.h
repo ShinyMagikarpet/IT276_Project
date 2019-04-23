@@ -6,12 +6,12 @@
 #include "gf2d_text.h"
 #include "gf2d_sprite.h"
 #include "gf2d_actor.h"
-#include "gf2d_collision.h"
 #include "simple_json.h"
-#include "camera.h"
 #include "items.h"
+#include "gf2d_shape.h"
+#include "gf2d_audio.h"
 
-
+#define EntityMaxSounds 8
 typedef enum {
 	ED_Up,			/**<entity is facing up*/
 	ED_Down,		/**<entity is facing down*/
@@ -57,6 +57,7 @@ typedef struct Entity_S {
 	EntityState state;
 	EntityDir dir;
 	Action action;
+	Sound *sound[8];
 
 	//Physics
 	cpShape *cpshape;
@@ -64,7 +65,6 @@ typedef struct Entity_S {
 
 	cpVect spawnpos; /**<Spawn position of entity*/
 	Shape shape;
-	Body body;
 	Vector2D velocity;
 	Vector2D position;
 

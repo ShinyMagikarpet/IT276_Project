@@ -1,9 +1,7 @@
 #ifndef __MENU_H__
 #define __MENU_H__
-#include "gf2d_elements.h"
-#include "gf2d_windows.h"
-#include "gf2d_audio.h"
 #include "items.h"
+#include "gf2d_entity.h"
 
 int Pause_Menu();
 
@@ -15,6 +13,6 @@ void move_cursor_up();
 
 void pause_menu_free();
 
-Item *select_item(int cursorPos, List *inventory_list);
+Item *select_item(Entity *ent, int cursorPos);
 
 #endif // !__MENU_H__

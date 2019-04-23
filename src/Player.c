@@ -70,21 +70,33 @@ Entity *player_new(cpVect position, cpSpace *space) {
 		player->rpg.level = 1;
 		player->rpg.xp = 0;
 		gf2d_rpg_set_stats(player, 10, 1, 1, 3);
+
+		//Weapon
 		item = get_item_by_name("Wood Sword");
 		item->inuse = 0;
 		player->rpg.equipped_weapon = *item;
-		player->rpg.equipped_weapon.inuse = 0;
-		slog("Weapon equipped: %s", player->rpg.equipped_weapon.name);
+		player->rpg.equipped_weapon.inuse = 1;
+		slog("Weapon list usagee: %i", item_list[1].inuse);
 		item = &player->rpg.equipped_weapon;
 		put_item_in_inventory(item);
+
+		//Armor
 		item = get_item_by_name("Leather Armor");
-		item->inuse = 1;
 		player->rpg.equipped_armor = *item;
+		player->rpg.equipped_armor.inuse = 1;
+		slog("Armor equipped: %s", player->rpg.equipped_armor.name);
+		item = &player->rpg.equipped_armor;
 		put_item_in_inventory(item);
+
+		//Accessory
 		item = get_item_by_name("Gold Pendant");
 		player->rpg.equipped_accessory = *item;
+		player->rpg.equipped_accessory.inuse = 1;
+		slog("Accessory equipped: %s", player->rpg.equipped_accessory.name);
+		item = &player->rpg.equipped_accessory;
 		put_item_in_inventory(item);
-		item->inuse = 1;
+
+		//Potion
 		item = get_item_by_name("Potion");
 		item->inuse = 0;
 		put_item_in_inventory(item);
@@ -93,10 +105,9 @@ Entity *player_new(cpVect position, cpSpace *space) {
 		player->rpg = rpg;
 	}
 
-	
-
 	player->iframes = 0;
 	player->attack_rate = 1.0f;
+	player->sound[0] = gf2d_sound_load("sounds/sword_swing.mp3", 1, -1);
 	
 
 	//player functions
@@ -126,7 +137,6 @@ Entity *player_spawn(cpVect position, SJson *args, cpSpace *space)
 	if (player != NULL)
 	{
 		vector2d_copy(player->position, position);
-		level_add_entity(player);
 		return NULL;
 	}
 	if (!space) {
@@ -144,9 +154,6 @@ void player_set_position(cpVect position) {
 	}
 	/*vector2d_copy(player->position, position);
 	vector2d_copy(player->body.position, position);*/
-
-	
-
 }
 
 int cpTouch_player(cpBody *self, cpBody *other) {
@@ -341,6 +348,7 @@ void player_think(Entity *self) {
 					
 
 			}
+			gf2d_sound_play(self->sound[0], 0, 1, -1, -1);
 			self->state = ES_Attack;
 			self->cooldown = self->attack_rate;
 

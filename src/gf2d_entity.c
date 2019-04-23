@@ -3,6 +3,7 @@
 #include "gf2d_sprite.h"
 #include "gf2d_entity.h"
 #include "Player.h"
+#include "camera.h"
 
 typedef struct {
 
@@ -89,10 +90,15 @@ Entity *gf2d_entity_new()
 
 void gf2d_entity_free(Entity *self)
 {
+	int i;
 	if (!self)return;
 	if (self->sprite != NULL)
 	{
 		gf2d_sprite_free(self->sprite);
+	}
+
+	for (i = 0; i < EntityMaxSounds; i++) {
+		gf2d_sound_free(self->sound[i]);
 	}
 
 	if(!&self->actor)
@@ -211,41 +217,41 @@ void gf2d_entity_update_all() {
 	}
 }
 
-void gf2d_entity_pre_sync_body(Entity *self)
-{
-	if (!self)return;// nothin to do
-	vector2d_copy(self->body.velocity, self->velocity);
-	vector2d_copy(self->body.position, self->position);
-}
+//void gf2d_entity_pre_sync_body(Entity *self)
+//{
+//	if (!self)return;// nothin to do
+//	vector2d_copy(self->body.velocity, self->velocity);
+//	vector2d_copy(self->body.position, self->position);
+//}
+//
+//void gf2d_entity_post_sync_body(Entity *self)
+//{
+//	if (!self)return;// nothin to do
+////    slog("entity %li : %s old position(%f,%f) => new position (%f,%f)",self->id,self->name,self->position,self->body.position);
+//	vector2d_copy(self->position, self->body.position);
+//	vector2d_copy(self->velocity, self->body.velocity);
+//	
+//}
 
-void gf2d_entity_post_sync_body(Entity *self)
-{
-	if (!self)return;// nothin to do
-//    slog("entity %li : %s old position(%f,%f) => new position (%f,%f)",self->id,self->name,self->position,self->body.position);
-	vector2d_copy(self->position, self->body.position);
-	vector2d_copy(self->velocity, self->body.velocity);
-	
-}
-
-void gf2d_entity_pre_sync_all()
-{
-	int i;
-	for (i = 0; i < entityManager.maxEntities; i++)
-	{
-		if (entityManager.entityList[i].inuse == 0)continue;
-		gf2d_entity_pre_sync_body(&entityManager.entityList[i]);
-	}
-}
-
-void gf2d_entity_post_sync_all()
-{
-	int i;
-	for (i = 0; i < entityManager.maxEntities; i++)
-	{
-		if (entityManager.entityList[i].inuse == 0)continue;
-		gf2d_entity_post_sync_body(&entityManager.entityList[i]);
-	}
-}
+//void gf2d_entity_pre_sync_all()
+//{
+//	int i;
+//	for (i = 0; i < entityManager.maxEntities; i++)
+//	{
+//		if (entityManager.entityList[i].inuse == 0)continue;
+//		gf2d_entity_pre_sync_body(&entityManager.entityList[i]);
+//	}
+//}
+//
+//void gf2d_entity_post_sync_all()
+//{
+//	int i;
+//	for (i = 0; i < entityManager.maxEntities; i++)
+//	{
+//		if (entityManager.entityList[i].inuse == 0)continue;
+//		gf2d_entity_post_sync_body(&entityManager.entityList[i]);
+//	}
+//}
 
 
 Entity *gf2d_entity_get_by_id(Uint32 id)

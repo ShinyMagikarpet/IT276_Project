@@ -5,6 +5,7 @@
 #include "gf2d_element_list.h"
 #include "gf2d_element_label.h"
 #include "gf2d_input.h"
+#include "gf2d_audio.h"
 
 
 static Sound *menu_sound = NULL;
@@ -124,8 +125,9 @@ void Inventory() {
 	//When player hits ok, we get cursor position relative to the list in inventory and return the item
 	if (gf2d_input_command_pressed("ok")) {
 		Item *item;
-		item = select_item(_inventory_current_index, list->list);
+		item = select_item(player, _inventory_current_index);
 		if (!item)return;
+		slog("item name: %s", item->name);
 		switch (item->flag) {
 
 		case IT_WEAPON:
@@ -262,13 +264,12 @@ void pause_menu_free() {
 
 }
 
-Item *select_item(int cursorPos, List *inventory_list) {
-	Element *item_element;
+Item *select_item(Entity *ent, int cursorPos) {
+
 	Item *item;
-	item_element = gf2d_list_get_nth(inventory_list, cursorPos);
-	LabelElement *label = (LabelElement *)item_element->data;
-	item = get_item_by_name(label->text);
-	if (item)
-		return item;
+	if (!ent)return;
+	item = ent->rpg.inventory[cursorPos - 2];
+	if (!item)return;
+	return item;
 
 }

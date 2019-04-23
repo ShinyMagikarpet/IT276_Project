@@ -505,10 +505,10 @@ void level_add_entity(Entity *ent)
 		return;
 	}
 
-	if (ent->body.touch == NULL)
+	/*if (ent->body.touch == NULL)
 	{
 		ent->body.touch = body_body_touch;
-	}
+	}*/
 }
 
 void level_transition(char *filename, const char *playerTarget, Uint32 targetId)
