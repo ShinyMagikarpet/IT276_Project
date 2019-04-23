@@ -39,11 +39,12 @@ void *use_consumable(Entity *self, Item *item, int index) {
 }
 
 void *equip_weapon(Entity *self, Item *item, int index) {
+	int i;
 	Item *replace_item;
 	slog("This is a weapon");
 	if (!item)return;
-	replace_item = get_item_by_name(item->name);
 	if (item->inuse == 1) {
+		replace_item = get_item_by_name(item->name);
 		item->inuse = 0;
 		memset(&self->rpg.equipped_weapon, 0, sizeof(Item));
 		self->rpg.inventory[index] = replace_item;
@@ -51,6 +52,15 @@ void *equip_weapon(Entity *self, Item *item, int index) {
 		return;
 	}
 	//Else we unequip the current item and change it to the new requested item
+	for (i = 0; i < MAX_ITEMS; i++) {
+		if (self->rpg.inventory[i] == &self->rpg.equipped_weapon) {
+			self->rpg.inventory[i] = get_item_by_name(self->rpg.equipped_weapon.name);
+		}
+			
+	}
+	self->rpg.equipped_weapon = *item;
+	self->rpg.equipped_weapon.inuse = 1;
+	self->rpg.inventory[index] = &self->rpg.equipped_weapon;
 }
 
 void *equip_armor(Entity *self, Item *item, int index) {
@@ -73,7 +83,10 @@ void put_item_in_inventory(Item *item) {
 	}
 
 	slog("No more room in inventory");
-	return;
+}
+
+void sort_inventory(int index) {
+
 }
 
 //List of all items

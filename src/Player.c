@@ -100,6 +100,10 @@ Entity *player_new(cpVect position, cpSpace *space) {
 		item = get_item_by_name("Potion");
 		item->inuse = 0;
 		put_item_in_inventory(item);
+
+		//Second Weapon for testing
+		item = get_item_by_name("Iron Sword");
+		put_item_in_inventory(item);
 	}
 	else {
 		player->rpg = rpg;

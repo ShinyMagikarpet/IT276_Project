@@ -291,10 +291,6 @@ void gf2d_element_list_setup_inventory(Element *e) {
 		if (!equipment)break;
 		item = gf2d_element_new_full(e, i, "item", bound, color, 1);
 		text = equipment->name;
-		if (equipment->inuse == 1) {
-			snprintf(buffer, sizeof buffer, "%s E", text);
-			text = buffer;
-		}
 		gf2d_element_make_label(item, gf2d_element_label_new_full("item", text, color, style, LJ_Left, 0));
 		item->index = 100 + i;
 		//slog("item index: %i", item->index);

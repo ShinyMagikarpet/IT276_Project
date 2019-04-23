@@ -112,7 +112,6 @@ void Inventory() {
 	gf2d_input_update(); //Guess I need to update here or else code thinks the control calls are true
 	if (gf2d_input_command_pressed("cancel")) {
 		window->state = 0;
-		slog("why is code breaking here?");
 		cursor->bounds.y -= (_inventory_current_index - 2) * 36; //current index starts at 2
 		window = get_window_get_by_id(1);
 		element = gf2d_list_get_nth(window->elements, 0); //Get the cursor

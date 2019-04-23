@@ -263,7 +263,22 @@ void change_text_based_on_name(LabelElement *label, int index) {
 		snprintf(buffer, sizeof(buffer), "%s: %i", label->name, playerStat);
 	}
 	else if (strcmp(label->name, "item") == 0) {
-		snprintf(buffer, sizeof(buffer), "%s", label->text);
+		if (!(player->rpg.inventory[index - 100])) {
+			gf2d_block_cpy(label->text, "");
+			return;
+		}
+		if (player->rpg.inventory[index - 100]->inuse == 1) {
+			snprintf(buffer, sizeof buffer, "%s E", player->rpg.inventory[index - 100]->name);
+		}
+		else {
+			int length;
+			length = strlen(label->text);
+			if(label->text[length - 1] == 'E') {
+				label->text[length - 1] = '\0';
+			}
+			snprintf(buffer, sizeof(buffer), "%s", label->text);
+		}
+			
 	}
 	else {
 		//This is a message

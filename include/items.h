@@ -53,6 +53,12 @@ void put_item_in_inventory(Item *item);
 */
 int num_items();
 
+/**
+* @brief sorts the player's inventory when they drop or consume an item
+* @param index The index of the item being removed
+*/
+void sort_inventory(int index);
+
 
 
 extern Item item_list[]; /**item list for reference to everything in the program*/
