@@ -28,17 +28,6 @@ int Pause_Menu() {
 		slog("Element list count: %i", gf2d_list_get_count(list->list));
 	}
 
-	if (gf2d_input_command_pressed("case")) {
-		Entity *player = player_get();
-		Element *tempElement = element;
-		element = gf2d_element_get_by_id(element, 100 + 3);
-		gf2d_element_label_set_text(element, " ");
-		Item *item = get_item_by_index(player->rpg.inventory[3]);
-		if (item)
-			item->use(player, item, 3);
-		element = tempElement;
-	}
-
 	//Are we accessing our inventory?
 	if (_inventory == 1) {
 		Inventory();
@@ -108,6 +97,9 @@ int Pause_Menu() {
 
 void Inventory() {
 	Entity *player = player_get();
+	//Element *label_element = (Element *)gf2d_list_get_nth(list->list, _inventory_current_index);
+	//LabelElement *label = (LabelElement *)label_element->data;
+	//slog("label contents: %s", label->text);
 
 	gf2d_input_update(); //Guess I need to update here or else code thinks the control calls are true
 	if (gf2d_input_command_pressed("cancel")) {
@@ -121,6 +113,15 @@ void Inventory() {
 		_inventory = 0;
 	}
 
+	if (gf2d_input_command_pressed("case")) {
+		int i;
+		for (i = 0; i < list->list->count; i++) {
+			Element *label_element = (Element *)gf2d_list_get_nth(list->list, i);
+			LabelElement *label = (LabelElement *)label_element->data;
+			slog("label contents: %s", label->text);
+		}
+	}
+
 	//When player hits ok, we get cursor position relative to the list in inventory and return the item
 	if (gf2d_input_command_pressed("ok")) {
 		Item *item;
@@ -129,18 +130,34 @@ void Inventory() {
 		slog("item name: %s", item->name);
 		switch (item->flag) {
 
-		case IT_WEAPON:
+		case IT_WEAPON: {
+			Element *label_element = (Element *)gf2d_list_get_nth(list->list, _inventory_current_index);
+			LabelElement *label = (LabelElement *)label_element->data;
+			slog("label contents: %s", label->text);
 			item->equip(player, item, _inventory_current_index - 2);
+			label_element->draw;
 			break;
+		}
 		case IT_ACCESSORY:
 			item->equip(player, item, _inventory_current_index - 2);
 			break;
 		case IT_ARMOR:
 			item->equip(player, item, _inventory_current_index - 2);
 			break;
-		case IT_COMSUMEABLES:
+		case IT_COMSUMEABLES: {
+			slog("list count before: %i", gf2d_list_get_count(list->list));
+			Element *label_element = (Element *)gf2d_list_get_nth(list->list, _inventory_current_index);
+			LabelElement *label = (LabelElement *)label_element->data;
+			slog("label contents: %s", label->text);
 			item->use(player, item, _inventory_current_index - 2);
+			int i;
+			for (i = _inventory_current_index; i < list->list->count - 1; i++) {
+				list->list[i] = list->list[i + 1];
+			}
+			gf2d_list_delete_last(list->list);
+			//gf2d_element_update(label_element, vector2d(0, 0));
 			break;
+		}
 		default:
 			return;
 		}

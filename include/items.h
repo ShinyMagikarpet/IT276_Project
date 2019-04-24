@@ -55,9 +55,10 @@ int num_items();
 
 /**
 * @brief sorts the player's inventory when they drop or consume an item
+* @param self The player entity
 * @param index The index of the item being removed
 */
-void sort_inventory(int index);
+void sort_inventory(struct Entity_S *self, int index);
 
 
 

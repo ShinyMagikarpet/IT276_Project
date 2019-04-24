@@ -100,6 +100,11 @@ Entity *player_new(cpVect position, cpSpace *space) {
 		item = get_item_by_name("Potion");
 		item->inuse = 0;
 		put_item_in_inventory(item);
+		
+		//Potion
+		item = get_item_by_name("Potion");
+		item->inuse = 0;
+		put_item_in_inventory(item);
 
 		//Second Weapon for testing
 		item = get_item_by_name("Iron Sword");
@@ -399,13 +404,6 @@ void player_think(Entity *self) {
 			slog("WTF direction are you?!");
 		}
 		self->state = ES_Idle;
-	}
-
-	if (gf2d_input_command_pressed("case")) {
-		
-		Item *item = player->rpg.inventory[3];
-		if(item)
-			item->use(self, item, 3);
 	}
 
 	//DEBUG

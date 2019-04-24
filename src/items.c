@@ -34,7 +34,8 @@ void *use_consumable(Entity *self, Item *item, int index) {
 	self->rpg.stats.hp_current += self->rpg.stats.hp_max * (float)(item->statvalue / 100.0);
 	if (self->rpg.stats.hp_current > self->rpg.stats.hp_max)
 		self->rpg.stats.hp_current = self->rpg.stats.hp_max;
-	self->rpg.inventory[index] = NULL;
+	//self->rpg.inventory[index] = NULL;
+	sort_inventory(self, index);
 	
 }
 
@@ -55,6 +56,7 @@ void *equip_weapon(Entity *self, Item *item, int index) {
 	for (i = 0; i < MAX_ITEMS; i++) {
 		if (self->rpg.inventory[i] == &self->rpg.equipped_weapon) {
 			self->rpg.inventory[i] = get_item_by_name(self->rpg.equipped_weapon.name);
+			break;
 		}
 			
 	}
@@ -85,8 +87,18 @@ void put_item_in_inventory(Item *item) {
 	slog("No more room in inventory");
 }
 
-void sort_inventory(int index) {
+void sort_inventory(Entity *self, int index) {
+	int i;
+	for (i = index; i < MAX_ITEMS; i++) {
+		
+		if (self->rpg.inventory[i] != NULL) {
+			self->rpg.inventory[i] = self->rpg.inventory[i + 1];
+		}
+		else {
+			break;
+		}
 
+	}
 }
 
 //List of all items
