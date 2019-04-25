@@ -100,10 +100,8 @@ void gf2d_entity_free(Entity *self)
 	for (i = 0; i < EntityMaxSounds; i++) {
 		gf2d_sound_free(self->sound[i]);
 	}
-
-	if(!&self->actor)
-		gf2d_actor_free(&self->actor);
-
+	gf2d_actor_free(&self->actor);
+	gf2d_particle_emitter_free(self->pe);
 	memset(self, 0, sizeof(Entity));
 }
 
@@ -134,6 +132,7 @@ void gf2d_entity_draw(Entity * self)
 	if (!self)return;
 	if (!self->inuse)return;
 	Vector2D cam = camera_get_position();
+	gf2d_particle_emitter_draw(self->pe, vector2d(0,0));
 	gf2d_sprite_draw(
 		self->actor.sprite,
 		vector2d(self->position.x - cam.x, self->position.y - cam.y),
@@ -204,6 +203,7 @@ void gf2d_entity_update(Entity *self) {
 	if (!self)return;
 	if (!self->inuse)return;
 
+	gf2d_particle_emitter_update(self->pe);
 	if (self->update != NULL) {
 		self->update(self);
 	}

@@ -7,6 +7,7 @@
 #include <SDL_mixer.h>
 #include "gf2d_transition.h"
 #include "gf2d_cpSpace.h"
+#include "particle_effects.h"
 
 
 static Entity *player = NULL;
@@ -360,8 +361,7 @@ void player_think(Entity *self) {
 			gf2d_sound_play(self->sound[0], 0, 1, -1, -1);
 			self->state = ES_Attack;
 			self->cooldown = self->attack_rate;
-
-
+			particle_spray(cpvector_to_gf2dvector(self->cpbody->p), vector2d(0, -2), gf2d_color8(255, 0, 0, 200), 100);
 
 		}
 

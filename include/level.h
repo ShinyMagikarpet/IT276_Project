@@ -7,6 +7,7 @@
 #include "gf2d_entity.h"
 #include "simple_json.h"
 #include "gf2d_cpSpace.h"
+#include "gf2d_particles.h"
 
 /**
  * @Purpose game specific level code
@@ -127,4 +128,10 @@ void level_transition(char *filename, const char *playerTarget, Uint32 targetId)
 * @param shape The shape to store the data in
 */
 void level_transition_data(SJson *transitionList, int value, cpShape *shape);
+
+/**
+* @brief get the particle emitter for the level
+* @return NULL if not available, or a pointer to the particle emitter
+*/
+ParticleEmitter * level_get_particle_emitter();
 #endif

@@ -10,6 +10,7 @@
 #include "items.h"
 #include "gf2d_shape.h"
 #include "gf2d_audio.h"
+#include "gf2d_particles.h"
 
 #define EntityMaxSounds 8
 typedef enum {
@@ -75,6 +76,8 @@ typedef struct Entity_S {
 	Vector2D scalecenter;
 	Vector2D flip;
 	Sprite *sprite;
+
+	ParticleEmitter *pe;
 
 	void(*update)(struct Entity_S *self);	/**<update entity per frame*/
 	void(*think)(struct Entity_S *self);	/**<think before update*/

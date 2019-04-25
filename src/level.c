@@ -19,6 +19,7 @@ typedef struct
 	Sprite     *tileLayer;
 	Sprite     *tileSet;
 	Mix_Music  *backgroundMusic;
+	ParticleEmitter *pe;
 }Level;
 
 
@@ -37,6 +38,7 @@ void level_clear()
 	gf2d_sprite_free(gamelevel.backgroundImage);
 	gf2d_sprite_free(gamelevel.tileSet);
 	gf2d_sprite_free(gamelevel.tileLayer);
+	gf2d_particle_emitter_free(gamelevel.pe);
 	//gf2d_sprite_clear_all();
 	gf2d_sound_clear_all();
 	
@@ -443,6 +445,31 @@ void level_init(LevelInfo *linfo, Uint8 space)
 	level_spawn_entities(linfo->spawnList);
 
 	//transition_window_to_normal();
+
+	gamelevel.pe = gf2d_particle_emitter_new_full(
+		2048,
+		10,
+		5,
+		PT_Pixel,
+		vector2d(0, 0),
+		vector2d(0, 0),
+		vector2d(0, 0),
+		vector2d(0, 0),
+		vector2d(0, 0),
+		vector2d(0, 0),
+		gf2d_color(0, 0, 0, 1),
+		gf2d_color(0, 0, 0, 0),
+		gf2d_color(0, 0, 0, 0),
+		NULL,
+		0,
+		0,
+		0,
+		"",
+		0,
+		0,
+		0,
+		0,
+		SDL_BLENDMODE_BLEND);
 	
 
 	camera_set_dimensions(0, 0, SCREENWIDTH, SCREENHEIGHT);
@@ -458,6 +485,7 @@ void level_draw()
 	//gf2d_sprite_draw_image(gamelevel.tileLayer, vector2d(-cam.x, -cam.y), vector2d(2, 2)); //Changed last one to be scale
 	gf2d_entity_draw_all();
 	//gf2d_entity_draw_shape_all();
+	gf2d_particle_emitter_draw(gamelevel.pe, vector2d(0,0));
 	if (!player)return;
 
 	//if (gamelevel.space)gf2d_space_draw(gamelevel.space,vector2d(-cam.x,-cam.y));
@@ -470,6 +498,8 @@ void level_update()
 	gf2d_entity_think_all();
 
 	gf2d_entity_update_all();
+
+	gf2d_particle_emitter_update(gamelevel.pe);
 
 	gf2d_cpSpace_update(gamelevel.space);
 	
@@ -535,6 +565,11 @@ void level_transition(char *filename, const char *playerTarget, Uint32 targetId)
 	SDL_Delay(250);
 	gf2d_window_free(get_window_get_by_id(9));
 
+}
+
+ParticleEmitter *level_get_particle_emitter()
+{
+	return gamelevel.pe;
 }
 
 /*eol@eof*/
