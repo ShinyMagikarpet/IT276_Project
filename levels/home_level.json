@@ -44,7 +44,8 @@
     "transitionList": [
       {
         "value": 2,
-        "targetLevel": "overworld_1.json"
+        "targetLevel": "overworld_1.json",
+        "player_pos":  [535, 250]
       }
     ]
   }

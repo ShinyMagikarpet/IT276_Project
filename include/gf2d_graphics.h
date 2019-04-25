@@ -7,8 +7,8 @@
 #include "gf2d_vector.h"
 
 
-#define SCREENWIDTH 900
-#define SCREENHEIGHT 560
+#define SCREENWIDTH 1280
+#define SCREENHEIGHT 720
 
 /**
  * @brief initializes SDL and setups up basic window and rendering contexts

@@ -214,6 +214,7 @@ void free_all_bodies(cpBody *body, void *data) {
 void post_step_remove(cpSpace *space, cpShape *shape, void *data) {
 	TextLine targetLevel;  //, targetEntity;
 	Uint32 targetId;
+	cpVect player_spawn_pos;
 	Entity *player = player_get();
 
 	Transition *transitiondata = (Transition *)shape->userData;
@@ -221,6 +222,8 @@ void post_step_remove(cpSpace *space, cpShape *shape, void *data) {
 	if (!player)return;
 	if (!space)return;
 	gf2d_line_cpy(targetLevel, transitiondata->targetLevel);
+	slog("player Pos: %f, %f", transitiondata->player_pos.x, transitiondata->player_pos.y);
+	player_spawn_pos = transitiondata->player_pos;
 	//gf2d_line_cpy(targetEntity, "house");
 	targetId = 1;
 	transition_window_to_black();
@@ -229,8 +232,10 @@ void post_step_remove(cpSpace *space, cpShape *shape, void *data) {
 	entity_clear_all_but_player();
 	player->free(player);
 	level_transition(targetLevel, NULL, targetId);
+	slog("player Pos: %f, %f", transitiondata->player_pos.x, transitiondata->player_pos.y);
+	if(player_spawn_pos.x != 0 && player_spawn_pos.y != 0)
+		player->cpbody->p = player_spawn_pos;
 	
-
 }
 
 /*eol@eof*/

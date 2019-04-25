@@ -8,7 +8,8 @@
 */
 typedef struct Transition{
 	TextLine	targetLevel;	/**<Target level name*/
-	int			value;				/**<Value of the transitioner*/
+	int			value;			/**<Value of the transitioner*/
+	cpVect		player_pos;		/**<Where to spawn the player*/
 	Uint32		inuse;			/**<Check if currently in use*/
 }Transition;
 

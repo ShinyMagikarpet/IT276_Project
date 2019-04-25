@@ -63,8 +63,7 @@
     ],
     "spawnList": [
       {
-        "name": "player_start",
-        "position": [ 128, 128 ]
+        "name": "player_start"
       },
       {
         "name": "chest",
@@ -72,7 +71,7 @@
       },
       {
         "name": "bug_hive_start",
-        "position": [ 500, 400 ]
+        "position": [ 500, 500 ]
       },
       {
         "name": "bug_start",

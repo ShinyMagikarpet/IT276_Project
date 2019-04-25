@@ -197,7 +197,6 @@ LevelInfo *level_info_load(char *filename)
 	linfo->transitionList = sj_copy(sj_object_get_value(world, "transitionList"));
 	count = sj_array_get_count(linfo->transitionList);
 	slog("Transition list count = %i", count);
-
 	sj_free(json);
 	slog("loaded level info for %s", filename);
 	
@@ -399,6 +398,8 @@ void level_transition_data(SJson *transitionList, int value, cpShape *shape) {
 		item = sj_array_get_nth(transitionList, value - 2);
 		if (!item)continue;
 		sj_get_integer_value(sj_object_get_value(item, "value"), &data->value);
+		sj_value_as_vector2d(sj_object_get_value(item, "player_pos"), &data->player_pos); //Change here
+		//slog("player_pos: %f, %f", data->player_pos.x, data->player_pos.y);
 		gf2d_line_cpy(data->targetLevel, sj_get_string_value(sj_object_get_value(item, "targetLevel")));
 	}
 	data = gf2d_check_if_duplicate(data);
