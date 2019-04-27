@@ -202,6 +202,7 @@ void gf2d_input_update()
 
 	memcpy(gf2d_input_old_keys, gf2d_input_keys, sizeof(Uint8)*gf2d_input_key_count);
 	SDL_PumpEvents();   // update SDL's internal event structures
+	if (!&gf2d_input_key_count)return;
 	gf2d_input_keys = SDL_GetKeyboardState(&gf2d_input_key_count);
 
 	c = gf2d_list_get_count(gf2d_input_list);

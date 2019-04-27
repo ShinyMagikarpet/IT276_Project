@@ -94,6 +94,9 @@ cpBool player_touch_monster_presolve(cpArbiter *arb, cpSpace *space, void *data)
 	Entity *player = (Entity *)playerbody->userData;
 	Entity *other = (Entity *)monster->userData;
 
+	//if not in use, ignore collision altogether
+	if (!other->inuse)return cpFalse;
+
 	if (strcmp(other->name, "bug_hive") == 0) {
 		return cpTrue;
 	}
@@ -114,7 +117,8 @@ void player_touch_monster_postsolve(cpArbiter *arb, cpSpace *space, void *data) 
 	
 	if (inflicted) {
 
-		cpSpaceAddPostStepCallback(space, (cpPostStepFunc)free_physics, inflicted, NULL);
+		//cpSpaceAddPostStepCallback(space, (cpPostStepFunc)free_physics, inflicted, NULL);
+		inflicted->inuse = 0;
 
 	}
 }
@@ -226,7 +230,7 @@ void post_step_remove(cpSpace *space, cpShape *shape, void *data) {
 	player_spawn_pos = transitiondata->player_pos;
 	//gf2d_line_cpy(targetEntity, "house");
 	targetId = 1;
-	transition_window_to_black();
+	transition_window_to_black(80.0f);
 	cpSpaceEachShape(space, (cpSpaceShapeIteratorFunc)free_all_shapes, NULL);
 	cpSpaceEachBody(space, (cpSpaceBodyIteratorFunc)free_all_bodies, NULL);
 	entity_clear_all_but_player();

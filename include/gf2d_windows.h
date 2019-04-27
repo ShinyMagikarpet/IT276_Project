@@ -133,8 +133,9 @@ Window *get_window_get_by_id(Uint32 id);
 
 /**
  * @brief transition a black window
+ * @param speed Determines how fast to fade to black (0 being instant and 255 being slowest)
  */
-void transition_window_to_black();
+void transition_window_to_black(float speed);
 
 /**
  * @brief transition a window to normal

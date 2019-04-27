@@ -40,6 +40,7 @@ Entity *bug_new(cpVect position, cpSpace *space) {
 	gf2d_line_cpy(bug->name, "Bug");
 	gf2d_rpg_set_stats(bug, 3, 1, 1, 1);
 	bug->rpg.xp = 100;
+	slog("bug id: %i", bug->id);
 	return bug;
 
 

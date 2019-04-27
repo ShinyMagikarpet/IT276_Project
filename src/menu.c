@@ -42,12 +42,13 @@ int Pause_Menu() {
 			case 0: {
 				pause = 0;
 				slog("unpaused");
-				transition_window_to_black();
+				transition_window_to_black(40.0f);
 				pause_menu_free();
 				return pause;
 				break;
 			}
 			case 1: {
+				transition_window_to_black(40.0f);
 				window = get_window_get_by_id(2);
 				element = gf2d_list_get_nth(window->elements, 0);
 				cursor = element->get_by_name(element, "cursor");
@@ -101,7 +102,7 @@ void Inventory() {
 	//LabelElement *label = (LabelElement *)label_element->data;
 	//slog("label contents: %s", label->text);
 
-	gf2d_input_update(); //Guess I need to update here or else code thinks the control calls are true
+	//gf2d_input_update(); //Guess I need to update here or else code thinks the control calls are true
 	if (gf2d_input_command_pressed("cancel")) {
 		window->state = 0;
 		cursor->bounds.y -= (_inventory_current_index - 2) * 36; //current index starts at 2
@@ -152,10 +153,9 @@ void Inventory() {
 			item->use(player, item, _inventory_current_index - 2);
 			int i;
 			for (i = _inventory_current_index; i < list->list->count - 1; i++) {
-				list->list[i] = list->list[i + 1];
+				memmove(&list->list[i], &list->list[i + 1], sizeof(List*));//Don't know what's better, memcpy or memmove as both seem to give same results
 			}
 			gf2d_list_delete_last(list->list);
-			//gf2d_element_update(label_element, vector2d(0, 0));
 			break;
 		}
 		default:

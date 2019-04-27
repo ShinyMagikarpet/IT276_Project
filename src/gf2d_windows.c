@@ -185,7 +185,8 @@ void gf2d_window_free(Window *win)
 	{
 		gf2d_element_free((Element*)gf2d_list_get_nth(win->elements, i));
 	}
-	gf2d_list_delete(win->elements);
+	if(win->elements)
+		gf2d_list_delete(win->elements);
 	gf2d_sprite_free(win->background);
 	gf2d_sprite_free(win->border);
 	memset(win, 0, sizeof(Window));
@@ -507,12 +508,12 @@ Window *get_window_get_by_id(Uint32 id) {
 	return NULL;
 }
 
-void transition_window_to_black() {
+void transition_window_to_black(float speed) {
 	int i;
 	Window *win = gf2d_window_load("config/transition_window.cfg");
 	float alpha = 0;
-	for (i = 0; i < 80; i++) {
-		alpha += 255.0 / 80.0;
+	for (i = 0; i < speed; i++) {
+		alpha += 255.0 / speed;
 		if (alpha > 255.0)
 			alpha = 255.0;
 		win->color = vector4d(0, 0, 0, alpha);

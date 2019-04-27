@@ -41,7 +41,7 @@ Entity *player_spawn(cpVect position, SJson *args, cpSpace *space);
 * @brief number of items in player's inventory
 * @return returns integer of items
 */
-int get_inventory_count();
+int get_inventory_count(Entity *self);
 
 
 #endif

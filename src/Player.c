@@ -64,7 +64,6 @@ Entity *player_new(cpVect position, cpSpace *space) {
 	player->dir = ED_Down;
 	player->state = ES_Idle;
 
-
 	//RPG stuff
 	//Check if this is first time being initialized
 	if (rpg.level <= 0) {
@@ -130,7 +129,13 @@ Entity *player_new(cpVect position, cpSpace *space) {
 }
 
 Entity *player_get() {
-	return player;
+
+	if(strcmp(player->name, "player") == 0)
+		return player;
+	else {
+		player = gf2d_entity_get_by_name("player");
+		return player;
+	}
 }
 
 void player_free(Entity *self) {
@@ -300,19 +305,19 @@ void player_think(Entity *self) {
 
 			switch (self->dir) {
 			case ED_Down:
-				gf2d_actor_set_action(&player->actor, "attack_down");
+				gf2d_actor_set_action(&self->actor, "attack_down");
 				offsetRayY = 35;
 				break;
 			case ED_Left:
-				gf2d_actor_set_action(&player->actor, "attack_left");
+				gf2d_actor_set_action(&self->actor, "attack_left");
 				offsetRayX = -35;
 				break;
 			case ED_Right:
-				gf2d_actor_set_action(&player->actor, "attack_right");
+				gf2d_actor_set_action(&self->actor, "attack_right");
 				offsetRayX = 35;
 				break;
 			case ED_Up:
-				gf2d_actor_set_action(&player->actor, "attack_up");
+				gf2d_actor_set_action(&self->actor, "attack_up");
 				offsetRayY = -35;
 				break;
 			default:
@@ -358,6 +363,7 @@ void player_think(Entity *self) {
 					
 
 			}
+			slog("Number of entities: %i", num_entities());
 			gf2d_sound_play(self->sound[0], 0, 1, -1, -1);
 			self->state = ES_Attack;
 			self->cooldown = self->attack_rate;
@@ -389,16 +395,16 @@ void player_think(Entity *self) {
 	if (self->actor.at == ART_END && self->state == ES_Attack) {
 		switch (self->dir) {
 		case ED_Down:
-			gf2d_actor_set_action(&player->actor, "idle_down");
+			gf2d_actor_set_action(&self->actor, "idle_down");
 			break;
 		case ED_Left:
-			gf2d_actor_set_action(&player->actor, "idle_left");
+			gf2d_actor_set_action(&self->actor, "idle_left");
 			break;
 		case ED_Right:
-			gf2d_actor_set_action(&player->actor, "idle_right");
+			gf2d_actor_set_action(&self->actor, "idle_right");
 			break;
 		case ED_Up:
-			gf2d_actor_set_action(&player->actor, "idle_up");
+			gf2d_actor_set_action(&self->actor, "idle_up");
 			break;
 		default:
 			slog("WTF direction are you?!");
@@ -420,7 +426,7 @@ void player_think(Entity *self) {
 			}
 			
 		}
-		slog("inventory count: %i", get_inventory_count());
+		slog("inventory count: %i", get_inventory_count(self));
 		
 	}
 	if (keys[SDL_SCANCODE_2]) {
@@ -471,11 +477,11 @@ void player_update(Entity *self) {
 	}
 }
 
-int get_inventory_count() {
+int get_inventory_count(Entity *self) {
 	int i, count;
 	count = 0;
 	for (i = 0; i < MAX_ITEMS; i++) {
-		if (player->rpg.inventory[i] != 0) {
+		if (self->rpg.inventory[i] != 0) {
 			count++;
 			continue;
 		}

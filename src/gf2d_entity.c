@@ -80,6 +80,7 @@ Entity *gf2d_entity_new()
 	{
 		if (entityManager.entityList[i].inuse)continue;
 		entityManager.entityList[i].inuse = 1;
+		entityManager.entityList[i].id = i;
 		entityManager.entityList[i].scale.x = 1;
 		entityManager.entityList[i].scale.y = 1;
 		return &entityManager.entityList[i];
@@ -132,7 +133,7 @@ void gf2d_entity_draw(Entity * self)
 	if (!self)return;
 	if (!self->inuse)return;
 	Vector2D cam = camera_get_position();
-	gf2d_particle_emitter_draw(self->pe, vector2d(0,0));
+	gf2d_particle_emitter_draw(self->pe, vector2d(self->position.x - cam.x, self->position.y - cam.y));
 	gf2d_sprite_draw(
 		self->actor.sprite,
 		vector2d(self->position.x - cam.x, self->position.y - cam.y),
@@ -268,6 +269,20 @@ Entity *gf2d_entity_get_by_id(Uint32 id)
 	return NULL;
 }
 
+Entity *gf2d_entity_get_by_name(const char *name)
+{
+	int i;
+	for (i = 0; i < entityManager.maxEntities; i++)
+	{
+		if (entityManager.entityList[i].inuse == 0)continue;
+		if ((gf2d_line_cmp(entityManager.entityList[i].name, name) == 0))
+		{
+			return &entityManager.entityList[i];
+		}
+	}
+	return NULL;
+}
+
 Entity *gf2d_entity_get_by_name_id(const char *name, Uint32 id)
 {
 	int i;
@@ -282,14 +297,30 @@ Entity *gf2d_entity_get_by_name_id(const char *name, Uint32 id)
 	return NULL;
 }
 
-void name_all_entity() {
-
+int num_entities() {
 	int i;
+	Entity *self;
 	for (i = 0; i < entityManager.maxEntities; i++)
 	{
-		if (entityManager.entityList[i].name) {
-			slog("Name is: %s", entityManager.entityList[i].name);
-		}
-	}
+		self = &entityManager.entityList[i];
+		if (!self->inuse) break;
 
+	}
+	return (i);
+}
+
+void sort_entities() {
+
+	int size = num_entities(), i;
+	qsort((void *)entityManager.entityList, size, sizeof(entityManager.entityList[0]), comparator);
+	/*for (i = 0; i < size; i++) {
+		slog("name: %s || index: %i", entityManager.entityList[i].name, i);
+	}*/
+
+}
+
+int comparator(const void *p, const void *q) {
+	float l = ((Entity *)p)->position.y + ( ((Entity *)p)->scale.y * ((Entity *)p)->actor.sprite->frame_h);
+	float r = ((Entity *)q)->position.y + ( ((Entity *)q)->scale.y * ((Entity *)q)->actor.sprite->frame_h);
+	return (l - r);
 }
