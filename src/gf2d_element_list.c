@@ -282,15 +282,24 @@ void gf2d_element_list_setup_inventory(Element *e) {
 	char *text;
 	Color color = { 210, 210, 210, 255, 1 };
 	Rect bound = { 48, -48, 0, 0 };
-	Entity *player = player_get();
+	Entity *player;
 	Item *equipment;
 	TextLine buffer;
 	
+	player = player_get();
+	slog("player name: %s", player->name);
+	if (strcmp(player->name, "player") != 0) {
+		player = gf2d_entity_get_by_name("player");
+		slog("player name: %s", player->name);
+	}
 	for (i = 0; i < MAX_ITEMS; i++) {
 		equipment = player->rpg.inventory[i];
 		if (!equipment)break;
 		item = gf2d_element_new_full(e, i, "item", bound, color, 1);
 		text = equipment->name;
+		slog("ID: %i", player->id);
+		if (!text)continue;
+		slog("text: %s", text);
 		gf2d_element_make_label(item, gf2d_element_label_new_full("item", text, color, style, LJ_Left, 0));
 		item->index = 100 + i;
 		//slog("item index: %i", item->index);

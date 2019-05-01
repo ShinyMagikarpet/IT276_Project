@@ -478,7 +478,7 @@ void level_init(LevelInfo *linfo, Uint8 space)
 void level_draw()
 {
 	Vector2D cam;
-	Entity *player = player = player_get();
+	Entity *player = player_get();
 	cam = camera_get_position();
 	camera_set_position(cpv(player->cpbody->p.x - (SCREENWIDTH / 2), player->cpbody->p.y - (SCREENHEIGHT / 2)));
 	gf2d_sprite_draw_image(gamelevel.backgroundImage, vector2d(-cam.x, -cam.y), vector2d(1,1));

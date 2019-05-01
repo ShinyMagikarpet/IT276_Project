@@ -130,12 +130,17 @@ Entity *player_new(cpVect position, cpSpace *space) {
 
 Entity *player_get() {
 
-	if(strcmp(player->name, "player") == 0)
+	/*if(strcmp(player->name, "player") == 0)
 		return player;
 	else {
 		player = gf2d_entity_get_by_name("player");
 		return player;
-	}
+	}*/
+	return player;
+}
+
+Entity *player_set(Entity *self) {
+	player = self;
 }
 
 void player_free(Entity *self) {
@@ -207,32 +212,32 @@ void player_update_velocity(cpBody *body, cpVect gravity, cpFloat damping, cpFlo
 
 
 void player_think(Entity *self) {
-
-	 moveX = 0;
-	 moveY = 0;
-	 cpSegmentQueryInfo hit = { 0 };
-		 
-	 if (!self)return;
+	
+	moveX = 0;
+	moveY = 0;
+	cpSegmentQueryInfo hit = { 0 };
+	 
+	if (!self)return;
 	////Need to fix walking animation to easily
 	////transition from idle to walking
-	 if (gf2d_input_command_held("move_up")) {
+	if (gf2d_input_command_held("move_up")) {
 		 if (self->state != ES_Attack)
-			 moveY -= PLAYER_VELOCITY;
+			moveY -= PLAYER_VELOCITY;
 
 		 if (self->state == ES_Idle) {
-			 self->dir = ED_Up;
-			 self->state = ES_Walk;
-			 gf2d_actor_set_action(&self->actor, "move_up");
+			self->dir = ED_Up;
+			self->state = ES_Walk;
+			gf2d_actor_set_action(&self->actor, "move_up");
 		 }
 
 
-	 }
-	 else if (gf2d_input_command_get_state("move_up") == IE_Release && self->state != ES_Attack) {
-		 gf2d_actor_set_action(&self->actor, "idle_up");
-		 self->cpbody->v.x = 0;
-		 self->cpbody->v.y = 0;
-		 self->state = ES_Idle;
-	 }
+	}
+	else if (gf2d_input_command_get_state("move_up") == IE_Release && self->state != ES_Attack) {
+		gf2d_actor_set_action(&self->actor, "idle_up");
+		self->cpbody->v.x = 0;
+		self->cpbody->v.y = 0;
+		self->state = ES_Idle;
+	}
 
 	if (gf2d_input_command_held("move_down")) {
 		if (self->state != ES_Attack)
@@ -330,7 +335,7 @@ void player_think(Entity *self) {
 				if (hit.shape->type == MONSTER_TYPE) {
 					Entity *inflicted = hit.shape->body->userData;
 					if (inflicted) {
-						slog("Hit the monster!");
+						slog("Hit %s", inflicted->name);
 						inflicted->cpbody->p = cpvadd(inflicted->cpbody->p, cpv(50 * -hit.normal.x, 50 * -hit.normal.y));
 						inflicted->rpg.stats.hp_current -= self->damage(self, inflicted);
 						//if inclicted dies, reward player
@@ -363,7 +368,6 @@ void player_think(Entity *self) {
 					
 
 			}
-			slog("Number of entities: %i", num_entities());
 			gf2d_sound_play(self->sound[0], 0, 1, -1, -1);
 			self->state = ES_Attack;
 			self->cooldown = self->attack_rate;

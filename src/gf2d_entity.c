@@ -153,9 +153,9 @@ void gf2d_entity_draw(Entity * self)
 
 void gf2d_entity_draw_all() {
 	int i;
-
+	sort_entities(entityManager.entityList);
 	for (i = 0; i < entityManager.maxEntities; i++) {
-		//if (entityManager.entityList[i]._inuse == 0)continue;
+		if (entityManager.entityList[i].inuse == 0)continue;
 		gf2d_entity_draw(&entityManager.entityList[i]);
 	}
 }
@@ -309,14 +309,47 @@ int num_entities() {
 	return (i);
 }
 
-void sort_entities() {
+void list_entities() {
+	int i;
+	//Entity temp;
+	//for (i = 0; i < num_entities(); i++) {
+	//	slog("Old Entity index: %i and Old Entity name: %s", i, entityManager.entityList[i].name);
+	//}
+	//temp = entityManager.entityList[0];
+	//memmove(&entityManager.entityList[0], &entityManager.entityList[1], sizeof(Entity));
+	//memmove(&entityManager.entityList[1], &temp, sizeof(Entity));
+	//entityManager.entityList[1] = *temp;
+	for (i = 0; i < num_entities(); i++) {
+		slog("New Entity index: %i and New Entity name: %s", i, entityManager.entityList[i].name);
+	}
+}
 
-	int size = num_entities(), i;
-	qsort((void *)entityManager.entityList, size, sizeof(entityManager.entityList[0]), comparator);
+void sort_entities() {
+	Entity *ent_list = entityManager.entityList;
+	int i, size = num_entities();
+	//qsort((void *)ent_list, size, sizeof(entityManager.entityList[0]), comparator);
 	/*for (i = 0; i < size; i++) {
 		slog("name: %s || index: %i", entityManager.entityList[i].name, i);
 	}*/
+	Entity key;
+	Entity *arr = entityManager.entityList;
+	int j;
+	for (i = 1; i < size; i++) {
+		key = arr[i];
+		j = i - 1;
 
+		/* Move elements of arr[0..i-1], that are
+		  greater than key, to one position ahead
+		  of their current position */
+		while (j >= 0 && (arr[j].position.y + arr[j].actor.sprite->frame_h) > (key.position.y + key.actor.sprite->frame_h)) {
+			slog("moving: %s with %s", arr[j + 1].name, arr[j].name);
+			arr[j + 1] = arr[j];
+			j = j - 1;
+		}
+		arr[j + 1] = key;
+	}
+
+	player_set(gf2d_entity_get_by_name("player"));
 }
 
 int comparator(const void *p, const void *q) {

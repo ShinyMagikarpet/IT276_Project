@@ -72,13 +72,7 @@ int main(int argc, char * argv[])
     /*main game loop*/
     while(!done)
     {
-		
-		sort_entities();
-		/*
-		//As of now, this is halfway working as the sprites do change draw order
-		However, because I don't know how to properly move around the memory pertaining to the entityManager
-		Entities start to misbehave becuase of unupdated pointers.
-		*/
+		//sort_entities();
         //SDL_PumpEvents();   // update SDL's internal event structures
         keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
         /*update things here*/
@@ -135,6 +129,9 @@ int main(int argc, char * argv[])
 		if (gf2d_input_command_pressed("exit")) {
 			pause = 0;
 			done = 1;
+		}
+		if (gf2d_input_command_pressed("ok")) {
+			list_entities();
 		}
         //slog("Rendering at %f FPS",gf2d_graphics_get_frames_per_second());
     }

@@ -65,7 +65,7 @@ void spawn_entity(const char *name, cpVect position, Uint32 id, SJson *args, cpS
 				ent = spawn->spawn(position, args, space);
 				if (ent)
 				{
-					ent->id = id;
+					//ent->id = id;
 				}
 				return;
 			}

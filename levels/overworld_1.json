@@ -67,7 +67,7 @@
       },
       {
         "name": "chest",
-        "position": [ 10, 10 ]
+        "position": [ 10, 40 ]
       },
       {
         "name": "bug_hive_start",

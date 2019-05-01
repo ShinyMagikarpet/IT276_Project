@@ -177,6 +177,8 @@ int num_entities();
 
 void sort_entities();
 
+void list_entities();
+
 int comparator(const void *p, const void *q);
 
 #endif

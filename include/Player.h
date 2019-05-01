@@ -23,6 +23,8 @@ Entity *player_new(cpVect position, cpSpace *space);
  */
 Entity *player_get();
 
+Entity *player_set(Entity *self);
+
 /**
  * @brief set the position of the player
  * @param position the postion to spawn the player
