@@ -15,8 +15,9 @@
 #include "Player.h"
 #include "menu.h"
 
-static int done = 0;
-static int pause = 0;
+static int _done = 0;
+static int _pause = 0;
+static int _main_menu = 1;
 
 static Window *window = NULL;
 
@@ -30,6 +31,7 @@ int main(int argc, char * argv[])
     float mf = 0;
     Sprite *mouse;
     Vector4D mouseColor = {255,100,255,200};
+	int _editor;
 	Sound *menu_sound = NULL;
 
 	LevelInfo *linfo = NULL;
@@ -70,8 +72,8 @@ int main(int argc, char * argv[])
     //mouse = gf2d_sprite_load_all("images/pointer.png",32,32,16,0);
 
     /*main game loop*/
-    while(!done)
-    {
+   GAME_LOOP: while(!_done)
+   {
 		//sort_entities();
         //SDL_PumpEvents();   // update SDL's internal event structures
         keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
@@ -79,13 +81,14 @@ int main(int argc, char * argv[])
         SDL_GetMouseState(&mx,&my);
         mf+=0.1;
         if (mf >= 16.0)mf = 0;
+
 		gf2d_input_update();
-        
+
         gf2d_graphics_clear_screen();// clears drawing buffers
 
 		//Update and draw level	
 		level_draw();
-		if (!pause) {
+		if (!_pause && !_main_menu) {
 			level_update();
 		}
 			
@@ -103,10 +106,10 @@ int main(int argc, char * argv[])
                 (int)mf);*/
 		
         gf2d_grahics_next_frame();// render current draw frame and skip to the next frame
-
-		if (gf2d_input_command_pressed("pause")) {
-			pause = 1;
+		if (gf2d_input_command_pressed("pause") && !_main_menu) {
+			_pause = 1;
 		}
+
 		if (gf2d_input_command_pressed("save")) {
 			SaveInfo save;
 			Entity *player = player_get();
@@ -117,28 +120,38 @@ int main(int argc, char * argv[])
 		if (gf2d_input_command_pressed("load")) {
 			save_load_in("save/save.bin");
 		}
+
+		if (_main_menu) {
+			_main_menu = Main_Menu();
+			if (_main_menu == 1)
+				_editor = 1;
+			else if (_main_menu == 2) {
+				_main_menu = 0;
+				_done = 1;
+			}
+
+		}
+
+
+
 		//Pause loop
-		if (pause) {
-			pause = Pause_Menu();
-			if (pause == 2) {
-				pause = 0;
-				done = 1;
+		if (_pause) {
+			_pause = Pause_Menu();
+			if (_pause == 2) {
+				_pause = 0;
+				_done = 1;
 			}
 		}
 		
 		if (gf2d_input_command_pressed("exit")) {
-			pause = 0;
-			done = 1;
-		}
-		if (gf2d_input_command_pressed("ok")) {
-			list_entities();
+			_pause = 0;
+			_done = 1;
 		}
         //slog("Rendering at %f FPS",gf2d_graphics_get_frames_per_second());
-    }
+   }
     slog("---==== END ====---");
 	gf2d_input_commands_purge();
 	level_info_free(linfo);
-	gf2d_sound_free(menu_sound);
 	cpSpaceEachShape(get_space(), (cpSpaceShapeIteratorFunc)free_all_shapes, NULL);
 	cpSpaceEachBody(get_space(), (cpSpaceBodyIteratorFunc)free_all_bodies, NULL);
 	level_clear();

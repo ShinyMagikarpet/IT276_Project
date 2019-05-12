@@ -14,6 +14,62 @@ static Element *element = NULL, *cursor = NULL;
 static int _inventory = 0, _inventory_current_index = 0;
 static ListElement *list = NULL;
 
+
+int Main_Menu() {
+
+	int pause = 1, done = 0;
+	if (window == NULL) {
+		window = gf2d_window_load("config/main_menu_window.cfg");
+		menu_sound = gf2d_sound_load("sounds/pop.ogg", 1.0, 0);
+
+		element = gf2d_list_get_nth(window->elements, 0);
+		cursor = element->get_by_name(element, "cursor");
+
+		//Instead of making a new actor cursor actor, I'm just going to scale the one I already have
+		Actor *cursor_actor = (Actor *)cursor->data;
+		if (cursor_actor)
+			cursor_actor->al->scale = vector2d(1.3, 1.3);
+		ListElement *list = (ListElement *)element->data;
+	}
+
+	if (gf2d_input_command_pressed("ok")) {
+		if (element) {
+			switch (element->index)
+			{
+			case 0: {
+				pause = 0;
+				transition_window_to_black(40.0f);
+				pause_menu_free();
+				return pause;
+				break;
+			}
+			case 1: {
+				pause = 1;
+				transition_window_to_black(40.0f);
+				pause_menu_free();
+				return pause;
+				break;
+			}
+			default:
+				pause = 2;
+				pause_menu_free();
+				break;
+			}
+		}
+	}
+
+	//move the cursor position down
+	if (gf2d_input_command_pressed("move_down")) {
+		move_cursor_down(50);
+	}
+
+	if (gf2d_input_command_pressed("move_up")) {
+		move_cursor_up(50);
+	}
+
+	return pause;
+}
+
 int Pause_Menu() {
 
 	int pause = 1, done = 0;
@@ -86,11 +142,11 @@ int Pause_Menu() {
 
 	//move the cursor position down
 	if (gf2d_input_command_pressed("move_down")) {
-		move_cursor_down();
+		move_cursor_down(30);
 	}
 
 	if (gf2d_input_command_pressed("move_up")) {
-		move_cursor_up();
+		move_cursor_up(30);
 	}
 
 	return pause;
@@ -156,7 +212,7 @@ void Inventory() {
 				memcpy(&list->list[i], &list->list[i + 1], sizeof(List*));//Don't know what's better, memcpy or memmove as both seem to give same results
 			}
 			gf2d_list_delete_last(list->list);
-			if (_inventory_current_index == list->list->count)move_cursor_up(); //move cursor up if last item
+			if (_inventory_current_index == list->list->count)move_cursor_up(30); //move cursor up if last item
 			break;
 		}
 		default:
@@ -167,16 +223,16 @@ void Inventory() {
 
 	//move the cursor position down
 	if (gf2d_input_command_pressed("move_down")) {
-		move_cursor_down();
+		move_cursor_down(30);
 	}
 
 	if (gf2d_input_command_pressed("move_up")) {
-		move_cursor_up();
+		move_cursor_up(30);
 	}
 }
 
 //So this is probably the most hackey way to move my cursor. I hate this and it should burn
-void move_cursor_down() { 
+void move_cursor_down(int moveValue) { 
 	int i, j, count = window->selection_count;
 	Element *new_element, *new_cursor; /**< temp variable to hold info*/
 	if (!element) { //If this is first time, then we know to start at 0
@@ -222,7 +278,7 @@ void move_cursor_down() {
 			break;
 		}
 	}
-	cursor->bounds.y += 30;
+	cursor->bounds.y += moveValue;
 	gf2d_sound_play(menu_sound, 0, 1.0, -1, -1); //Player menu sound
 
 	/*
@@ -233,7 +289,7 @@ void move_cursor_down() {
 }
 
 //move_cursor_down() and everyday is opposite day
-void move_cursor_up() {
+void move_cursor_up(int moveValue) {
 	int i, j, count = gf2d_list_get_count(window->elements);
 	Element *new_element, *new_cursor;
 
@@ -264,7 +320,7 @@ void move_cursor_up() {
 			break;
 		}
 	}
-	cursor->bounds.y -= 30;
+	cursor->bounds.y -= moveValue;
 	gf2d_sound_play(menu_sound, 0, 1.0, 1, -1);
 
 }
