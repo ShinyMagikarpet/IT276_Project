@@ -153,7 +153,6 @@ void gf2d_entity_draw(Entity * self)
 
 void gf2d_entity_draw_all() {
 	int i;
-	sort_entities(entityManager.entityList);
 	for (i = 0; i < entityManager.maxEntities; i++) {
 		if (entityManager.entityList[i].inuse == 0)continue;
 		gf2d_entity_draw(&entityManager.entityList[i]);

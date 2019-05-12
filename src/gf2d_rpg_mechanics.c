@@ -1,8 +1,8 @@
 #include "gf2d_rpg_mechanics.h"
 #include "simple_logger.h"
+#include "particle_effects.h"
 #include <math.h>
 
-//TODO: FIGURE OUT XP SYSTEM DISTRIBUTION
 
 void check_if_level_up(Entity *self) {
 
@@ -10,12 +10,22 @@ void check_if_level_up(Entity *self) {
 	
 	int playerXP = self->rpg.xp;
 	int playerLevel = self->rpg.level;
+	int originalLevel = self->rpg.level;
 
 
 	while (playerXP >= xp_to_next_level(playerLevel)) {
 		playerLevel++;
 		on_level_up(self);
 	}
+
+	if (playerLevel > originalLevel) {
+		Vector2D offset;
+		vector2d_add(offset, self->position, vector2d(30, 0));
+
+		particle_spray(offset, vector2d(0, -3.5), gf2d_color8(255, 255, 100, 255), 150);
+
+	}
+		
 
 	self->rpg.level = playerLevel;
 

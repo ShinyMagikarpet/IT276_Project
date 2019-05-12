@@ -448,7 +448,7 @@ void level_init(LevelInfo *linfo, Uint8 space)
 
 	gamelevel.pe = gf2d_particle_emitter_new_full(
 		2048,
-		10,
+		100,
 		5,
 		PT_Pixel,
 		vector2d(0, 0),
@@ -459,7 +459,7 @@ void level_init(LevelInfo *linfo, Uint8 space)
 		vector2d(0, 0),
 		gf2d_color(0, 0, 0, 1),
 		gf2d_color(0, 0, 0, 0),
-		gf2d_color(0, 0, 0, 0),
+		gf2d_color(0, 255, 0, 0),
 		NULL,
 		0,
 		0,
@@ -485,7 +485,7 @@ void level_draw()
 	//gf2d_sprite_draw_image(gamelevel.tileLayer, vector2d(-cam.x, -cam.y), vector2d(2, 2)); //Changed last one to be scale
 	gf2d_entity_draw_all();
 	//gf2d_entity_draw_shape_all();
-	gf2d_particle_emitter_draw(gamelevel.pe, vector2d(0,0));
+	gf2d_particle_emitter_draw(gamelevel.pe, vector2d(-cam.x, -cam.y));
 	if (!player)return;
 
 	//if (gamelevel.space)gf2d_space_draw(gamelevel.space,vector2d(-cam.x,-cam.y));

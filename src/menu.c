@@ -153,7 +153,7 @@ void Inventory() {
 			item->use(player, item, _inventory_current_index - 2);
 			int i;
 			for (i = _inventory_current_index; i < list->list->count - 1; i++) {
-				memmove(&list->list[i], &list->list[i + 1], sizeof(List*));//Don't know what's better, memcpy or memmove as both seem to give same results
+				memcpy(&list->list[i], &list->list[i + 1], sizeof(List*));//Don't know what's better, memcpy or memmove as both seem to give same results
 			}
 			gf2d_list_delete_last(list->list);
 			if (_inventory_current_index == list->list->count)move_cursor_up(); //move cursor up if last item
