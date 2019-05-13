@@ -146,6 +146,8 @@ int main(int argc, char * argv[])
 			if (gf2d_input_command_pressed("cancel")) {
 				editor_new_map(NULL);
 			}
+			level_update();
+			level_draw();
 			gf2d_mouse_update();
 			gf2d_mouse_draw();
 		}
