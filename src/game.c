@@ -68,7 +68,7 @@ int main(int argc, char * argv[])
 	//linfo = level_info_load("levels/home_level.json");
 	//level_init(linfo, 1);
     /*demo setup*/
-   //mouse = gf2d_sprite_load_all("images/pointer.png",32,32,16,0);
+    mouse = gf2d_sprite_load_all("images/pointer.png",32,32,16,0);
     /*main game loop*/
    while(!_done) {
 
@@ -97,8 +97,18 @@ int main(int argc, char * argv[])
 		gf2d_windows_update_all();
 		gf2d_windows_draw_all();
 
+		/*gf2d_sprite_draw(
+			mouse,
+			vector2d(mx, my),
+			NULL,
+			NULL,
+			NULL,
+			NULL,
+			&mouseColor,
+			(Uint16)mf);*/
+
 		
-        gf2d_grahics_next_frame();// render current draw frame and skip to the next frame
+       
 		if (gf2d_input_command_pressed("pause") && !_main_menu) {
 			_pause = 1;
 		}
@@ -113,6 +123,8 @@ int main(int argc, char * argv[])
 		if (gf2d_input_command_pressed("load")) {
 			save_load_in("save/save.bin");
 		}
+
+
 
 		//Main menu is always true when starting from launcher
 		//So it is ok to setup initial level here
@@ -151,6 +163,8 @@ int main(int argc, char * argv[])
 			gf2d_mouse_update();
 			gf2d_mouse_draw();
 		}
+
+		gf2d_grahics_next_frame();// render current draw frame and skip to the next frame
 
 		//Pause loop
 		if (_pause) {
