@@ -483,9 +483,9 @@ void level_draw()
 
 	cam = camera_get_position();
 	camera_set_position(cpv(player->cpbody->p.x - (SCREENWIDTH / 2), player->cpbody->p.y - (SCREENHEIGHT / 2)));
-	gf2d_sprite_draw_image(gamelevel.backgroundImage, vector2d(-cam.x, -cam.y), vector2d(1,1));
+	gf2d_sprite_draw_image(gamelevel.backgroundImage, camera_get_offset(), vector2d(1,1));
 
-	//gf2d_sprite_draw_image(gamelevel.tileLayer, vector2d(-cam.x, -cam.y), vector2d(2, 2)); //Changed last one to be scale
+	gf2d_sprite_draw_image(gamelevel.tileLayer, vector2d(-cam.x, -cam.y), vector2d(2, 2)); //Changed last one to be scale
 	gf2d_entity_draw_all();
 	//gf2d_entity_draw_shape_all();
 	gf2d_particle_emitter_draw(gamelevel.pe, vector2d(-cam.x, -cam.y));

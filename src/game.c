@@ -15,6 +15,7 @@
 #include "Player.h"
 #include "menu.h"
 #include "editor.h"
+#include "gf2d_mouse.h"
 
 static int _done = 0;
 static int _pause = 0;
@@ -62,15 +63,17 @@ int main(int argc, char * argv[])
 	gf2d_transition_system_init(8);
 
 	menu_sound = gf2d_sound_load("sounds/clementpanchout_rpgtitlescreen.wav", 1, 0);
-	gf2d_sound_play(menu_sound, -1, 1, 1, 1);
+	gf2d_sound_play(menu_sound, -1, 0.6, 1, 1);
 
 	//linfo = level_info_load("levels/home_level.json");
 	//level_init(linfo, 1);
     /*demo setup*/
-    mouse = gf2d_sprite_load_all("images/pointer.png",32,32,16,0);
+   //mouse = gf2d_sprite_load_all("images/pointer.png",32,32,16,0);
     /*main game loop*/
-   GAME_LOOP: while(!_done)
-   {
+   while(!_done) {
+
+
+
 
 
 		//sort_entities();
@@ -115,16 +118,21 @@ int main(int argc, char * argv[])
 		//So it is ok to setup initial level here
 		if (_main_menu) {
 			_main_menu = Main_Menu();
+			//Start the editor
 			if (_main_menu == 2) {
 				gf2d_sound_delete(menu_sound);
 				_editor = 1;
 				editor_launch();
+				gf2d_mouse_load("actor/mouse.actor");
 				_main_menu = 0;
+				SDL_ShowCursor(SDL_ENABLE);
 			}
+			//Quit the game
 			else if (_main_menu == 3) {
 				_main_menu = 0;
 				_done = 1;
 			}
+			//Start the game
 			else if (_main_menu == 0) {
 				gf2d_sound_delete(menu_sound);
 				window = gf2d_window_load("config/testwindow.cfg");
@@ -135,15 +143,11 @@ int main(int argc, char * argv[])
 		}
 
 		if (_editor) {
-			gf2d_sprite_draw(
-				mouse,
-				vector2d(mx,my),
-				NULL,
-				NULL,
-				NULL,
-				NULL,
-				&mouseColor,
-				(int)mf);
+			if (gf2d_input_command_pressed("cancel")) {
+				editor_new_map(NULL);
+			}
+			gf2d_mouse_update();
+			gf2d_mouse_draw();
 		}
 
 		//Pause loop

@@ -42,11 +42,11 @@ void editor_new_map(void *data)
 {
 	editorData.level = level_info_create(
 		"images/backgrounds/bg_flat.png",
-		"music/old_city_theme.ogg",
-		"images/tiles/basetile.png",
+		"sounds/main_menu_theme.ogg",
+		"images/ClassicRPGTileset/ClassicRPG_Tileset0000.png",
 		vector2d(32, 32),
 		vector2d(38, 24));
-	level_init(editorData.level, 0);
+	level_init(editorData.level, 1);
 }
 
 
