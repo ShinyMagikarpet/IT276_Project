@@ -15,4 +15,6 @@ void pause_menu_free();
 
 Item *select_item(Entity *ent, int cursorPos);
 
+void Game_Over();
+
 #endif // !__MENU_H__

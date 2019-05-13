@@ -44,14 +44,14 @@ int Main_Menu() {
 				break;
 			}
 			case 1: {
-				pause = 1;
+				pause = 2;
 				transition_window_to_black(40.0f);
 				pause_menu_free();
 				return pause;
 				break;
 			}
 			default:
-				pause = 2;
+				pause = 3;
 				pause_menu_free();
 				break;
 			}
@@ -231,6 +231,11 @@ void Inventory() {
 	}
 }
 
+
+void Game_Over() {
+
+}
+
 //So this is probably the most hackey way to move my cursor. I hate this and it should burn
 void move_cursor_down(int moveValue) { 
 	int i, j, count = window->selection_count;
@@ -321,7 +326,7 @@ void move_cursor_up(int moveValue) {
 		}
 	}
 	cursor->bounds.y -= moveValue;
-	gf2d_sound_play(menu_sound, 0, 1.0, 1, -1);
+	gf2d_sound_play(menu_sound, 0, 1.0, -1, -1);
 
 }
 

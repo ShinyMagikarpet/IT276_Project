@@ -6,6 +6,7 @@
 #include "gf2d_entity_common.h"
 #include "Player.h"
 #include "gf2d_transition.h"
+#include "menu.h"
 
 static cpSpace *newSpace = NULL;
 
@@ -80,8 +81,9 @@ cpBool player_touch_monster_begin(cpArbiter *arb, cpSpace *space, void *data) {
 		player->iframes = 2.0;
 	}
 
-	if (player->rpg.stats.hp_current == 0) {
-		slog("PLAYER SHOULD DIE");
+	if (player->rpg.stats.hp_current <= 0) {
+		player->rpg.stats.hp_current = 0;
+		Game_Over();
 	}
 
 	return cpTrue;

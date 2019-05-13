@@ -14,10 +14,12 @@
 #include "save.h"
 #include "Player.h"
 #include "menu.h"
+#include "editor.h"
 
 static int _done = 0;
 static int _pause = 0;
 static int _main_menu = 1;
+static int _editor = 0;
 
 static Window *window = NULL;
 
@@ -31,7 +33,6 @@ int main(int argc, char * argv[])
     float mf = 0;
     Sprite *mouse;
     Vector4D mouseColor = {255,100,255,200};
-	int _editor;
 	Sound *menu_sound = NULL;
 
 	LevelInfo *linfo = NULL;
@@ -60,20 +61,18 @@ int main(int argc, char * argv[])
 	gf2d_input_init("config/input.cfg");
 	gf2d_transition_system_init(8);
 
-	//linfo = level_info_load("levels/overworld_2.json");
-	//linfo = level_info_load("levels/overworld_1.json");
-	linfo = level_info_load("levels/home_level.json");
+	menu_sound = gf2d_sound_load("sounds/clementpanchout_rpgtitlescreen.wav", 1, 0);
+	gf2d_sound_play(menu_sound, -1, 1, 1, 1);
+
 	//linfo = level_info_load("levels/home_level.json");
-	level_init(linfo, 1);
-
-	window = gf2d_window_load("config/testwindow.cfg");
+	//level_init(linfo, 1);
     /*demo setup*/
-    //sprite = gf2d_sprite_load_image("images/menu3.png");
-    //mouse = gf2d_sprite_load_all("images/pointer.png",32,32,16,0);
-
+    mouse = gf2d_sprite_load_all("images/pointer.png",32,32,16,0);
     /*main game loop*/
    GAME_LOOP: while(!_done)
    {
+
+
 		//sort_entities();
         //SDL_PumpEvents();   // update SDL's internal event structures
         keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
@@ -85,25 +84,16 @@ int main(int argc, char * argv[])
 		gf2d_input_update();
 
         gf2d_graphics_clear_screen();// clears drawing buffers
-
 		//Update and draw level	
-		level_draw();
-		if (!_pause && !_main_menu) {
+		if (!_pause && !_main_menu && !_editor) {
+
 			level_update();
+			level_draw();
 		}
 			
 		gf2d_windows_update_all();
 		gf2d_windows_draw_all();
-            //UI elements last
-           /* gf2d_sprite_draw(
-                mouse,
-                vector2d(mx,my),
-                NULL,
-                NULL,
-                NULL,
-                NULL,
-                &mouseColor,
-                (int)mf);*/
+
 		
         gf2d_grahics_next_frame();// render current draw frame and skip to the next frame
 		if (gf2d_input_command_pressed("pause") && !_main_menu) {
@@ -121,18 +111,40 @@ int main(int argc, char * argv[])
 			save_load_in("save/save.bin");
 		}
 
+		//Main menu is always true when starting from launcher
+		//So it is ok to setup initial level here
 		if (_main_menu) {
 			_main_menu = Main_Menu();
-			if (_main_menu == 1)
+			if (_main_menu == 2) {
+				gf2d_sound_delete(menu_sound);
 				_editor = 1;
-			else if (_main_menu == 2) {
+				editor_launch();
+				_main_menu = 0;
+			}
+			else if (_main_menu == 3) {
 				_main_menu = 0;
 				_done = 1;
+			}
+			else if (_main_menu == 0) {
+				gf2d_sound_delete(menu_sound);
+				window = gf2d_window_load("config/testwindow.cfg");
+				linfo = level_info_load("levels/home_level.json");
+				level_init(linfo, 1);
 			}
 
 		}
 
-
+		if (_editor) {
+			gf2d_sprite_draw(
+				mouse,
+				vector2d(mx,my),
+				NULL,
+				NULL,
+				NULL,
+				NULL,
+				&mouseColor,
+				(int)mf);
+		}
 
 		//Pause loop
 		if (_pause) {
@@ -152,11 +164,13 @@ int main(int argc, char * argv[])
     slog("---==== END ====---");
 	gf2d_input_commands_purge();
 	level_info_free(linfo);
-	cpSpaceEachShape(get_space(), (cpSpaceShapeIteratorFunc)free_all_shapes, NULL);
-	cpSpaceEachBody(get_space(), (cpSpaceBodyIteratorFunc)free_all_bodies, NULL);
+	gf2d_sound_free(menu_sound);
+	if (get_space()) {
+		cpSpaceEachShape(get_space(), (cpSpaceShapeIteratorFunc)free_all_shapes, NULL);
+		cpSpaceEachBody(get_space(), (cpSpaceBodyIteratorFunc)free_all_bodies, NULL);
+	}
 	level_clear();
 	gf2d_window_free_all();
-	//save_write_out("config/save.cfg");
     return 0;
 }
 
