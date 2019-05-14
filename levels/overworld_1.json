@@ -3,7 +3,7 @@
     "backgroundImage": "images/backgrounds/level_1.png",
     "backgroundSize": [1600, 1600],
     "backgroundMusic": "images/rpg-pack/soundtrack/WindlessSlopes.mp3",
-    "tileSet": "images/ClassicRPGTileset/ClassicRPG_Tileset0000.png",
+    "tileSet": " ",
     "tileSize": [ 32, 32 ],
     "tileMapSize": [ 50, 50 ],
     "tilesPerLine": 80,
