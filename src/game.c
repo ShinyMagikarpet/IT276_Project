@@ -155,7 +155,6 @@ int main(int argc, char * argv[])
 			gf2d_mouse_draw();
 		}
 
-
 		//Well aware that doing the code like this is horrible practice but
 		//this is so well worth it
 		_game_over = Game_Over();
@@ -168,17 +167,24 @@ int main(int argc, char * argv[])
 				if (player) {
 					player->rpg.stats.hp_current = player->rpg.stats.hp_max;
 				}
+				main_menu_sound = gf2d_sound_load("sounds/clementpanchout_rpgtitlescreen.wav", 1, 0);
+				gf2d_sound_play(main_menu_sound, -1, 0.6, 1, 1);
 				_game_over = 0;
 				_main_menu = 1;
 			}
+
+			if (gf2d_input_command_pressed("exit")) {
+				_game_over = 0;
+				_done = 1;
+			}
+
 			gf2d_graphics_clear_screen();// clears drawing buffers
-			gf2d_sprite_draw_image(sprite, vector2d(SCREENWIDTH / 2 - 100, SCREENHEIGHT / 2 - 100), vector2d(1, 1));
+			gf2d_text_draw_line("GAME OVER", FT_H2, gf2d_color(1, 1, 0, 1), vector2d(400, 100));
+			gf2d_text_draw_line("Your soul now belongs to NJIT for all eternity", FT_H1, gf2d_color(1, 0, 0, 1), vector2d(150, 550));
+			gf2d_sprite_draw_image(sprite, vector2d(SCREENWIDTH / 2 - 190, SCREENHEIGHT / 2 - 150), vector2d(1.5, 1.5));
 			gf2d_grahics_next_frame();// render current draw frame and skip to the next frame
 		}
 
-		gf2d_grahics_next_frame();// render current draw frame and skip to the next frame
-
-		//Pause loop
 		if (_pause) {
 			_pause = Pause_Menu();
 			if (_pause == 2) {
@@ -186,11 +192,19 @@ int main(int argc, char * argv[])
 				_done = 1;
 			}
 		}
+
+		if (gf2d_input_command_pressed("no")) {
+			Entity *player = player_get();
+			if (player)
+				player->rpg.stats.hp_current = 0;
+		}
 		
 		if (gf2d_input_command_pressed("exit")) {
 			_pause = 0;
 			_done = 1;
 		}
+
+		gf2d_grahics_next_frame();// render current draw frame and skip to the next frame
         //slog("Rendering at %f FPS",gf2d_graphics_get_frames_per_second());
    }
     slog("---==== END ====---");

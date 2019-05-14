@@ -26,11 +26,9 @@ int Main_Menu() {
 		element = gf2d_list_get_nth(window->elements, 0);
 		cursor = element->get_by_name(element, "cursor");
 
-		//Instead of making a new actor cursor actor, I'm just going to scale the one I already have
 		Actor *cursor_actor = (Actor *)cursor->data;
 		if (cursor_actor)
 			cursor_actor->al->scale = vector2d(1.3, 1.3);
-		ListElement *list = (ListElement *)element->data;
 	}
 
 	if (gf2d_input_command_pressed("ok")) {
@@ -209,8 +207,8 @@ void Inventory() {
 			//slog("label contents: %s", label->text);
 			item->use(player, item, _inventory_current_index - 2);
 			int i;
-			for (i = _inventory_current_index; i < list->list->count - 1; i++) {
-				memcpy(&list->list[i], &list->list[i + 1], sizeof(List*));//Don't know what's better, memcpy or memmove as both seem to give same results
+			for (i = _inventory_current_index; i < list->list->count - 2; i++) {
+				memmove(&list->list[i], &list->list[i + 1], sizeof(List*));//Don't know what's better, memcpy or memmove as both seem to give same results
 			}
 			gf2d_list_delete_last(list->list);
 			if (_inventory_current_index == list->list->count)move_cursor_up(30); //move cursor up if last item
@@ -242,7 +240,7 @@ int Game_Over() {
 		transition_window_to_black(400);
 		level_music_stop();
 		menu_sound = gf2d_sound_load("sounds/NJIT_Theme_8-BIT.mp3", 1, 0);
-		gf2d_sound_play(menu_sound, -1, 1, 1, 1);
+		gf2d_sound_play(menu_sound, -1, 10, 1, 1);
 		//set player health to 1 to not loop back here
 		player->rpg.stats.hp_current = 1;
 		return 1;
@@ -349,7 +347,6 @@ void move_cursor_up(int moveValue) {
 
 void pause_menu_free() {
 	gf2d_sound_free(menu_sound);
-	//Order matters when I free windows?
 	gf2d_window_free(get_window_get_by_id(2));
 	gf2d_window_free(get_window_get_by_id(1));
 	menu_sound = NULL;
