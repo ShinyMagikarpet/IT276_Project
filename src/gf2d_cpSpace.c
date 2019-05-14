@@ -75,6 +75,10 @@ cpBool player_touch_monster_begin(cpArbiter *arb, cpSpace *space, void *data) {
 		return cpTrue;
 	}
 
+	//If not in use, ignore all collision
+	if (!other->inuse)
+		return cpFalse;
+
 	//Handles damage and invincibility frames here
 	if (player->iframes <= 0) {
 		player->rpg.stats.hp_current -= other->damage(other, player);
@@ -83,7 +87,6 @@ cpBool player_touch_monster_begin(cpArbiter *arb, cpSpace *space, void *data) {
 
 	if (player->rpg.stats.hp_current <= 0) {
 		player->rpg.stats.hp_current = 0;
-		Game_Over();
 	}
 
 	return cpTrue;
@@ -235,8 +238,6 @@ void post_step_remove(cpSpace *space, cpShape *shape, void *data) {
 	transition_window_to_black(80.0f);
 	cpSpaceEachShape(space, (cpSpaceShapeIteratorFunc)free_all_shapes, NULL);
 	cpSpaceEachBody(space, (cpSpaceBodyIteratorFunc)free_all_bodies, NULL);
-	entity_clear_all_but_player();
-	player->free(player);
 	level_transition(targetLevel, NULL, targetId);
 	slog("player Pos: %f, %f", transitiondata->player_pos.x, transitiondata->player_pos.y);
 	if(player_spawn_pos.x != 0 && player_spawn_pos.y != 0)

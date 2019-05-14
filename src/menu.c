@@ -6,6 +6,7 @@
 #include "gf2d_element_label.h"
 #include "gf2d_input.h"
 #include "gf2d_audio.h"
+#include "level.h"
 
 
 static Sound *menu_sound = NULL;
@@ -232,7 +233,23 @@ void Inventory() {
 }
 
 
-void Game_Over() {
+int Game_Over() {
+	
+	Entity *player = player_get();
+	if (!player) return 0;
+
+	if (player->rpg.stats.hp_current <= 0) {
+		transition_window_to_black(400);
+		level_music_stop();
+		menu_sound = gf2d_sound_load("sounds/NJIT_Theme_8-BIT.mp3", 1, 0);
+		gf2d_sound_play(menu_sound, -1, 1, 1, 1);
+		//set player health to 1 to not loop back here
+		player->rpg.stats.hp_current = 1;
+		return 1;
+	}
+
+	return 0;
+	
 
 }
 

@@ -51,6 +51,15 @@ void level_clear()
 	slog("level cleared");
 }
 
+void level_music_stop() {
+
+	if (gamelevel.backgroundMusic)
+	{
+		Mix_PauseMusic();
+	}
+
+}
+
 void level_info_free(LevelInfo *linfo)
 {
 	if (!linfo)return;
@@ -486,7 +495,8 @@ void level_draw()
 		camera_set_position(cpv(player->cpbody->p.x - (SCREENWIDTH / 2), player->cpbody->p.y - (SCREENHEIGHT / 2)));
 	gf2d_sprite_draw_image(gamelevel.backgroundImage, vector2d(-cam.x, -cam.y), vector2d(1,1));
 
-	gf2d_sprite_draw_image(gamelevel.tileLayer, vector2d(-cam.x, -cam.y), vector2d(2, 2)); //Changed last one to be scale
+	if(gamelevel.tileLayer)
+		gf2d_sprite_draw_image(gamelevel.tileLayer, vector2d(0, 0), vector2d(2, 2)); //Changed last one to be scale
 	gf2d_entity_draw_all();
 	//gf2d_entity_draw_shape_all();
 	gf2d_particle_emitter_draw(gamelevel.pe, vector2d(-cam.x, -cam.y));
@@ -553,7 +563,10 @@ void level_transition(char *filename, const char *playerTarget, Uint32 targetId)
 	TextLine filepath;
 	//TextLine targetname;
 	Uint32 id;
+	Entity *player = player_get();
 	LevelInfo *linfo = NULL;
+	entity_clear_all_but_player();
+	if(player) player->free(player);
 	level_clear();
 	snprintf(filepath, GF2DLINELEN, "levels/%s", filename);
 	slog("%s", filepath);

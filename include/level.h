@@ -39,6 +39,9 @@ typedef struct
  */
 void level_clear();
 
+void level_music_stop();
+
+
 void level_draw();
 void level_update();
 

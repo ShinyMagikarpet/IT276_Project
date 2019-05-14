@@ -16,13 +16,20 @@
 #include "menu.h"
 #include "editor.h"
 #include "gf2d_mouse.h"
+#include "gf2d_entity_common.h"
 
 static int _done = 0;
 static int _pause = 0;
 static int _main_menu = 1;
 static int _editor = 0;
+static int _game_over = 0;
 
 static Window *window = NULL;
+
+
+void Start_New_Game() {
+
+}
 
 int main(int argc, char * argv[])
 {
@@ -34,7 +41,7 @@ int main(int argc, char * argv[])
     float mf = 0;
     Sprite *mouse;
     Vector4D mouseColor = {255,100,255,200};
-	Sound *menu_sound = NULL;
+	Sound *main_menu_sound = NULL;
 
 	LevelInfo *linfo = NULL;
 	//Chipmunk Physics
@@ -62,21 +69,17 @@ int main(int argc, char * argv[])
 	gf2d_input_init("config/input.cfg");
 	gf2d_transition_system_init(8);
 
-	menu_sound = gf2d_sound_load("sounds/clementpanchout_rpgtitlescreen.wav", 1, 0);
-	gf2d_sound_play(menu_sound, -1, 0.6, 1, 1);
+	main_menu_sound = gf2d_sound_load("sounds/clementpanchout_rpgtitlescreen.wav", 1, 0);
+	gf2d_sound_play(main_menu_sound, -1, 0.6, 1, 1);
 
 	//linfo = level_info_load("levels/home_level.json");
 	//level_init(linfo, 1);
     /*demo setup*/
     mouse = gf2d_sprite_load_all("images/pointer.png",32,32,16,0);
+	sprite = gf2d_sprite_load_image("images/The_Devil.jpg");
     /*main game loop*/
    while(!_done) {
 
-
-
-
-
-		//sort_entities();
         //SDL_PumpEvents();   // update SDL's internal event structures
         keys = SDL_GetKeyboardState(NULL); // get the keyboard state for this frame
         /*update things here*/
@@ -88,26 +91,18 @@ int main(int argc, char * argv[])
 
         gf2d_graphics_clear_screen();// clears drawing buffers
 		//Update and draw level	
-		if (!_pause && !_main_menu && !_editor) {
 
-			level_update();
+		if (!_game_over) {
 			level_draw();
+		}
+			
+
+		if (!_pause && !_main_menu && !_editor && !_game_over) {
+			level_update();
 		}
 			
 		gf2d_windows_update_all();
 		gf2d_windows_draw_all();
-
-		/*gf2d_sprite_draw(
-			mouse,
-			vector2d(mx, my),
-			NULL,
-			NULL,
-			NULL,
-			NULL,
-			&mouseColor,
-			(Uint16)mf);*/
-
-		
        
 		if (gf2d_input_command_pressed("pause") && !_main_menu) {
 			_pause = 1;
@@ -132,12 +127,11 @@ int main(int argc, char * argv[])
 			_main_menu = Main_Menu();
 			//Start the editor
 			if (_main_menu == 2) {
-				gf2d_sound_delete(menu_sound);
+				gf2d_sound_delete(main_menu_sound);
 				_editor = 1;
 				editor_launch();
 				gf2d_mouse_load("actor/mouse.actor");
 				_main_menu = 0;
-				SDL_ShowCursor(SDL_ENABLE);
 			}
 			//Quit the game
 			else if (_main_menu == 3) {
@@ -146,10 +140,9 @@ int main(int argc, char * argv[])
 			}
 			//Start the game
 			else if (_main_menu == 0) {
-				gf2d_sound_delete(menu_sound);
+				gf2d_sound_delete(main_menu_sound);
 				window = gf2d_window_load("config/testwindow.cfg");
-				linfo = level_info_load("levels/home_level.json");
-				level_init(linfo, 1);
+				level_transition("home_level.json", NULL, 1);
 			}
 
 		}
@@ -158,10 +151,29 @@ int main(int argc, char * argv[])
 			if (gf2d_input_command_pressed("cancel")) {
 				editor_new_map(NULL);
 			}
-			level_update();
-			level_draw();
 			gf2d_mouse_update();
 			gf2d_mouse_draw();
+		}
+
+
+		//Well aware that doing the code like this is horrible practice but
+		//this is so well worth it
+		_game_over = Game_Over();
+		while(_game_over) {
+			gf2d_input_update();
+			if (gf2d_input_command_pressed("ok")) {
+				Entity *player = player_get();
+				level_clear();
+				entity_clear_all_but_player();
+				if (player) {
+					player->rpg.stats.hp_current = player->rpg.stats.hp_max;
+				}
+				_game_over = 0;
+				_main_menu = 1;
+			}
+			gf2d_graphics_clear_screen();// clears drawing buffers
+			gf2d_sprite_draw_image(sprite, vector2d(SCREENWIDTH / 2 - 100, SCREENHEIGHT / 2 - 100), vector2d(1, 1));
+			gf2d_grahics_next_frame();// render current draw frame and skip to the next frame
 		}
 
 		gf2d_grahics_next_frame();// render current draw frame and skip to the next frame
@@ -184,7 +196,7 @@ int main(int argc, char * argv[])
     slog("---==== END ====---");
 	gf2d_input_commands_purge();
 	level_info_free(linfo);
-	gf2d_sound_free(menu_sound);
+	gf2d_sound_free(main_menu_sound);
 	if (get_space()) {
 		cpSpaceEachShape(get_space(), (cpSpaceShapeIteratorFunc)free_all_shapes, NULL);
 		cpSpaceEachBody(get_space(), (cpSpaceBodyIteratorFunc)free_all_bodies, NULL);
